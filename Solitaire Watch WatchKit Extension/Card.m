@@ -10,6 +10,80 @@
 
 @implementation Card
 static NSArray* cardNames = nil;
+
+static NSString* SWNormalizedSkinName(NSString* skin)
+{
+    if (skin == nil || [skin length] == 0 || [skin isEqualToString:@"1"])
+    {
+        return @"classic";
+    }
+    return skin;
+}
+
+static BOOL SWBundleHasImageNamed(NSString* filename)
+{
+    if (filename == nil || [filename length] == 0)
+    {
+        return NO;
+    }
+    NSString* extension = [filename pathExtension];
+    NSString* nameWithoutExtension = [filename stringByDeletingPathExtension];
+    if ([extension length] == 0)
+    {
+        extension = @"png";
+        nameWithoutExtension = filename;
+    }
+    return ([[NSBundle mainBundle] pathForResource:nameWithoutExtension ofType:extension] != nil);
+}
+
+static NSString* SWBuildFilename(NSString* baseFilename, NSString* suffix)
+{
+    NSString* root = [baseFilename stringByDeletingPathExtension];
+    NSString* extension = [baseFilename pathExtension];
+    if ([extension length] == 0)
+    {
+        extension = @"png";
+    }
+    return [NSString stringWithFormat:@"%@%@.%@", root, suffix, extension];
+}
+
++(NSString*) resolveAssetFilenameForBaseFilename:(NSString*) baseFilename skin:(NSString*) skin preferLarge:(BOOL) preferLarge
+{
+    if (baseFilename == nil || [baseFilename length] == 0)
+    {
+        return baseFilename;
+    }
+
+    NSString* normalizedSkin = SWNormalizedSkinName(skin);
+    NSArray* sizeTokens = preferLarge ? @[@"44mm", @"38mm"] : @[@"38mm", @"44mm"];
+    NSMutableArray* candidates = [[NSMutableArray alloc] init];
+
+    [candidates addObject:baseFilename];
+    [candidates addObject:SWBuildFilename(baseFilename, [NSString stringWithFormat:@"_%@", normalizedSkin])];
+
+    for (NSString* token in sizeTokens)
+    {
+        [candidates addObject:SWBuildFilename(baseFilename, [NSString stringWithFormat:@"_%@%@", token, normalizedSkin])];
+        [candidates addObject:SWBuildFilename(baseFilename, [NSString stringWithFormat:@"_%@", token])];
+        [candidates addObject:SWBuildFilename(baseFilename, [NSString stringWithFormat:@"_%@classic", token])];
+    }
+
+    NSMutableSet* seen = [[NSMutableSet alloc] init];
+    for (NSString* candidate in candidates)
+    {
+        if ([seen containsObject:candidate])
+        {
+            continue;
+        }
+        [seen addObject:candidate];
+        if (SWBundleHasImageNamed(candidate))
+        {
+            return candidate;
+        }
+    }
+
+    return [candidates objectAtIndex:0];
+}
 -(NSString*) cardName
 {
     if (cardNames == nil)
@@ -90,26 +164,9 @@ static NSArray* cardNames = nil;
             {
                 self.sharedDefaults = [[NSUserDefaults alloc] initWithSuiteName:@"group.solitaire"];
             }
-            if ([self.sharedDefaults objectForKey:@"cardskin"] == nil)
-            {
-                [self.sharedDefaults setObject:@"classic" forKey:@"cardskin"];
-            }
-            if ([self.sharedDefaults objectForKey:@"cardskin"] != nil)
-            {
-                if ([[self.sharedDefaults objectForKey:@"cardskin"] isEqualToString: @"1"])
-                {
-                     [self.sharedDefaults setObject:@"classic" forKey:@"cardskin"];
-                }
-            }
-            
-            if (self.is42)
-            {
-                self.filename = [filename stringByReplacingOccurrencesOfString:@".png" withString:[NSString stringWithFormat:@"_44mm%@.png",[self.sharedDefaults objectForKey:@"cardskin"]]];
-            }
-            else
-            {
-                self.filename = [filename stringByReplacingOccurrencesOfString:@".png" withString:[NSString stringWithFormat:@"_38mm%@.png",[self.sharedDefaults objectForKey:@"cardskin"]]];//@"_38mm.png"];
-            }
+            NSString* skin = SWNormalizedSkinName([self.sharedDefaults objectForKey:@"cardskin"]);
+            [self.sharedDefaults setObject:skin forKey:@"cardskin"];
+            self.filename = [Card resolveAssetFilenameForBaseFilename:filename skin:skin preferLarge:self.is42];
         }
         
         NSLog(@"filename is:%@ -%@",self.filename,self.is42?@"is42!":@"no!");
@@ -141,26 +198,9 @@ static NSArray* cardNames = nil;
             {
                 self.sharedDefaults = [[NSUserDefaults alloc] initWithSuiteName:@"group.solitaire"];
             }
-            if ([self.sharedDefaults objectForKey:@"cardskin"] == nil)
-            {
-                [self.sharedDefaults setObject:@"classic" forKey:@"cardskin"];
-            }
-            
-            if ([self.sharedDefaults objectForKey:@"cardskin"] != nil)
-            {
-                if ([[self.sharedDefaults objectForKey:@"cardskin"] isEqualToString: @"1"])
-                {
-                    [self.sharedDefaults setObject:@"classic" forKey:@"cardskin"];
-                }
-            }
-            if (self.is42)
-            {
-                self.filename = [filename stringByReplacingOccurrencesOfString:@".png" withString:[NSString stringWithFormat:@"_44mm%@.png",[self.sharedDefaults objectForKey:@"cardskin"]]];
-            }
-            else
-            {
-                self.filename = [filename stringByReplacingOccurrencesOfString:@".png" withString:[NSString stringWithFormat:@"_38mm%@.png",[self.sharedDefaults objectForKey:@"cardskin"]]];//@"_38mm.png"];
-            }
+            NSString* skin = SWNormalizedSkinName([self.sharedDefaults objectForKey:@"cardskin"]);
+            [self.sharedDefaults setObject:skin forKey:@"cardskin"];
+            self.filename = [Card resolveAssetFilenameForBaseFilename:filename skin:skin preferLarge:self.is42];
         }
     }
     return self;

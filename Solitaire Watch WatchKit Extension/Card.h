@@ -21,6 +21,7 @@
 @property BOOL is42;
 -(NSInteger) index;
 -(NSString*) cardName;
++(NSString*) resolveAssetFilenameForBaseFilename:(NSString*) baseFilename skin:(NSString*) skin preferLarge:(BOOL) preferLarge;
 -(id) initWithSuit:(NSString*) suit value:(NSInteger) value filename:(NSString*) filename color:(NSString*) color andIndex:(NSInteger) index is42:(BOOL) is42 isCopy:(BOOL) isCopy;
 -(Card*) copyCard;
 -(id) initWithSuit:(NSString*) suit value:(NSInteger) value filename:(NSString*) filename color:(NSString*) color andIndex:(NSInteger)index andFacing:(BOOL) facing is42:(BOOL) is42 isCopy:(BOOL) isCopy;

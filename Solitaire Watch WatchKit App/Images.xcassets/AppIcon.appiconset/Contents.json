@@ -118,17 +118,10 @@
       "subtype" : "49mm"
     },
     {
+      "filename" : "IconAppStore1024.png",
       "idiom" : "watch-marketing",
       "scale" : "1x",
       "size" : "1024x1024"
-    },
-    {
-      "filename" : "LongLook@2x.png",
-      "idiom" : "watch",
-      "role" : "longLook",
-      "scale" : "2x",
-      "size" : "44x44",
-      "subtype" : "42mm"
     }
   ],
   "info" : {

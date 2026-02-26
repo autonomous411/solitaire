@@ -2518,16 +2518,7 @@ static const NSArray* cardNames;// = @[@"Unknown",@"Ace",@"One",@"Two",@"Three",
 
 -(BOOL) is42
 {
-    if (self.contentFrame.size.width > 136)
-    {
-        //NSLog(@"is 42!");
-        return true;
-    }
-    else
-    {
-       // NSLog(@"is 38!");
-        return false;
-    }
+    return ([self currentWatchLogicalWidth] >= 176.0f);
 }
 
 -(void) loadMasterDeck
@@ -2677,14 +2668,7 @@ static const NSArray* cardNames;// = @[@"Unknown",@"Ace",@"One",@"Two",@"Three",
 
 -(NSString*) platform:(NSString*) filename
 {
-    if ([self is42])
-    {
-        return [filename stringByReplacingOccurrencesOfString:@".png" withString:@"_44mm.png"];
-    }
-    else
-    {
-        return [filename stringByReplacingOccurrencesOfString:@".png" withString:@"_38mm.png"];//@"_38mm.png"];
-    }
+    return [Card resolveAssetFilenameForBaseFilename:filename skin:nil preferLarge:[self is42]];
 }
 
 -(void) renderStack
