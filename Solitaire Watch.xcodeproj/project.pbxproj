@@ -425,10 +425,6 @@
 		201E9A431B21673500B43636 /* spadeQ_44mmlaunch@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 201E99731B21673500B43636 /* spadeQ_44mmlaunch@2x.png */; };
 		2027A6211ACB9CCE003C1E1E /* s2_small.png in Resources */ = {isa = PBXBuildFile; fileRef = 2027A6201ACB9CCE003C1E1E /* s2_small.png */; };
 		2027A6271ACBB34D003C1E1E /* GameKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2027A6261ACBB34D003C1E1E /* GameKit.framework */; };
-		2027A6301ACBB477003C1E1E /* NSDataAES256.m in Sources */ = {isa = PBXBuildFile; fileRef = 2027A62B1ACBB477003C1E1E /* NSDataAES256.m */; };
-		2027A6311ACBB477003C1E1E /* NSDataAES256.m in Sources */ = {isa = PBXBuildFile; fileRef = 2027A62B1ACBB477003C1E1E /* NSDataAES256.m */; };
-		2027A6321ACBB477003C1E1E /* Reachability.m in Sources */ = {isa = PBXBuildFile; fileRef = 2027A62D1ACBB477003C1E1E /* Reachability.m */; };
-		2027A6331ACBB477003C1E1E /* Reachability.m in Sources */ = {isa = PBXBuildFile; fileRef = 2027A62D1ACBB477003C1E1E /* Reachability.m */; };
 		202881B41AB551AC00CE1A5D /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 202881B11AB551AC00CE1A5D /* Default-568h@2x.png */; };
 		202881B51AB551AC00CE1A5D /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = 202881B21AB551AC00CE1A5D /* Default.png */; };
 		202881B61AB551AC00CE1A5D /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 202881B31AB551AC00CE1A5D /* Default@2x.png */; };
@@ -454,7 +450,6 @@
 		20569D561ACB8D440087BE8A /* MMWormhole.m in Sources */ = {isa = PBXBuildFile; fileRef = 20569D551ACB8D440087BE8A /* MMWormhole.m */; };
 		20569D571ACB8D440087BE8A /* MMWormhole.m in Sources */ = {isa = PBXBuildFile; fileRef = 20569D551ACB8D440087BE8A /* MMWormhole.m */; };
 		2059891B1AD4C8E10067177A /* PossibleMove.m in Sources */ = {isa = PBXBuildFile; fileRef = 2059891A1AD4C8E10067177A /* PossibleMove.m */; };
-		205993DF1AD3881C00D57CA1 /* icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 205993DE1AD3881C00D57CA1 /* icon.png */; };
 		206EFACA1AB2C49F00EE1DE2 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 206EFAC91AB2C49F00EE1DE2 /* main.m */; };
 		206EFACD1AB2C49F00EE1DE2 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 206EFACC1AB2C49F00EE1DE2 /* AppDelegate.m */; };
 		206EFAD01AB2C49F00EE1DE2 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 206EFACF1AB2C49F00EE1DE2 /* ViewController.m */; };
@@ -782,12 +777,6 @@
 		2027A61D1ACB99A9003C1E1E /* Solitaire Watch WatchKit Extension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = "Solitaire Watch WatchKit Extension.entitlements"; sourceTree = "<group>"; };
 		2027A6201ACB9CCE003C1E1E /* s2_small.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = s2_small.png; sourceTree = "<group>"; };
 		2027A6261ACBB34D003C1E1E /* GameKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GameKit.framework; path = System/Library/Frameworks/GameKit.framework; sourceTree = SDKROOT; };
-		2027A6281ACBB477003C1E1E /* GameCenterManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GameCenterManager.h; path = "../../../../Downloads/GameCenterManager-master/GC Manager/GameCenterManager.h"; sourceTree = "<group>"; };
-		2027A6291ACBB477003C1E1E /* GameCenterManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GameCenterManager.m; path = "../../../../Downloads/GameCenterManager-master/GC Manager/GameCenterManager.m"; sourceTree = "<group>"; };
-		2027A62A1ACBB477003C1E1E /* NSDataAES256.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NSDataAES256.h; path = "../../../../Downloads/GameCenterManager-master/GC Manager/NSDataAES256.h"; sourceTree = "<group>"; };
-		2027A62B1ACBB477003C1E1E /* NSDataAES256.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NSDataAES256.m; path = "../../../../Downloads/GameCenterManager-master/GC Manager/NSDataAES256.m"; sourceTree = "<group>"; };
-		2027A62C1ACBB477003C1E1E /* Reachability.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Reachability.h; path = "../../../../Downloads/GameCenterManager-master/GC Manager/Reachability.h"; sourceTree = "<group>"; };
-		2027A62D1ACBB477003C1E1E /* Reachability.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Reachability.m; path = "../../../../Downloads/GameCenterManager-master/GC Manager/Reachability.m"; sourceTree = "<group>"; };
 		202881B11AB551AC00CE1A5D /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Default-568h@2x.png"; path = "Images.xcassets/LaunchImage.launchimage/Default-568h@2x.png"; sourceTree = "<group>"; };
 		202881B21AB551AC00CE1A5D /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Default.png; path = Images.xcassets/LaunchImage.launchimage/Default.png; sourceTree = "<group>"; };
 		202881B31AB551AC00CE1A5D /* Default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Default@2x.png"; path = "Images.xcassets/LaunchImage.launchimage/Default@2x.png"; sourceTree = "<group>"; };
@@ -819,7 +808,6 @@
 		20569D551ACB8D440087BE8A /* MMWormhole.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MMWormhole.m; sourceTree = "<group>"; };
 		205989191AD4C8E10067177A /* PossibleMove.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PossibleMove.h; sourceTree = "<group>"; };
 		2059891A1AD4C8E10067177A /* PossibleMove.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PossibleMove.m; sourceTree = "<group>"; };
-		205993DE1AD3881C00D57CA1 /* icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = icon.png; path = ../../../marketing/icon.png; sourceTree = "<group>"; };
 		206EFAC41AB2C49F00EE1DE2 /* Solitaire Watch.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Solitaire Watch.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		206EFAC81AB2C49F00EE1DE2 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		206EFAC91AB2C49F00EE1DE2 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -1235,12 +1223,6 @@
 				206EFB141AB2C5FA00EE1DE2 /* diamondJ_44mm@2x.png */,
 				206EFB151AB2C5FA00EE1DE2 /* diamond9_44mm@2x.png */,
 				206EFB161AB2C5FA00EE1DE2 /* diamond8_44mm@2x.png */,
-				2027A6281ACBB477003C1E1E /* GameCenterManager.h */,
-				2027A6291ACBB477003C1E1E /* GameCenterManager.m */,
-				2027A62A1ACBB477003C1E1E /* NSDataAES256.h */,
-				2027A62B1ACBB477003C1E1E /* NSDataAES256.m */,
-				2027A62C1ACBB477003C1E1E /* Reachability.h */,
-				2027A62D1ACBB477003C1E1E /* Reachability.m */,
 				206EFB171AB2C5FA00EE1DE2 /* diamond7_44mm@2x.png */,
 				206EFB181AB2C5FA00EE1DE2 /* diamond6_44mm@2x.png */,
 				206EFB191AB2C5FA00EE1DE2 /* diamond5_44mm@2x.png */,
@@ -1295,7 +1277,6 @@
 				206EFAFF1AB2C5CE00EE1DE2 /* diamondK_44mm@2x.png */,
 				206EFAED1AB2C52300EE1DE2 /* SizeToScreen.m */,
 				206EFAEE1AB2C52300EE1DE2 /* SizeToScreen.h */,
-				205993DE1AD3881C00D57CA1 /* icon.png */,
 				206EFACB1AB2C49F00EE1DE2 /* AppDelegate.h */,
 				206EFACC1AB2C49F00EE1DE2 /* AppDelegate.m */,
 				206EFACE1AB2C49F00EE1DE2 /* ViewController.h */,
@@ -1360,7 +1341,7 @@
 			name = "Solitaire Watch WatchKit Extension";
 			productName = "Solitaire Watch WatchKit Extension";
 			productReference = 20569C4B1ACB7F5E0087BE8A /* Solitaire Watch WatchKit Extension.appex */;
-			productType = "com.apple.product-type.watchkit-extension";
+				productType = "com.apple.product-type.watchkit2-extension";
 		};
 		20569C581ACB7F5E0087BE8A /* Solitaire Watch WatchKit App */ = {
 			isa = PBXNativeTarget;
@@ -1375,7 +1356,7 @@
 			name = "Solitaire Watch WatchKit App";
 			productName = "Solitaire Watch WatchKit App";
 			productReference = 20569C591ACB7F5E0087BE8A /* Solitaire Watch WatchKit App.app */;
-			productType = "com.apple.product-type.application.watchapp";
+				productType = "com.apple.product-type.application.watchapp2";
 		};
 		206EFAC31AB2C49F00EE1DE2 /* Solitaire Watch */ = {
 			isa = PBXNativeTarget;
@@ -1851,7 +1832,6 @@
 				206EFB3C1AB2C5FA00EE1DE2 /* diamondJ_44mm@2x.png in Resources */,
 				201E99EE1B21673500B43636 /* heart6_44mmlaunch@2x.png in Resources */,
 				201E98921B2166BA00B43636 /* diamond10_44mmclassic@2x.png in Resources */,
-				205993DF1AD3881C00D57CA1 /* icon.png in Resources */,
 				206EFB3D1AB2C5FA00EE1DE2 /* diamond9_44mm@2x.png in Resources */,
 				201E99C81B21673500B43636 /* diamond10_38mmlaunch@2x.png in Resources */,
 				201E9A281B21673500B43636 /* spade8_38mmlaunch@2x.png in Resources */,
@@ -2015,10 +1995,8 @@
 				20569C741ACB830B0087BE8A /* ModalHelperClass.m in Sources */,
 				2059891B1AD4C8E10067177A /* PossibleMove.m in Sources */,
 				20569D571ACB8D440087BE8A /* MMWormhole.m in Sources */,
-				2027A6331ACBB477003C1E1E /* Reachability.m in Sources */,
 				20569C511ACB7F5E0087BE8A /* InterfaceController.m in Sources */,
 				20569C541ACB7F5E0087BE8A /* GlanceController.m in Sources */,
-				2027A6311ACBB477003C1E1E /* NSDataAES256.m in Sources */,
 				20569C731ACB830B0087BE8A /* Card.m in Sources */,
 				20F3DD1F1AEC14120098ED23 /* SolitaireSettings.m in Sources */,
 			);
@@ -2031,11 +2009,9 @@
 				206EFB621AB2C61100EE1DE2 /* Card.m in Sources */,
 				20F3DD201AEC2CC30098ED23 /* PossibleMove.m in Sources */,
 				206EFAD01AB2C49F00EE1DE2 /* ViewController.m in Sources */,
-				2027A6301ACBB477003C1E1E /* NSDataAES256.m in Sources */,
 				20569D561ACB8D440087BE8A /* MMWormhole.m in Sources */,
 				206EFACD1AB2C49F00EE1DE2 /* AppDelegate.m in Sources */,
 				206EFACA1AB2C49F00EE1DE2 /* main.m in Sources */,
-				2027A6321ACBB477003C1E1E /* Reachability.m in Sources */,
 				206EFAEF1AB2C52300EE1DE2 /* SizeToScreen.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2107,8 +2083,11 @@
 					"$(inherited)",
 				);
 				INFOPLIST_FILE = "Solitaire Watch WatchKit Extension/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.2;
+				SDKROOT = watchos;
+				SUPPORTED_PLATFORMS = "watchos watchsimulator";
+				WATCHOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.autonomous.Solitaire-Watch.watchkitextension";
 				PRODUCT_NAME = "${TARGET_NAME}";
 				PROVISIONING_PROFILE = "";
 				SKIP_INSTALL = YES;
@@ -2122,8 +2101,11 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				INFOPLIST_FILE = "Solitaire Watch WatchKit Extension/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.2;
+				SDKROOT = watchos;
+				SUPPORTED_PLATFORMS = "watchos watchsimulator";
+				WATCHOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.autonomous.Solitaire-Watch.watchkitextension";
 				PRODUCT_NAME = "${TARGET_NAME}";
 				PROVISIONING_PROFILE = "";
 				SKIP_INSTALL = YES;
@@ -2142,12 +2124,15 @@
 				);
 				IBSC_MODULE = Solitaire_Watch_WatchKit_Extension;
 				INFOPLIST_FILE = "Solitaire Watch WatchKit App/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.2;
+				SDKROOT = watchos;
+				SUPPORTED_PLATFORMS = "watchos watchsimulator";
+				WATCHOS_DEPLOYMENT_TARGET = 8.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.autonomous.Solitaire-Watch.watchkitapp";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = 4;
-				"TARGETED_DEVICE_FAMILY[sdk=iphonesimulator*]" = "1,4";
+				"TARGETED_DEVICE_FAMILY[sdk=iphonesimulator*]" = 4;
 			};
 			name = Debug;
 		};
@@ -2159,12 +2144,15 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				IBSC_MODULE = Solitaire_Watch_WatchKit_Extension;
 				INFOPLIST_FILE = "Solitaire Watch WatchKit App/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.2;
+				SDKROOT = watchos;
+				SUPPORTED_PLATFORMS = "watchos watchsimulator";
+				WATCHOS_DEPLOYMENT_TARGET = 8.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.autonomous.Solitaire-Watch.watchkitapp";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = 4;
-				"TARGETED_DEVICE_FAMILY[sdk=iphonesimulator*]" = "1,4";
+				"TARGETED_DEVICE_FAMILY[sdk=iphonesimulator*]" = 4;
 			};
 			name = Release;
 		};
@@ -2202,7 +2190,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+					IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -2237,7 +2225,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+					IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
@@ -2252,12 +2240,13 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEVELOPMENT_TEAM = 5A33EB27R8;
-				INFOPLIST_FILE = "Solitaire Watch/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "";
-				TARGETED_DEVICE_FAMILY = 1;
+					INFOPLIST_FILE = "Solitaire Watch/Info.plist";
+					IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+					LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+					PRODUCT_BUNDLE_IDENTIFIER = "com.autonomous.Solitaire-Watch";
+					PRODUCT_NAME = "$(TARGET_NAME)";
+					PROVISIONING_PROFILE = "";
+					TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -2269,12 +2258,13 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEVELOPMENT_TEAM = 5A33EB27R8;
-				INFOPLIST_FILE = "Solitaire Watch/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "";
-				TARGETED_DEVICE_FAMILY = 1;
+					INFOPLIST_FILE = "Solitaire Watch/Info.plist";
+					IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+					LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+					PRODUCT_BUNDLE_IDENTIFIER = "com.autonomous.Solitaire-Watch";
+					PRODUCT_NAME = "$(TARGET_NAME)";
+					PROVISIONING_PROFILE = "";
+					TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};
