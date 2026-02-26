@@ -1,0 +1,768 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder.WatchKit.Storyboard" version="3.0" toolsVersion="7706" systemVersion="14A389" targetRuntime="watchKit" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="AgC-eL-Hgc">
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7703"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBWatchKitPlugin" version="7701"/>
+    </dependencies>
+    <scenes>
+        <!--Solitaire-->
+        <scene sceneID="aou-V4-d1y">
+            <objects>
+                <controller title="Solitaire" id="AgC-eL-Hgc" customClass="InterfaceController">
+                    <items>
+                        <group width="1" alignment="left" layout="vertical" radius="0.0" spacing="0.0" id="n5z-Aj-6Qf" userLabel="root">
+                            <items>
+                                <group width="136" height="40" alignment="left" backgroundImage="deckbackground_44mm.png" contentMode="center" radius="0.0" spacing="0.0" id="Ecd-9N-vau" userLabel="Deck">
+                                    <items>
+                                        <button alignment="left" accessibilityLabel="Flip from Deck" accessibilityHint="Flip 1 or 3 cards onto the stack." id="3Jf-Js-fRI" userLabel="Deck Stack">
+                                            <group key="contentGroup" width="1" height="1" alignment="left" radius="0.0" id="4dO-Ha-Ygg">
+                                                <items>
+                                                    <group width="1" height="1" alignment="left" radius="0.0" spacing="0.0" id="Lmk-i7-vKH" userLabel="DeckStackButtonGroup">
+                                                        <items>
+                                                            <imageView width="19" height="25" alignment="center" verticalAlignment="center" image="facedown_38mm.png" contentMode="left" id="Tch-83-LO2" userLabel="Deck Stack 1">
+                                                                <variation key="device=watch38mm" height="25" image="facedown_38mm.png" width="19"/>
+                                                                <variation key="device=watch42mm" height="30" image="facedown_44mm.png" width="22"/>
+                                                            </imageView>
+                                                            <imageView width="3" height="25" alignment="center" verticalAlignment="center" image="facedown.png" contentMode="right" id="wpj-MZ-mIb" userLabel="Deck Stack 2">
+                                                                <variation key="device=watch38mm" height="25" image="facedown_38mm.png" width="3"/>
+                                                                <variation key="device=watch42mm" height="30" image="facedown_44mm.png" width="6"/>
+                                                            </imageView>
+                                                            <imageView width="3" height="25" alignment="center" verticalAlignment="center" image="facedown_38mm.png" contentMode="right" id="51t-5T-Ovs" userLabel="Deck Stack 3">
+                                                                <variation key="device=watch38mm" height="25" image="facedown_38mm.png" width="3"/>
+                                                                <variation key="device=watch42mm" height="30" image="facedown_44mm.png" width="6"/>
+                                                            </imageView>
+                                                        </items>
+                                                    </group>
+                                                </items>
+                                            </group>
+                                            <connections>
+                                                <action selector="deckStackAction:" destination="AgC-eL-Hgc" id="EqP-jD-DeU"/>
+                                            </connections>
+                                        </button>
+                                        <group width="0.5" height="1" alignment="right" radius="0.0" spacing="0.0" id="TH2-Xk-4rx" userLabel="Deck Flip">
+                                            <items>
+                                                <button alignment="center" verticalAlignment="center" id="QEH-ca-Tea" userLabel="Deck Flip">
+                                                    <group key="contentGroup" width="1" height="1" alignment="left" contentMode="left" radius="0.0" spacing="0.0" id="MKF-fc-FJE" userLabel="Deck Flip Button">
+                                                        <items>
+                                                            <imageView width="14" height="25" alignment="left" verticalAlignment="center" image="heart10_38zmm.png" contentMode="left" id="pcb-de-ec8" userLabel="Flip Card Back">
+                                                                <variation key="device=watch38mm" height="25" image="heart10_38mm.png" width="14"/>
+                                                                <variation key="device=watch42mm" height="30" image="heart10_44mm.png" width="16"/>
+                                                            </imageView>
+                                                            <imageView width="14" height="25" alignment="left" verticalAlignment="center" image="club2_38mm.png" contentMode="left" id="J5w-7Y-eZh" userLabel="Flip Card Middle">
+                                                                <variation key="device=watch38mm" height="25" image="club2_38mm.png" width="14"/>
+                                                                <variation key="device=watch42mm" height="30" image="club2_44mm.png" width="16"/>
+                                                            </imageView>
+                                                            <imageView width="19" height="25" alignment="left" verticalAlignment="center" image="heart2_44mm.png" id="ovs-Zx-iyb" userLabel="Flip Card Front">
+                                                                <variation key="device=watch38mm" height="25" image="heart2_38mm.png" width="19"/>
+                                                                <variation key="device=watch42mm" height="30" image="heart2_44mm.png" width="22"/>
+                                                            </imageView>
+                                                        </items>
+                                                    </group>
+                                                    <connections>
+                                                        <action selector="deckFlipAction:" destination="AgC-eL-Hgc" id="eJG-Mg-hYr"/>
+                                                    </connections>
+                                                </button>
+                                            </items>
+                                        </group>
+                                    </items>
+                                    <variation key="device=watch38mm" height="30" width="136"/>
+                                    <variation key="device=watch42mm" height="36" width="156"/>
+                                </group>
+                                <group width="1" height="40" alignment="left" backgroundImage="discardbackground_44mm.png" contentMode="center" radius="0.0" spacing="0.0" id="WOt-F3-nBa" userLabel="Discard">
+                                    <items>
+                                        <group width="0.25" height="1" alignment="left" radius="0.0" spacing="0.0" id="dDT-ir-ooI" userLabel="Discard 1">
+                                            <items>
+                                                <button alignment="center" verticalAlignment="center" accessibilityLabel="Foundation" accessibilityHint="The four foundations are built up by suit from Ace to King." id="q63-c1-VK6" userLabel="Discard Button 1">
+                                                    <group key="contentGroup" width="1" height="1" alignment="left" radius="0.0" spacing="0.0" id="8w6-xV-lNg">
+                                                        <items>
+                                                            <imageView width="19" height="25" alignment="center" verticalAlignment="center" image="cardback_44mm.png" id="wfC-Lb-0Vp">
+                                                                <variation key="device=watch38mm" height="25" width="19"/>
+                                                                <variation key="device=watch42mm" height="30" width="22"/>
+                                                            </imageView>
+                                                        </items>
+                                                    </group>
+                                                    <connections>
+                                                        <action selector="discard1Action:" destination="AgC-eL-Hgc" id="ieD-3L-B2h"/>
+                                                    </connections>
+                                                </button>
+                                            </items>
+                                        </group>
+                                        <group width="0.25" height="1" alignment="left" radius="0.0" spacing="0.0" id="qyS-WI-Lem" userLabel="Discard 2">
+                                            <items>
+                                                <button alignment="center" verticalAlignment="center" accessibilityLabel="Foundation" accessibilityHint="The four foundations are built up by suit from Ace to King." id="yVL-xV-mGH" userLabel="Discard Button 2">
+                                                    <group key="contentGroup" width="1" height="1" alignment="left" radius="0.0" spacing="0.0" id="rDW-Gg-xWU">
+                                                        <items>
+                                                            <imageView width="19" height="25" alignment="center" verticalAlignment="center" image="cardback_44mm.png" id="Nf1-i9-JGV">
+                                                                <variation key="device=watch38mm" height="25" width="19"/>
+                                                                <variation key="device=watch42mm" height="30" width="22"/>
+                                                            </imageView>
+                                                        </items>
+                                                    </group>
+                                                    <connections>
+                                                        <action selector="discard2Action:" destination="AgC-eL-Hgc" id="yGw-AI-OML"/>
+                                                    </connections>
+                                                </button>
+                                            </items>
+                                        </group>
+                                        <group width="0.25" height="1" alignment="left" radius="0.0" spacing="0.0" id="W2Z-U9-4Sf" userLabel="Discard 3">
+                                            <items>
+                                                <button alignment="center" verticalAlignment="center" accessibilityLabel="Foundation" accessibilityHint="The four foundations are built up by suit from Ace to King." id="rwm-7k-ibb" userLabel="Discard Button 3">
+                                                    <group key="contentGroup" width="1" height="1" alignment="left" radius="0.0" spacing="0.0" id="ZaR-bw-QaU">
+                                                        <items>
+                                                            <imageView width="19" height="25" alignment="center" verticalAlignment="center" image="cardback_44mm.png" id="jb2-NF-ayF">
+                                                                <variation key="device=watch38mm" height="25" width="19"/>
+                                                                <variation key="device=watch42mm" height="30" width="22"/>
+                                                            </imageView>
+                                                        </items>
+                                                    </group>
+                                                    <connections>
+                                                        <action selector="discard3Action:" destination="AgC-eL-Hgc" id="IMz-AC-Wn7"/>
+                                                    </connections>
+                                                </button>
+                                            </items>
+                                        </group>
+                                        <group width="0.25" height="1" alignment="left" radius="0.0" spacing="0.0" id="1aE-hi-U2f" userLabel="Discard 4">
+                                            <items>
+                                                <button alignment="center" verticalAlignment="center" accessibilityLabel="Foundation" accessibilityHint="The four foundations are built up by suit from Ace to King." id="gA2-sE-BqE" userLabel="Discard Button 4">
+                                                    <group key="contentGroup" width="1" height="1" alignment="left" radius="0.0" spacing="0.0" id="Gig-N0-VrV">
+                                                        <items>
+                                                            <imageView width="19" height="25" alignment="center" verticalAlignment="center" image="cardback_44mm.png" id="ULy-13-gOn">
+                                                                <variation key="device=watch38mm" height="25" width="19"/>
+                                                                <variation key="device=watch42mm" height="30" width="22"/>
+                                                            </imageView>
+                                                        </items>
+                                                    </group>
+                                                    <connections>
+                                                        <action selector="discard4Action:" destination="AgC-eL-Hgc" id="9vd-SO-6gV"/>
+                                                    </connections>
+                                                </button>
+                                            </items>
+                                        </group>
+                                    </items>
+                                    <color key="backgroundColor" red="1" green="0.99318945075829168" blue="0.17960122590772065" alpha="0.17999999999999999" colorSpace="calibratedRGB"/>
+                                    <variation key="device=watch38mm" height="30"/>
+                                    <variation key="device=watch42mm" height="36"/>
+                                </group>
+                                <group width="1" alignment="left" backgroundImage="deckbackground_44mm.png" contentMode="redraw" radius="0.0" spacing="0.0" id="DCQ-cm-h8O" userLabel="Hand">
+                                    <items>
+                                        <group width="19" alignment="left" layout="vertical" radius="0.0" spacing="0.0" id="wts-8n-aEH" userLabel="HandStack1">
+                                            <items>
+                                                <button alignment="center" accessibilityLabel="First Pile" id="C4E-Dd-9TB" userLabel="HandStack1Button">
+                                                    <group key="contentGroup" width="1" height="180" alignment="left" layout="vertical" radius="0.0" spacing="0.0" id="FDa-LU-Uks" userLabel="HandStack1ButtonGroup">
+                                                        <items>
+                                                            <imageView width="1" height="2" alignment="left" contentMode="top" id="Mny-b4-GvW" userLabel="Spacer"/>
+                                                            <imageView height="25" alignment="left" image="heart10.png" contentMode="top" id="BUQ-kg-BXP" userLabel="Card0">
+                                                                <variation key="device=watch42mm" height="30"/>
+                                                            </imageView>
+                                                            <imageView height="17" alignment="left" hidden="YES" image="spade2.png" contentMode="top" id="BIa-vk-XLk" userLabel="Card1"/>
+                                                            <imageView height="17" alignment="left" hidden="YES" image="club2.png" contentMode="top" id="v9e-p0-hey" userLabel="Card2"/>
+                                                            <imageView height="17" alignment="left" hidden="YES" image="spade2.png" contentMode="top" id="3fc-8N-wc6" userLabel="Card3"/>
+                                                            <imageView height="17" alignment="left" hidden="YES" image="diamond2.png" contentMode="top" id="cAU-WA-qA3" userLabel="Card4"/>
+                                                            <imageView height="25" alignment="left" hidden="YES" image="spade2.png" contentMode="top" id="191-1T-7xA" userLabel="Card5"/>
+                                                            <imageView height="25" alignment="left" hidden="YES" image="spade2.png" contentMode="top" id="RjW-R4-EWJ" userLabel="Card6"/>
+                                                            <imageView height="25" alignment="left" hidden="YES" image="spade2.png" contentMode="top" id="55T-WD-BQb" userLabel="Card7"/>
+                                                            <imageView height="25" alignment="left" hidden="YES" image="spade2.png" contentMode="top" id="QYJ-y2-wE6" userLabel="Card8"/>
+                                                            <imageView height="25" alignment="left" hidden="YES" image="spade2.png" contentMode="top" id="NrI-Zy-1q6" userLabel="Card9"/>
+                                                            <imageView height="25" alignment="left" hidden="YES" image="spade2.png" contentMode="top" id="gkd-kw-AIZ" userLabel="Card10"/>
+                                                            <imageView height="25" alignment="left" hidden="YES" image="spade2.png" contentMode="top" id="aNk-Tl-6fH" userLabel="Card11"/>
+                                                            <imageView height="25" alignment="left" hidden="YES" image="spade2.png" contentMode="top" id="H1l-sI-MmA" userLabel="Card12"/>
+                                                            <imageView height="25" alignment="left" hidden="YES" image="spade2.png" contentMode="top" id="Wdz-vn-EUK" userLabel="Card13"/>
+                                                            <imageView height="25" alignment="left" hidden="YES" image="spade2.png" contentMode="top" id="w2a-aU-O1W" userLabel="Card14"/>
+                                                            <imageView height="25" alignment="left" hidden="YES" image="spade2.png" contentMode="top" id="qf9-oi-ZJb" userLabel="Card15"/>
+                                                            <imageView height="25" alignment="left" hidden="YES" image="spade2.png" contentMode="top" id="r7a-Ag-I9P" userLabel="Card16"/>
+                                                            <imageView height="25" alignment="left" hidden="YES" image="spade2.png" contentMode="top" id="HBc-05-GZ9" userLabel="Card17"/>
+                                                            <imageView height="25" alignment="left" hidden="YES" image="spade2.png" contentMode="top" id="SEF-By-vj1" userLabel="Card18"/>
+                                                            <imageView height="25" alignment="left" hidden="YES" image="spade2.png" contentMode="top" id="Paw-LL-gs2" userLabel="Card19"/>
+                                                        </items>
+                                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                                        <variation key="device=watch38mm" height="200"/>
+                                                        <variation key="device=watch42mm" height="220"/>
+                                                    </group>
+                                                    <connections>
+                                                        <action selector="handStack1Action:" destination="AgC-eL-Hgc" id="g1Z-SR-LgA"/>
+                                                    </connections>
+                                                </button>
+                                            </items>
+                                            <edgeInsets key="margins" left="0.0" right="0.0" top="0.0" bottom="0.0"/>
+                                            <variation key="device=watch38mm" width="19"/>
+                                            <variation key="device=watch42mm" width="22"/>
+                                        </group>
+                                        <group width="19" alignment="left" layout="vertical" radius="0.0" spacing="0.0" id="21H-dP-xLd" userLabel="HandStack2">
+                                            <items>
+                                                <button alignment="center" accessibilityLabel="Second Pile" id="Jur-lX-dQV" userLabel="HandStack2Button">
+                                                    <group key="contentGroup" width="1" height="180" alignment="left" layout="vertical" radius="0.0" spacing="0.0" id="3vg-rc-EKK" userLabel="HandStack2ButtonGroup">
+                                                        <items>
+                                                            <imageView width="1" height="2" alignment="left" contentMode="top" id="Jyf-Kj-QBT" userLabel="Spacer"/>
+                                                            <imageView height="6" alignment="left" image="facedown.png" contentMode="top" id="jNk-cr-Ruh" userLabel="Card0"/>
+                                                            <imageView height="25" alignment="left" image="heart9.png" contentMode="top" id="YZI-L4-LBu" userLabel="Card1">
+                                                                <variation key="device=watch38mm" height="25"/>
+                                                                <variation key="device=watch42mm" height="30"/>
+                                                            </imageView>
+                                                            <imageView height="17" alignment="left" hidden="YES" image="club2.png" contentMode="top" id="tdG-xA-Gd2" userLabel="Card2"/>
+                                                            <imageView height="17" alignment="left" hidden="YES" image="spade2.png" contentMode="top" id="O8x-BD-nTO" userLabel="Card3"/>
+                                                            <imageView height="17" alignment="left" hidden="YES" image="diamond2.png" contentMode="top" id="gSu-zE-CkX" userLabel="Card4"/>
+                                                            <imageView height="25" alignment="left" hidden="YES" image="spade2.png" contentMode="top" id="91E-WD-sBo" userLabel="Card5"/>
+                                                            <imageView height="25" alignment="left" hidden="YES" image="spade2.png" contentMode="top" id="pJ2-kx-9qD" userLabel="Card6"/>
+                                                            <imageView height="25" alignment="left" hidden="YES" image="spade2.png" contentMode="top" id="b59-nM-MiZ" userLabel="Card7"/>
+                                                            <imageView height="25" alignment="left" hidden="YES" image="spade2.png" contentMode="top" id="Vwm-hQ-87R" userLabel="Card8"/>
+                                                            <imageView height="25" alignment="left" hidden="YES" image="spade2.png" contentMode="top" id="QFd-0e-LRT" userLabel="Card9"/>
+                                                            <imageView height="25" alignment="left" hidden="YES" image="spade2.png" contentMode="top" id="pdC-gl-RQX" userLabel="Card10"/>
+                                                            <imageView height="25" alignment="left" hidden="YES" image="spade2.png" contentMode="top" id="j8O-d6-Rvc" userLabel="Card11"/>
+                                                            <imageView height="25" alignment="left" hidden="YES" image="spade2.png" contentMode="top" id="aG6-a2-idh" userLabel="Card12"/>
+                                                            <imageView height="25" alignment="left" hidden="YES" image="spade2.png" contentMode="top" id="c4Z-To-6am" userLabel="Card13"/>
+                                                            <imageView height="25" alignment="left" hidden="YES" image="spade2.png" contentMode="top" id="vhe-Ph-Z0r" userLabel="Card14"/>
+                                                            <imageView height="25" alignment="left" hidden="YES" image="spade2.png" contentMode="top" id="mMO-fS-r8F" userLabel="Card15"/>
+                                                            <imageView height="25" alignment="left" hidden="YES" image="spade2.png" contentMode="top" id="Y7v-rr-Hke" userLabel="Card16"/>
+                                                            <imageView height="25" alignment="left" hidden="YES" image="spade2.png" contentMode="top" id="TP7-ca-ipn" userLabel="Card17"/>
+                                                            <imageView height="25" alignment="left" hidden="YES" image="spade2.png" contentMode="top" id="WOM-4D-SqM" userLabel="Card18"/>
+                                                            <imageView height="25" alignment="left" hidden="YES" image="spade2.png" contentMode="top" id="OdB-4w-h3Q" userLabel="Card19"/>
+                                                        </items>
+                                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                                        <variation key="device=watch38mm" height="200"/>
+                                                        <variation key="device=watch42mm" height="220"/>
+                                                    </group>
+                                                    <connections>
+                                                        <action selector="handStack2Action:" destination="AgC-eL-Hgc" id="Kpf-by-LSv"/>
+                                                    </connections>
+                                                </button>
+                                            </items>
+                                            <edgeInsets key="margins" left="0.0" right="0.0" top="0.0" bottom="0.0"/>
+                                            <variation key="device=watch38mm" width="19"/>
+                                            <variation key="device=watch42mm" width="22"/>
+                                        </group>
+                                        <group width="19" alignment="left" layout="vertical" radius="0.0" spacing="0.0" id="Idi-pj-KoL" userLabel="HandStack3">
+                                            <items>
+                                                <button alignment="center" accessibilityLabel="Third Pile" id="O0K-RL-X15" userLabel="HandStack3Button">
+                                                    <group key="contentGroup" width="1" height="180" alignment="left" layout="vertical" radius="0.0" spacing="0.0" id="ibc-E6-gXQ" userLabel="HandStack3ButtonGroup">
+                                                        <items>
+                                                            <imageView width="1" height="2" alignment="left" contentMode="top" id="g9t-Eq-wDz" userLabel="Spacer"/>
+                                                            <imageView height="6" alignment="left" image="facedown.png" contentMode="top" id="cgv-2T-MDz" userLabel="Card0"/>
+                                                            <imageView height="6" alignment="left" image="facedown.png" contentMode="top" id="X36-CW-CiL" userLabel="Card1"/>
+                                                            <imageView height="25" alignment="left" image="spade6.png" contentMode="top" id="LAN-jU-Is8" userLabel="Card2">
+                                                                <variation key="device=watch38mm" height="25"/>
+                                                                <variation key="device=watch42mm" height="30"/>
+                                                            </imageView>
+                                                            <imageView height="17" alignment="left" hidden="YES" image="spade2.png" contentMode="top" id="Fnb-a4-eP8" userLabel="Card3"/>
+                                                            <imageView height="17" alignment="left" hidden="YES" image="diamond2.png" contentMode="top" id="ADr-SE-6Yt" userLabel="Card4"/>
+                                                            <imageView height="25" alignment="left" hidden="YES" image="spade2.png" contentMode="top" id="lZx-bu-OU6" userLabel="Card5"/>
+                                                            <imageView height="25" alignment="left" hidden="YES" image="spade2.png" contentMode="top" id="qAv-5x-AGq" userLabel="Card6"/>
+                                                            <imageView height="25" alignment="left" hidden="YES" image="spade2.png" contentMode="top" id="Lbs-2a-jFk" userLabel="Card7"/>
+                                                            <imageView height="25" alignment="left" hidden="YES" image="spade2.png" contentMode="top" id="beL-A2-Q5u" userLabel="Card8"/>
+                                                            <imageView height="25" alignment="left" hidden="YES" image="spade2.png" contentMode="top" id="DzN-af-lDz" userLabel="Card9"/>
+                                                            <imageView height="25" alignment="left" hidden="YES" image="spade2.png" contentMode="top" id="Pvz-Wl-Ug2" userLabel="Card10"/>
+                                                            <imageView height="25" alignment="left" hidden="YES" image="spade2.png" contentMode="top" id="nFH-aN-0kX" userLabel="Card11"/>
+                                                            <imageView height="25" alignment="left" hidden="YES" image="spade2.png" contentMode="top" id="9LV-Gz-C5J" userLabel="Card12"/>
+                                                            <imageView height="25" alignment="left" hidden="YES" image="spade2.png" contentMode="top" id="L9F-sf-nPf" userLabel="Card13"/>
+                                                            <imageView height="25" alignment="left" hidden="YES" image="spade2.png" contentMode="top" id="MWV-P2-RES" userLabel="Card14"/>
+                                                            <imageView height="25" alignment="left" hidden="YES" image="spade2.png" contentMode="top" id="xTA-Va-flV" userLabel="Card15"/>
+                                                            <imageView height="25" alignment="left" hidden="YES" image="spade2.png" contentMode="top" id="AiC-2X-OiZ" userLabel="Card16"/>
+                                                            <imageView height="25" alignment="left" hidden="YES" image="spade2.png" contentMode="top" id="C52-bF-UgT" userLabel="Card17"/>
+                                                            <imageView height="25" alignment="left" hidden="YES" image="spade2.png" contentMode="top" id="QNm-Zn-I3b" userLabel="Card18"/>
+                                                            <imageView height="25" alignment="left" hidden="YES" image="spade2.png" contentMode="top" id="yP9-md-s55" userLabel="Card19"/>
+                                                        </items>
+                                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                                        <variation key="device=watch38mm" height="200"/>
+                                                        <variation key="device=watch42mm" height="220"/>
+                                                    </group>
+                                                    <connections>
+                                                        <action selector="handStack3Action:" destination="AgC-eL-Hgc" id="kh4-wY-Zxz"/>
+                                                    </connections>
+                                                </button>
+                                            </items>
+                                            <edgeInsets key="margins" left="0.0" right="0.0" top="0.0" bottom="0.0"/>
+                                            <variation key="device=watch38mm" width="19"/>
+                                            <variation key="device=watch42mm" width="22"/>
+                                        </group>
+                                        <group width="19" alignment="left" layout="vertical" radius="0.0" spacing="0.0" id="Isd-VY-y7f" userLabel="HandStack4">
+                                            <items>
+                                                <button alignment="center" accessibilityLabel="Fourth Pile" id="YSJ-d0-2Fn" userLabel="HandStack4Button">
+                                                    <group key="contentGroup" width="1" height="180" alignment="left" layout="vertical" radius="0.0" spacing="0.0" id="l7f-PS-XQK" userLabel="HandStack4ButtonGroup">
+                                                        <items>
+                                                            <imageView width="1" height="2" alignment="left" contentMode="top" id="xPf-9O-2Le" userLabel="Spacer"/>
+                                                            <imageView height="6" alignment="left" image="facedown.png" contentMode="top" id="d2f-OH-XYw" userLabel="Card0"/>
+                                                            <imageView height="6" alignment="left" image="facedown.png" contentMode="top" id="RUs-4b-rzR" userLabel="Card1"/>
+                                                            <imageView height="6" alignment="left" image="facedown.png" contentMode="top" id="zmN-pR-BKe" userLabel="Card2"/>
+                                                            <imageView height="25" alignment="left" image="diamondK.png" contentMode="top" id="dbe-YL-dAy" userLabel="Card3">
+                                                                <variation key="device=watch38mm" height="25"/>
+                                                                <variation key="device=watch42mm" height="30"/>
+                                                            </imageView>
+                                                            <imageView height="17" alignment="left" hidden="YES" image="diamond2.png" contentMode="top" id="0Bt-fE-AQq" userLabel="Card4"/>
+                                                            <imageView height="25" alignment="left" hidden="YES" image="spade2.png" contentMode="top" id="39t-Da-DNS" userLabel="Card5"/>
+                                                            <imageView height="25" alignment="left" hidden="YES" image="spade2.png" contentMode="top" id="K3d-XW-cK3" userLabel="Card6"/>
+                                                            <imageView height="25" alignment="left" hidden="YES" image="spade2.png" contentMode="top" id="hIi-QR-1fE" userLabel="Card7"/>
+                                                            <imageView height="25" alignment="left" hidden="YES" image="spade2.png" contentMode="top" id="UV4-gZ-ZZz" userLabel="Card8"/>
+                                                            <imageView height="25" alignment="left" hidden="YES" image="spade2.png" contentMode="top" id="SEA-WR-Zec" userLabel="Card9"/>
+                                                            <imageView height="25" alignment="left" hidden="YES" image="spade2.png" contentMode="top" id="ugm-Gc-Kb5" userLabel="Card10"/>
+                                                            <imageView height="25" alignment="left" hidden="YES" image="spade2.png" contentMode="top" id="7MR-DW-H6d" userLabel="Card11"/>
+                                                            <imageView height="25" alignment="left" hidden="YES" image="spade2.png" contentMode="top" id="NcR-Ds-Lua" userLabel="Card12"/>
+                                                            <imageView height="25" alignment="left" hidden="YES" image="spade2.png" contentMode="top" id="QAf-q8-qVl" userLabel="Card13"/>
+                                                            <imageView height="25" alignment="left" hidden="YES" image="spade2.png" contentMode="top" id="Hpw-eo-eKJ" userLabel="Card14"/>
+                                                            <imageView height="25" alignment="left" hidden="YES" image="spade2.png" contentMode="top" id="6bC-FY-kX1" userLabel="Card15"/>
+                                                            <imageView height="25" alignment="left" hidden="YES" image="spade2.png" contentMode="top" id="lI2-9q-wWx" userLabel="Card16"/>
+                                                            <imageView height="25" alignment="left" hidden="YES" image="spade2.png" contentMode="top" id="qK8-CR-JBr" userLabel="Card17"/>
+                                                            <imageView height="25" alignment="left" hidden="YES" image="spade2.png" contentMode="top" id="Crt-rA-WzZ" userLabel="Card18"/>
+                                                            <imageView height="25" alignment="left" hidden="YES" image="spade2.png" contentMode="top" id="9jR-ox-RId" userLabel="Card19"/>
+                                                        </items>
+                                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                                        <variation key="device=watch38mm" height="200"/>
+                                                        <variation key="device=watch42mm" height="220"/>
+                                                    </group>
+                                                    <connections>
+                                                        <action selector="handStack4Action:" destination="AgC-eL-Hgc" id="obL-KL-8w8"/>
+                                                    </connections>
+                                                </button>
+                                            </items>
+                                            <edgeInsets key="margins" left="0.0" right="0.0" top="0.0" bottom="0.0"/>
+                                            <variation key="device=watch38mm" width="19"/>
+                                            <variation key="device=watch42mm" width="22"/>
+                                        </group>
+                                        <group width="19" alignment="left" layout="vertical" radius="0.0" spacing="0.0" id="bkf-sy-9Nx" userLabel="HandStack5">
+                                            <items>
+                                                <button alignment="center" accessibilityLabel="Fifth Pile" id="I25-c9-k5B" userLabel="HandStack5Button">
+                                                    <group key="contentGroup" width="1" height="180" alignment="left" layout="vertical" radius="0.0" spacing="0.0" id="Y1t-KA-Tox" userLabel="HandStack5ButtonGroup">
+                                                        <items>
+                                                            <imageView width="1" height="2" alignment="left" contentMode="top" id="gao-49-lEH" userLabel="Spacer"/>
+                                                            <imageView height="6" alignment="left" image="facedown.png" contentMode="top" id="KRR-sZ-5kZ" userLabel="Card0"/>
+                                                            <imageView height="6" alignment="left" image="facedown.png" contentMode="top" id="aJ5-7U-2vE" userLabel="Card1"/>
+                                                            <imageView height="6" alignment="left" image="facedown.png" contentMode="top" id="aw8-YQ-OKk" userLabel="Card2"/>
+                                                            <imageView height="6" alignment="left" image="facedown.png" contentMode="top" id="rMu-Cq-gyw" userLabel="Card3"/>
+                                                            <imageView height="25" alignment="left" image="club3.png" contentMode="top" id="qjl-PX-wnb" userLabel="Card4">
+                                                                <variation key="device=watch38mm" height="25"/>
+                                                                <variation key="device=watch42mm" height="30"/>
+                                                            </imageView>
+                                                            <imageView height="25" alignment="left" hidden="YES" image="spade2.png" contentMode="top" id="sbK-DN-7N9" userLabel="Card5"/>
+                                                            <imageView height="25" alignment="left" hidden="YES" image="spade2.png" contentMode="top" id="1HC-PB-yfE" userLabel="Card6"/>
+                                                            <imageView height="25" alignment="left" hidden="YES" image="spade2.png" contentMode="top" id="Y4v-pb-rOt" userLabel="Card7"/>
+                                                            <imageView height="25" alignment="left" hidden="YES" image="spade2.png" contentMode="top" id="W13-Su-MDh" userLabel="Card8"/>
+                                                            <imageView height="25" alignment="left" hidden="YES" image="spade2.png" contentMode="top" id="dph-hZ-FEJ" userLabel="Card9"/>
+                                                            <imageView height="25" alignment="left" hidden="YES" image="spade2.png" contentMode="top" id="c9I-TX-Bd3" userLabel="Card10"/>
+                                                            <imageView height="25" alignment="left" hidden="YES" image="spade2.png" contentMode="top" id="Z5V-WI-abs" userLabel="Card11"/>
+                                                            <imageView height="25" alignment="left" hidden="YES" image="spade2.png" contentMode="top" id="4GM-ri-ly3" userLabel="Card12"/>
+                                                            <imageView height="25" alignment="left" hidden="YES" image="spade2.png" contentMode="top" id="At6-nP-ryl" userLabel="Card13"/>
+                                                            <imageView height="25" alignment="left" hidden="YES" image="spade2.png" contentMode="top" id="Cyy-h6-IIm" userLabel="Card14"/>
+                                                            <imageView height="25" alignment="left" hidden="YES" image="spade2.png" contentMode="top" id="60R-ow-kwt" userLabel="Card15"/>
+                                                            <imageView height="25" alignment="left" hidden="YES" image="spade2.png" contentMode="top" id="N9P-7H-VAX" userLabel="Card16"/>
+                                                            <imageView height="25" alignment="left" hidden="YES" image="spade2.png" contentMode="top" id="F0x-BO-PXE" userLabel="Card17"/>
+                                                            <imageView height="25" alignment="left" hidden="YES" image="spade2.png" contentMode="top" id="FkB-7p-en1" userLabel="Card18"/>
+                                                            <imageView height="25" alignment="left" hidden="YES" image="spade2.png" contentMode="top" id="F9d-yh-QJo" userLabel="Card19"/>
+                                                        </items>
+                                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                                        <variation key="device=watch38mm" height="200"/>
+                                                        <variation key="device=watch42mm" height="220"/>
+                                                    </group>
+                                                    <connections>
+                                                        <action selector="handStack5Action:" destination="AgC-eL-Hgc" id="DCf-fG-887"/>
+                                                    </connections>
+                                                </button>
+                                            </items>
+                                            <edgeInsets key="margins" left="0.0" right="0.0" top="0.0" bottom="0.0"/>
+                                            <variation key="device=watch38mm" width="19"/>
+                                            <variation key="device=watch42mm" width="22"/>
+                                        </group>
+                                        <group width="19" alignment="left" layout="vertical" radius="0.0" spacing="0.0" id="6Nu-xR-QcN" userLabel="HandStack6">
+                                            <items>
+                                                <button alignment="center" accessibilityLabel="Sixth Pile" id="flG-Ye-tXV" userLabel="HandStack6Button">
+                                                    <group key="contentGroup" width="1" height="180" alignment="left" layout="vertical" radius="0.0" spacing="0.0" id="Lnu-uw-jz9" userLabel="HandStack6ButtonGroup">
+                                                        <items>
+                                                            <imageView width="1" height="2" alignment="left" contentMode="top" id="s1Q-nc-UWT" userLabel="Spacer"/>
+                                                            <imageView height="6" alignment="left" image="facedown.png" contentMode="top" id="Upe-yw-q87" userLabel="Card0">
+                                                                <variation key="device=watch42mm" image="facedown_44mm.png"/>
+                                                            </imageView>
+                                                            <imageView height="6" alignment="left" image="facedown.png" contentMode="top" id="nW7-YJ-lLq" userLabel="Card1">
+                                                                <variation key="device=watch42mm" image="facedown_44mm.png"/>
+                                                            </imageView>
+                                                            <imageView height="6" alignment="left" image="facedown.png" contentMode="top" id="3x0-yu-sw7" userLabel="Card2">
+                                                                <variation key="device=watch42mm" image="facedown_44mm.png"/>
+                                                            </imageView>
+                                                            <imageView height="6" alignment="left" image="facedown.png" contentMode="top" id="Z7L-IH-e0X" userLabel="Card3">
+                                                                <variation key="device=watch42mm" image="facedown_44mm.png"/>
+                                                            </imageView>
+                                                            <imageView height="6" alignment="left" image="facedown.png" contentMode="top" id="fQ8-JQ-alV" userLabel="Card4">
+                                                                <variation key="device=watch42mm" image="facedown_44mm.png"/>
+                                                            </imageView>
+                                                            <imageView height="25" alignment="left" image="clubJ_44mm.png" contentMode="top" id="xui-d0-tKS" userLabel="Card5">
+                                                                <variation key="device=watch38mm" height="25"/>
+                                                                <variation key="device=watch42mm" height="30"/>
+                                                            </imageView>
+                                                            <imageView height="25" alignment="left" hidden="YES" image="spade2.png" contentMode="top" id="Yyc-cF-PPh" userLabel="Card6"/>
+                                                            <imageView height="25" alignment="left" hidden="YES" image="spade2.png" contentMode="top" id="Xlg-ZW-M8C" userLabel="Card7"/>
+                                                            <imageView height="25" alignment="left" hidden="YES" image="spade2.png" contentMode="top" id="BXL-Hv-Ovf" userLabel="Card8"/>
+                                                            <imageView height="25" alignment="left" hidden="YES" image="spade2.png" contentMode="top" id="43t-mG-z86" userLabel="Card9"/>
+                                                            <imageView height="25" alignment="left" hidden="YES" image="spade2.png" contentMode="top" id="ehc-Gw-5Uk" userLabel="Card10"/>
+                                                            <imageView height="25" alignment="left" hidden="YES" image="spade2.png" contentMode="top" id="ouM-iA-aO6" userLabel="Card11"/>
+                                                            <imageView height="25" alignment="left" hidden="YES" image="spade2.png" contentMode="top" id="0WR-Se-ihk" userLabel="Card12"/>
+                                                            <imageView height="25" alignment="left" hidden="YES" image="spade2.png" contentMode="top" id="w9q-aZ-lb7" userLabel="Card13"/>
+                                                            <imageView height="25" alignment="left" hidden="YES" image="spade2.png" contentMode="top" id="UYC-pO-ZLp" userLabel="Card14"/>
+                                                            <imageView height="25" alignment="left" hidden="YES" image="spade2.png" contentMode="top" id="Rcf-ga-xfP" userLabel="Card15"/>
+                                                            <imageView height="25" alignment="left" hidden="YES" image="spade2.png" contentMode="top" id="qQZ-P5-4ef" userLabel="Card16"/>
+                                                            <imageView height="25" alignment="left" hidden="YES" image="spade2.png" contentMode="top" id="e7s-0Z-cGH" userLabel="Card17"/>
+                                                            <imageView height="25" alignment="left" hidden="YES" image="spade2.png" contentMode="top" id="0CE-Kf-w8Z" userLabel="Card18"/>
+                                                            <imageView height="25" alignment="left" hidden="YES" image="spade2.png" contentMode="top" id="43P-a8-8aP" userLabel="Card19"/>
+                                                        </items>
+                                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                                        <variation key="device=watch38mm" height="200"/>
+                                                        <variation key="device=watch42mm" height="220"/>
+                                                    </group>
+                                                    <connections>
+                                                        <action selector="handStack6Action:" destination="AgC-eL-Hgc" id="Ld0-aK-BhH"/>
+                                                    </connections>
+                                                </button>
+                                            </items>
+                                            <edgeInsets key="margins" left="0.0" right="0.0" top="0.0" bottom="0.0"/>
+                                            <variation key="device=watch38mm" width="19"/>
+                                            <variation key="device=watch42mm" width="22"/>
+                                        </group>
+                                        <group width="19" alignment="left" layout="vertical" radius="0.0" spacing="0.0" id="gfp-uG-N1E" userLabel="HandStack7">
+                                            <items>
+                                                <button alignment="center" accessibilityLabel="Seventh Pile" id="t7V-d1-GgW" userLabel="HandStack7Button">
+                                                    <group key="contentGroup" width="1" height="180" alignment="left" layout="vertical" radius="0.0" spacing="0.0" id="M1i-2Z-DVT" userLabel="HandStack7ButtonGroup">
+                                                        <items>
+                                                            <imageView width="1" height="2" alignment="left" contentMode="top" id="7j2-Xq-pmp" userLabel="Spacer"/>
+                                                            <imageView height="6" alignment="left" image="facedown.png" contentMode="top" id="zfw-2k-58S" userLabel="Card0">
+                                                                <variation key="device=watch42mm" image="facedown_44mm.png"/>
+                                                            </imageView>
+                                                            <imageView height="6" alignment="left" image="facedown.png" contentMode="top" id="88U-jv-F2D" userLabel="Card1">
+                                                                <variation key="device=watch42mm" image="facedown_44mm.png"/>
+                                                            </imageView>
+                                                            <imageView height="6" alignment="left" image="facedown.png" contentMode="top" id="hfp-mm-BjJ" userLabel="Card2">
+                                                                <variation key="device=watch42mm" image="facedown_44mm.png"/>
+                                                            </imageView>
+                                                            <imageView height="6" alignment="left" image="facedown.png" contentMode="top" id="c0H-29-lt3" userLabel="Card3">
+                                                                <variation key="device=watch42mm" image="facedown_44mm.png"/>
+                                                            </imageView>
+                                                            <imageView height="6" alignment="left" image="facedown.png" contentMode="top" id="HZ6-sc-0bj" userLabel="Card4">
+                                                                <variation key="device=watch42mm" image="facedown_44mm.png"/>
+                                                            </imageView>
+                                                            <imageView height="6" alignment="left" image="facedown.png" contentMode="top" id="Q2j-Zg-kXs" userLabel="Card5">
+                                                                <variation key="device=watch42mm" image="facedown_44mm.png"/>
+                                                            </imageView>
+                                                            <imageView height="25" alignment="left" image="spade2_38mm.png" contentMode="top" id="2An-YP-acE" userLabel="Card6">
+                                                                <variation key="device=watch38mm" height="25"/>
+                                                                <variation key="device=watch42mm" height="30"/>
+                                                            </imageView>
+                                                            <imageView height="25" alignment="left" hidden="YES" image="spade2.png" contentMode="top" id="LC5-9C-ZmU" userLabel="Card7"/>
+                                                            <imageView height="25" alignment="left" hidden="YES" image="spade2.png" contentMode="top" id="NnJ-It-pfX" userLabel="Card8"/>
+                                                            <imageView height="25" alignment="left" hidden="YES" image="spade2.png" contentMode="top" id="sZq-NK-0NI" userLabel="Card9"/>
+                                                            <imageView height="25" alignment="left" hidden="YES" image="spade2.png" contentMode="top" id="yZQ-FA-9kF" userLabel="Card10"/>
+                                                            <imageView height="25" alignment="left" hidden="YES" image="spade2.png" contentMode="top" id="uCW-2S-P3G" userLabel="Card11"/>
+                                                            <imageView height="25" alignment="left" hidden="YES" image="spade2.png" contentMode="top" id="ZZ7-Sb-yNS" userLabel="Card12"/>
+                                                            <imageView height="25" alignment="left" hidden="YES" image="spade2.png" contentMode="top" id="dSW-Rt-dCc" userLabel="Card13"/>
+                                                            <imageView height="25" alignment="left" hidden="YES" image="spade2.png" contentMode="top" id="2aC-4S-8xc" userLabel="Card14"/>
+                                                            <imageView height="25" alignment="left" hidden="YES" image="spade2.png" contentMode="top" id="XlE-tB-ycn" userLabel="Card15"/>
+                                                            <imageView height="25" alignment="left" hidden="YES" image="spade2.png" contentMode="top" id="wuI-KX-f5k" userLabel="Card16"/>
+                                                            <imageView height="25" alignment="left" hidden="YES" image="spade2.png" contentMode="top" id="spn-GC-bMf" userLabel="Card17"/>
+                                                            <imageView height="25" alignment="left" hidden="YES" image="spade2.png" contentMode="top" id="5bH-LO-wgX" userLabel="Card18"/>
+                                                            <imageView height="25" alignment="left" hidden="YES" image="spade2.png" contentMode="top" id="6XJ-2Y-uYg" userLabel="Card19"/>
+                                                        </items>
+                                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                                        <variation key="device=watch38mm" height="200"/>
+                                                        <variation key="device=watch42mm" height="220"/>
+                                                    </group>
+                                                    <connections>
+                                                        <action selector="handStack7Action:" destination="AgC-eL-Hgc" id="aIE-tZ-2N9"/>
+                                                    </connections>
+                                                </button>
+                                            </items>
+                                            <edgeInsets key="margins" left="0.0" right="0.0" top="0.0" bottom="0.0"/>
+                                            <variation key="device=watch38mm" width="19"/>
+                                            <variation key="device=watch42mm" width="22"/>
+                                        </group>
+                                    </items>
+                                </group>
+                                <group width="1" height="40" alignment="left" id="MdF-OZ-Qvm">
+                                    <items>
+                                        <button width="0.5" height="1" alignment="left" title="Redeal" id="Sk7-0E-sbq">
+                                            <color key="titleColor" red="0.1529411765" green="0.43921568630000002" blue="0.20000000000000001" alpha="1" colorSpace="calibratedRGB"/>
+                                            <color key="backgroundColor" red="1" green="1" blue="1" alpha="0.59999999999999998" colorSpace="calibratedRGB"/>
+                                            <connections>
+                                                <action selector="redealCards" destination="AgC-eL-Hgc" id="w7k-BL-rsY"/>
+                                            </connections>
+                                        </button>
+                                        <button width="0.5" height="1" alignment="left" title="1-Card" id="zec-Fh-Uox">
+                                            <color key="titleColor" red="0.1529411765" green="0.43921568630000002" blue="0.20000000000000001" alpha="1" colorSpace="calibratedRGB"/>
+                                            <color key="backgroundColor" red="1" green="1" blue="1" alpha="0.59999999999999998" colorSpace="calibratedRGB"/>
+                                            <connections>
+                                                <action selector="cardsToggle" destination="AgC-eL-Hgc" id="2WG-Vp-xnP"/>
+                                            </connections>
+                                        </button>
+                                    </items>
+                                </group>
+                                <group width="1" height="40" alignment="left" layout="vertical" spacing="1" id="5hM-Zg-TBq">
+                                    <items>
+                                        <group width="1" height="2" alignment="left" id="Kc8-Q0-tw4"/>
+                                        <button width="1" height="1" alignment="left" title="Change Deck" id="9o0-B9-akF">
+                                            <color key="titleColor" red="0.1529411765" green="0.43921568630000002" blue="0.20000000000000001" alpha="1" colorSpace="calibratedRGB"/>
+                                            <color key="backgroundColor" red="1" green="1" blue="1" alpha="0.59999999999999998" colorSpace="calibratedRGB"/>
+                                            <connections>
+                                                <action selector="changeCardSkin" destination="AgC-eL-Hgc" id="TKL-3y-jrN"/>
+                                            </connections>
+                                        </button>
+                                    </items>
+                                </group>
+                            </items>
+                            <edgeInsets key="margins" left="0.0" right="0.0" top="0.0" bottom="0.0"/>
+                        </group>
+                    </items>
+                    <color key="backgroundColor" red="0.32326907040000002" green="0.92130761169999997" blue="0.41929591710000003" alpha="0.47999999999999998" colorSpace="calibratedRGB"/>
+                    <variation key="device=watch38mm" title="Solitaire"/>
+                    <variation key="device=watch42mm" title="Solitaire"/>
+                    <connections>
+                        <outlet property="buttonCardsToggle" destination="zec-Fh-Uox" id="e4o-vg-tue"/>
+                        <outlet property="buttonRedeal" destination="Sk7-0E-sbq" id="IUU-sc-hVA"/>
+                        <outlet property="card0x0" destination="BUQ-kg-BXP" id="SDP-gQ-tZS"/>
+                        <outlet property="card0x1" destination="BIa-vk-XLk" id="SFM-NM-ihB"/>
+                        <outlet property="card0x10" destination="gkd-kw-AIZ" id="L3g-q2-PNh"/>
+                        <outlet property="card0x11" destination="aNk-Tl-6fH" id="IdX-Z5-lOF"/>
+                        <outlet property="card0x12" destination="H1l-sI-MmA" id="wah-sw-Ytu"/>
+                        <outlet property="card0x13" destination="Wdz-vn-EUK" id="wHa-9d-4om"/>
+                        <outlet property="card0x14" destination="w2a-aU-O1W" id="ff4-jh-SLJ"/>
+                        <outlet property="card0x15" destination="qf9-oi-ZJb" id="FSx-Fq-wfA"/>
+                        <outlet property="card0x16" destination="r7a-Ag-I9P" id="zf7-w5-dMT"/>
+                        <outlet property="card0x17" destination="HBc-05-GZ9" id="TZr-oh-5qD"/>
+                        <outlet property="card0x18" destination="SEF-By-vj1" id="xzk-WI-9vP"/>
+                        <outlet property="card0x19" destination="Paw-LL-gs2" id="vXc-uP-lS1"/>
+                        <outlet property="card0x2" destination="v9e-p0-hey" id="A3j-WY-GPd"/>
+                        <outlet property="card0x3" destination="3fc-8N-wc6" id="Iq9-TM-Bie"/>
+                        <outlet property="card0x4" destination="cAU-WA-qA3" id="JGw-4q-TWO"/>
+                        <outlet property="card0x5" destination="191-1T-7xA" id="8CL-ZF-sWE"/>
+                        <outlet property="card0x6" destination="RjW-R4-EWJ" id="y5X-aI-PCA"/>
+                        <outlet property="card0x7" destination="55T-WD-BQb" id="6yU-gW-emV"/>
+                        <outlet property="card0x8" destination="QYJ-y2-wE6" id="5ek-E4-tU1"/>
+                        <outlet property="card0x9" destination="NrI-Zy-1q6" id="LIw-1q-Emb"/>
+                        <outlet property="card1x0" destination="jNk-cr-Ruh" id="0Cz-ww-ABt"/>
+                        <outlet property="card1x1" destination="YZI-L4-LBu" id="nHI-eb-emM"/>
+                        <outlet property="card1x10" destination="pdC-gl-RQX" id="VfE-Hq-PCD"/>
+                        <outlet property="card1x11" destination="j8O-d6-Rvc" id="EMu-Vk-r72"/>
+                        <outlet property="card1x12" destination="aG6-a2-idh" id="afJ-Ma-Cpt"/>
+                        <outlet property="card1x13" destination="c4Z-To-6am" id="NVx-9S-YiT"/>
+                        <outlet property="card1x14" destination="vhe-Ph-Z0r" id="63X-yJ-mjT"/>
+                        <outlet property="card1x15" destination="mMO-fS-r8F" id="spj-Wz-Xj2"/>
+                        <outlet property="card1x16" destination="Y7v-rr-Hke" id="vnx-Dz-LSU"/>
+                        <outlet property="card1x17" destination="TP7-ca-ipn" id="M2Q-uO-TFj"/>
+                        <outlet property="card1x18" destination="WOM-4D-SqM" id="bBD-Yi-GUy"/>
+                        <outlet property="card1x19" destination="OdB-4w-h3Q" id="mhI-cK-IUO"/>
+                        <outlet property="card1x2" destination="tdG-xA-Gd2" id="6mf-Ki-k9v"/>
+                        <outlet property="card1x3" destination="O8x-BD-nTO" id="e0o-Nb-UdF"/>
+                        <outlet property="card1x4" destination="gSu-zE-CkX" id="gaU-pB-nr0"/>
+                        <outlet property="card1x5" destination="91E-WD-sBo" id="ZH8-7Z-3ZP"/>
+                        <outlet property="card1x6" destination="pJ2-kx-9qD" id="sXS-uK-2Zt"/>
+                        <outlet property="card1x7" destination="b59-nM-MiZ" id="YHR-jk-0J4"/>
+                        <outlet property="card1x8" destination="Vwm-hQ-87R" id="jB7-Nd-U0Q"/>
+                        <outlet property="card1x9" destination="QFd-0e-LRT" id="efS-DH-WCs"/>
+                        <outlet property="card2x0" destination="cgv-2T-MDz" id="20k-Ob-zgP"/>
+                        <outlet property="card2x1" destination="X36-CW-CiL" id="4L3-EK-HcJ"/>
+                        <outlet property="card2x10" destination="Pvz-Wl-Ug2" id="SAo-xz-Dpg"/>
+                        <outlet property="card2x11" destination="nFH-aN-0kX" id="K3z-Ok-MVm"/>
+                        <outlet property="card2x12" destination="9LV-Gz-C5J" id="7Xi-hV-ufY"/>
+                        <outlet property="card2x13" destination="L9F-sf-nPf" id="txf-lM-4Xb"/>
+                        <outlet property="card2x14" destination="MWV-P2-RES" id="3v0-Wi-IDK"/>
+                        <outlet property="card2x15" destination="xTA-Va-flV" id="mm7-qV-fh5"/>
+                        <outlet property="card2x16" destination="AiC-2X-OiZ" id="hmW-9Q-1Rt"/>
+                        <outlet property="card2x17" destination="C52-bF-UgT" id="vp4-hN-AGx"/>
+                        <outlet property="card2x18" destination="QNm-Zn-I3b" id="0nP-Fs-iar"/>
+                        <outlet property="card2x19" destination="yP9-md-s55" id="01a-0d-9v7"/>
+                        <outlet property="card2x2" destination="LAN-jU-Is8" id="Dsa-Pm-xL7"/>
+                        <outlet property="card2x3" destination="Fnb-a4-eP8" id="ogU-7k-WMu"/>
+                        <outlet property="card2x4" destination="ADr-SE-6Yt" id="KjM-zU-bTS"/>
+                        <outlet property="card2x5" destination="lZx-bu-OU6" id="4Vn-Vc-uVN"/>
+                        <outlet property="card2x6" destination="qAv-5x-AGq" id="5TS-c2-rkK"/>
+                        <outlet property="card2x7" destination="Lbs-2a-jFk" id="XVb-3B-195"/>
+                        <outlet property="card2x8" destination="beL-A2-Q5u" id="gRM-cj-pxq"/>
+                        <outlet property="card2x9" destination="DzN-af-lDz" id="pde-xP-qLn"/>
+                        <outlet property="card3x0" destination="d2f-OH-XYw" id="zvX-j3-7wK"/>
+                        <outlet property="card3x1" destination="RUs-4b-rzR" id="dOV-Qu-51d"/>
+                        <outlet property="card3x10" destination="ugm-Gc-Kb5" id="pwy-Ar-QUl"/>
+                        <outlet property="card3x11" destination="7MR-DW-H6d" id="gi7-AR-EWJ"/>
+                        <outlet property="card3x12" destination="NcR-Ds-Lua" id="lyd-kE-0jS"/>
+                        <outlet property="card3x13" destination="QAf-q8-qVl" id="HG2-5L-10C"/>
+                        <outlet property="card3x14" destination="Hpw-eo-eKJ" id="BRZ-9C-oSF"/>
+                        <outlet property="card3x15" destination="6bC-FY-kX1" id="VB8-5P-GM1"/>
+                        <outlet property="card3x16" destination="lI2-9q-wWx" id="u9A-A9-8Pq"/>
+                        <outlet property="card3x17" destination="qK8-CR-JBr" id="PL0-Xo-4N8"/>
+                        <outlet property="card3x18" destination="Crt-rA-WzZ" id="SCP-4i-InQ"/>
+                        <outlet property="card3x19" destination="9jR-ox-RId" id="bTm-1Z-qF7"/>
+                        <outlet property="card3x2" destination="zmN-pR-BKe" id="je2-Ke-twa"/>
+                        <outlet property="card3x3" destination="dbe-YL-dAy" id="kme-MQ-gj0"/>
+                        <outlet property="card3x4" destination="0Bt-fE-AQq" id="nhB-Kn-Gu6"/>
+                        <outlet property="card3x5" destination="39t-Da-DNS" id="fNY-Dj-8G7"/>
+                        <outlet property="card3x6" destination="K3d-XW-cK3" id="q1E-ij-0Bt"/>
+                        <outlet property="card3x7" destination="hIi-QR-1fE" id="Jda-xW-8ny"/>
+                        <outlet property="card3x8" destination="UV4-gZ-ZZz" id="Bhb-z4-GAU"/>
+                        <outlet property="card3x9" destination="SEA-WR-Zec" id="Kgc-wm-Shm"/>
+                        <outlet property="card4x0" destination="KRR-sZ-5kZ" id="aQP-xA-N9r"/>
+                        <outlet property="card4x1" destination="aJ5-7U-2vE" id="I7W-Rs-eaH"/>
+                        <outlet property="card4x10" destination="c9I-TX-Bd3" id="lU0-1F-kYu"/>
+                        <outlet property="card4x11" destination="Z5V-WI-abs" id="X25-58-VQK"/>
+                        <outlet property="card4x12" destination="4GM-ri-ly3" id="YTO-UM-ApH"/>
+                        <outlet property="card4x13" destination="At6-nP-ryl" id="pLf-td-EpX"/>
+                        <outlet property="card4x14" destination="Cyy-h6-IIm" id="HJ5-TB-d3f"/>
+                        <outlet property="card4x15" destination="60R-ow-kwt" id="dMj-Ga-FmH"/>
+                        <outlet property="card4x16" destination="N9P-7H-VAX" id="Bmf-RR-8lb"/>
+                        <outlet property="card4x17" destination="F0x-BO-PXE" id="bwV-xs-Xh5"/>
+                        <outlet property="card4x18" destination="FkB-7p-en1" id="EAT-sK-FhE"/>
+                        <outlet property="card4x19" destination="F9d-yh-QJo" id="RJy-6J-hFp"/>
+                        <outlet property="card4x2" destination="aw8-YQ-OKk" id="VwW-an-Pwj"/>
+                        <outlet property="card4x3" destination="rMu-Cq-gyw" id="Y6b-ig-8hc"/>
+                        <outlet property="card4x4" destination="qjl-PX-wnb" id="xMe-cW-1Lb"/>
+                        <outlet property="card4x5" destination="sbK-DN-7N9" id="MUb-To-6AP"/>
+                        <outlet property="card4x6" destination="1HC-PB-yfE" id="NcP-dl-h5a"/>
+                        <outlet property="card4x7" destination="Y4v-pb-rOt" id="NXb-2k-i11"/>
+                        <outlet property="card4x8" destination="W13-Su-MDh" id="7F5-25-2ZS"/>
+                        <outlet property="card4x9" destination="dph-hZ-FEJ" id="N2O-ca-n3J"/>
+                        <outlet property="card5x0" destination="Upe-yw-q87" id="anl-eT-rHN"/>
+                        <outlet property="card5x1" destination="nW7-YJ-lLq" id="Ywk-d9-WYL"/>
+                        <outlet property="card5x10" destination="ehc-Gw-5Uk" id="72z-KE-gzv"/>
+                        <outlet property="card5x11" destination="ouM-iA-aO6" id="E0X-vS-ByU"/>
+                        <outlet property="card5x12" destination="0WR-Se-ihk" id="3pN-y7-kou"/>
+                        <outlet property="card5x13" destination="w9q-aZ-lb7" id="m4T-yu-afX"/>
+                        <outlet property="card5x14" destination="UYC-pO-ZLp" id="Dxy-um-DVn"/>
+                        <outlet property="card5x15" destination="Rcf-ga-xfP" id="wAV-08-PZo"/>
+                        <outlet property="card5x16" destination="qQZ-P5-4ef" id="rNw-Ko-Bfa"/>
+                        <outlet property="card5x17" destination="e7s-0Z-cGH" id="37f-DD-giU"/>
+                        <outlet property="card5x18" destination="0CE-Kf-w8Z" id="RP1-x9-Cq4"/>
+                        <outlet property="card5x19" destination="43P-a8-8aP" id="YXw-6G-w5N"/>
+                        <outlet property="card5x2" destination="3x0-yu-sw7" id="Pul-49-y9h"/>
+                        <outlet property="card5x3" destination="Z7L-IH-e0X" id="4Ka-l2-DuI"/>
+                        <outlet property="card5x4" destination="fQ8-JQ-alV" id="dWZ-LA-wlV"/>
+                        <outlet property="card5x5" destination="xui-d0-tKS" id="EfY-fC-q4t"/>
+                        <outlet property="card5x6" destination="Yyc-cF-PPh" id="6SD-YW-WRR"/>
+                        <outlet property="card5x7" destination="Xlg-ZW-M8C" id="gFL-mp-Dbw"/>
+                        <outlet property="card5x8" destination="BXL-Hv-Ovf" id="Dn9-qF-csK"/>
+                        <outlet property="card5x9" destination="43t-mG-z86" id="qTI-gZ-5pp"/>
+                        <outlet property="card6x0" destination="zfw-2k-58S" id="dft-5f-jrO"/>
+                        <outlet property="card6x1" destination="88U-jv-F2D" id="ZJy-Ln-O6I"/>
+                        <outlet property="card6x10" destination="yZQ-FA-9kF" id="c1h-dn-yIH"/>
+                        <outlet property="card6x11" destination="uCW-2S-P3G" id="nCx-yn-J9X"/>
+                        <outlet property="card6x12" destination="ZZ7-Sb-yNS" id="kni-4v-N2C"/>
+                        <outlet property="card6x13" destination="dSW-Rt-dCc" id="hpK-yA-DJV"/>
+                        <outlet property="card6x14" destination="2aC-4S-8xc" id="zms-V6-TZO"/>
+                        <outlet property="card6x15" destination="XlE-tB-ycn" id="Aqm-Pd-o5T"/>
+                        <outlet property="card6x16" destination="wuI-KX-f5k" id="dOy-KI-NQw"/>
+                        <outlet property="card6x17" destination="spn-GC-bMf" id="LwZ-aL-rud"/>
+                        <outlet property="card6x18" destination="5bH-LO-wgX" id="Tgk-jU-cks"/>
+                        <outlet property="card6x19" destination="6XJ-2Y-uYg" id="8rB-Jy-028"/>
+                        <outlet property="card6x2" destination="hfp-mm-BjJ" id="SUv-rW-6yu"/>
+                        <outlet property="card6x3" destination="c0H-29-lt3" id="kJ3-6q-2QC"/>
+                        <outlet property="card6x4" destination="HZ6-sc-0bj" id="FHr-bE-PBz"/>
+                        <outlet property="card6x5" destination="Q2j-Zg-kXs" id="pgf-PB-QUf"/>
+                        <outlet property="card6x6" destination="2An-YP-acE" id="VHQ-RW-amA"/>
+                        <outlet property="card6x7" destination="LC5-9C-ZmU" id="ByC-3H-QeN"/>
+                        <outlet property="card6x8" destination="NnJ-It-pfX" id="zVa-RN-Dm9"/>
+                        <outlet property="card6x9" destination="sZq-NK-0NI" id="8D6-9k-Oy6"/>
+                        <outlet property="deckFlip1Image" destination="pcb-de-ec8" id="MRq-N0-GRk"/>
+                        <outlet property="deckFlip2Image" destination="J5w-7Y-eZh" id="mEs-fg-lOj"/>
+                        <outlet property="deckFlip3Image" destination="ovs-Zx-iyb" id="1bu-4c-A0u"/>
+                        <outlet property="deckFlipButton" destination="QEH-ca-Tea" id="ikA-e7-5lH"/>
+                        <outlet property="deckStack1Image" destination="Tch-83-LO2" id="XMb-07-svs"/>
+                        <outlet property="deckStack2Image" destination="wpj-MZ-mIb" id="KjE-lv-bse"/>
+                        <outlet property="deckStack3Image" destination="51t-5T-Ovs" id="G4Q-Hz-l8k"/>
+                        <outlet property="deckStackButton" destination="3Jf-Js-fRI" id="xZQ-Ip-vhK"/>
+                        <outlet property="discard1Button" destination="q63-c1-VK6" id="eYC-fI-8vi"/>
+                        <outlet property="discard1Image" destination="wfC-Lb-0Vp" id="niV-Pk-Ik5"/>
+                        <outlet property="discard2Button" destination="yVL-xV-mGH" id="LpH-56-Cvu"/>
+                        <outlet property="discard2Image" destination="Nf1-i9-JGV" id="hMG-mw-wEx"/>
+                        <outlet property="discard3Button" destination="rwm-7k-ibb" id="ti3-oU-sID"/>
+                        <outlet property="discard3Image" destination="jb2-NF-ayF" id="3QP-mH-tFB"/>
+                        <outlet property="discard4Button" destination="gA2-sE-BqE" id="617-2Z-LjQ"/>
+                        <outlet property="discard4Image" destination="ULy-13-gOn" id="CiM-7Z-OAp"/>
+                        <outlet property="discardRow" destination="WOt-F3-nBa" id="nBS-74-lSh"/>
+                        <outlet property="flipDeckRow" destination="Ecd-9N-vau" id="pv0-AF-OMj"/>
+                        <outlet property="hand0Button" destination="C4E-Dd-9TB" id="ojd-8B-aqn"/>
+                        <outlet property="hand1Button" destination="Jur-lX-dQV" id="DA6-Ah-h8r"/>
+                        <outlet property="hand2Button" destination="O0K-RL-X15" id="QNY-IN-lVv"/>
+                        <outlet property="hand3Button" destination="YSJ-d0-2Fn" id="Tbx-7k-MJO"/>
+                        <outlet property="hand4Button" destination="I25-c9-k5B" id="XA1-bJ-eKA"/>
+                        <outlet property="hand5Button" destination="flG-Ye-tXV" id="3Dd-AF-0aU"/>
+                        <outlet property="hand6Button" destination="t7V-d1-GgW" id="1l9-7N-kNH"/>
+                    </connections>
+                </controller>
+            </objects>
+            <point key="canvasLocation" x="717" y="394.5"/>
+        </scene>
+        <!--Controls-->
+        <scene sceneID="50A-1f-wdN">
+            <objects>
+                <controller identifier="settings" title="Controls" id="mbQ-PN-Qog" customClass="SolitaireSettings">
+                    <items>
+                        <group width="1" alignment="left" layout="vertical" spacing="0.0" id="VgD-UG-xLZ">
+                            <items>
+                                <switch width="1" alignment="left" title="Voice Only" id="qra-me-fgh">
+                                    <fontDescription key="font" type="system" pointSize="12"/>
+                                    <connections>
+                                        <action selector="switchVoiceOnly:" destination="mbQ-PN-Qog" id="fgr-Hz-5le"/>
+                                    </connections>
+                                </switch>
+                                <switch width="1" alignment="left" title="Voice+Moves" id="ZeU-Bz-5cP">
+                                    <fontDescription key="font" type="system" pointSize="12"/>
+                                    <connections>
+                                        <action selector="switchVoiceAndMoves:" destination="mbQ-PN-Qog" id="G4Z-x1-gUg"/>
+                                    </connections>
+                                </switch>
+                                <switch width="1" alignment="left" title="Touch One" id="Xve-uz-eFq">
+                                    <fontDescription key="font" type="system" pointSize="12"/>
+                                    <connections>
+                                        <action selector="switchTouchOne:" destination="mbQ-PN-Qog" id="hBR-zT-tbQ"/>
+                                    </connections>
+                                </switch>
+                                <switch width="1" alignment="left" value="YES" enabled="NO" title="Touch Two" id="1cP-SF-b7F">
+                                    <fontDescription key="font" type="system" pointSize="12"/>
+                                    <connections>
+                                        <action selector="switchTouchTwo:" destination="mbQ-PN-Qog" id="8jg-NR-Hoz"/>
+                                    </connections>
+                                </switch>
+                            </items>
+                            <variation key="device=watch38mm">
+                                <mask key="items">
+                                    <include reference="Xve-uz-eFq"/>
+                                </mask>
+                            </variation>
+                        </group>
+                    </items>
+                    <connections>
+                        <outlet property="touchOne" destination="Xve-uz-eFq" id="YjE-n5-IyS"/>
+                        <outlet property="touchTwo" destination="1cP-SF-b7F" id="xEw-Tj-ibo"/>
+                        <outlet property="voiceAndMoves" destination="ZeU-Bz-5cP" id="hHV-NY-z3S"/>
+                        <outlet property="voiceOnly" destination="qra-me-fgh" id="50s-xn-cOd"/>
+                    </connections>
+                </controller>
+            </objects>
+            <point key="canvasLocation" x="946" y="380"/>
+        </scene>
+        <!--Winner!-->
+        <scene sceneID="Dtw-do-IKq">
+            <objects>
+                <controller identifier="winner" title="Winner!" id="trc-cu-hxN" customClass="ModalHelperClass">
+                    <items>
+                        <group width="1" height="1" alignment="left" backgroundImage="s2_small.png" contentMode="scaleAspectFill" layout="vertical" spacing="6" id="R8H-lq-jbv" userLabel="Background">
+                            <items>
+                                <label alignment="center" verticalAlignment="center" text="You won!  " textAlignment="center" numberOfLines="0" minimumScaleFactor="0.50000000000000011" id="lDL-tN-Mb8">
+                                    <fontDescription key="font" type="system" weight="heavy" pointSize="26"/>
+                                    <variation key="device=watch38mm">
+                                        <fontDescription key="font" type="system" weight="heavy" pointSize="32"/>
+                                    </variation>
+                                    <variation key="device=watch42mm">
+                                        <fontDescription key="font" type="system" weight="heavy" pointSize="36"/>
+                                    </variation>
+                                </label>
+                                <button width="0.80000000000000004" alignment="center" verticalAlignment="bottom" alpha="0.90000000000000002" title="♠️♥️♣️♦️" id="Nax-i8-SIq">
+                                    <color key="titleColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                    <fontDescription key="font" name="HelveticaNeue" family="Helvetica Neue" pointSize="16"/>
+                                    <connections>
+                                        <action selector="done:" destination="trc-cu-hxN" id="Uvb-IE-5jo"/>
+                                    </connections>
+                                </button>
+                            </items>
+                        </group>
+                    </items>
+                    <variation key="device=watch38mm" title="Winner!"/>
+                    <variation key="device=watch42mm" title="Winner!"/>
+                    <connections>
+                        <outlet property="labelWon" destination="lDL-tN-Mb8" id="ror-7N-AoK"/>
+                    </connections>
+                </controller>
+            </objects>
+            <point key="canvasLocation" x="461" y="339"/>
+        </scene>
+    </scenes>
+</document>
