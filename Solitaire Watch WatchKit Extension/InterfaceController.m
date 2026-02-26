@@ -25,6 +25,7 @@ static BOOL isVoiceControlled = NO;
 static BOOL isUsingMoves = NO;
 static BOOL isOneTouch = YES;
 static int lastFromTouched = 0;
+@class SolitaireGameState;
 @interface InterfaceController()
 -(IBAction)resetBoardButton:(id)sender;
 -(IBAction)cardsToggle;
@@ -253,6 +254,7 @@ static int lastFromTouched = 0;
 @property NSUserDefaults* sharedDefaults;
 @property MMWormhole* wormhole;
 @property (nonatomic,strong) NSString* voiceResponse;
+@property (strong, nonatomic) SolitaireGameState* gameState;
 @end
 
 
@@ -270,6 +272,155 @@ static const int SELECTED_DISCARD_4 = 10;
 static const int SELECTED_FLIP = 11;
 static NSArray *skins;// = @[@"1",@""];
 static const NSArray* cardNames;// = @[@"Unknown",@"Ace",@"One",@"Two",@"Three",@"Four",@"Five",@"Six",@"Seven",@"Eight",@"Nine",@"Ten",@"Jack",@"Queen",@"King"];
+
+@interface SolitaireGameState : NSObject
+@property (strong, nonatomic) NSMutableArray* masterDeck;
+@property (strong, nonatomic) NSMutableArray* shuffleDeck;
+@property (strong, nonatomic) NSMutableArray* deckStack;
+@property (strong, nonatomic) NSMutableArray* deckFlip;
+@property (strong, nonatomic) NSMutableArray* deckFlipDiscard;
+@property (strong, nonatomic) NSArray* handArray;
+@property (strong, nonatomic) NSArray* discardArray;
+-(instancetype) initWithMasterDeck:(NSMutableArray*) masterDeck
+                        shuffleDeck:(NSMutableArray*) shuffleDeck
+                          deckStack:(NSMutableArray*) deckStack
+                           deckFlip:(NSMutableArray*) deckFlip
+                    deckFlipDiscard:(NSMutableArray*) deckFlipDiscard
+                          handArray:(NSArray*) handArray
+                       discardArray:(NSArray*) discardArray;
+@end
+
+@implementation SolitaireGameState
+-(instancetype) initWithMasterDeck:(NSMutableArray*) masterDeck
+                        shuffleDeck:(NSMutableArray*) shuffleDeck
+                          deckStack:(NSMutableArray*) deckStack
+                           deckFlip:(NSMutableArray*) deckFlip
+                    deckFlipDiscard:(NSMutableArray*) deckFlipDiscard
+                          handArray:(NSArray*) handArray
+                       discardArray:(NSArray*) discardArray
+{
+    self = [super init];
+    if (self)
+    {
+        self.masterDeck = masterDeck;
+        self.shuffleDeck = shuffleDeck;
+        self.deckStack = deckStack;
+        self.deckFlip = deckFlip;
+        self.deckFlipDiscard = deckFlipDiscard;
+        self.handArray = handArray;
+        self.discardArray = discardArray;
+    }
+    return self;
+}
+@end
+
+@interface SolitaireGameEngine : NSObject
++(void) moveCards:(int) cards fromStack:(NSMutableArray*) fromStack toStack:(NSMutableArray*) toStack orderPreserved:(BOOL) preserved;
++(void) moveCards:(int) cards fromStack:(NSMutableArray*) fromStack toStack:(NSMutableArray*) toStack dealStacked:(BOOL) dealStacked;
++(void) flipFromDeckInState:(SolitaireGameState*) state flipCardsNumber:(NSNumber*) flipCardsNumber;
++(void) dealToStacksInState:(SolitaireGameState*) state;
++(void) shuffleMasterDeckInState:(SolitaireGameState*) state;
+@end
+
+@implementation SolitaireGameEngine
++(void) moveCards:(int) cards fromStack:(NSMutableArray*) fromStack toStack:(NSMutableArray*) toStack orderPreserved:(BOOL) preserved
+{
+    int frontIndex =(int)[fromStack count]-cards;
+    for(int i = 0; i < cards; i++)
+    {
+        Card* card = [fromStack objectAtIndex:frontIndex];
+        if (card != nil)
+        {
+            [fromStack removeObjectAtIndex:frontIndex];
+            [toStack addObject:card];
+        }
+    }
+}
+
++(void) moveCards:(int) cards fromStack:(NSMutableArray*) fromStack toStack:(NSMutableArray*) toStack dealStacked:(BOOL) dealStacked
+{
+    for(int i = 0; i < cards; i++)
+    {
+        Card* card = [fromStack lastObject];
+        if (card != nil)
+        {
+            if (dealStacked && i == cards-1)
+            {
+                card.isFacingUp = YES;
+            }
+            [fromStack removeLastObject];
+            [toStack addObject:card];
+        }
+    }
+}
+
++(void) flipFromDeckInState:(SolitaireGameState*) state flipCardsNumber:(NSNumber*) flipCardsNumber
+{
+    if ([flipCardsNumber intValue] == 3)
+    {
+        if ([state.deckStack count] == 0)
+        {
+            [self moveCards:(int)[state.deckFlip count] fromStack:state.deckFlip toStack:state.deckFlipDiscard orderPreserved:YES];
+            [self moveCards:(int)[state.deckFlipDiscard count] fromStack:state.deckFlipDiscard toStack:state.deckStack dealStacked:NO];
+        }
+        [self moveCards:(int)[state.deckFlip count] fromStack:state.deckFlip toStack:state.deckFlipDiscard orderPreserved:YES];
+        [self moveCards:[flipCardsNumber intValue] fromStack:state.deckStack toStack:state.deckFlip dealStacked:NO];
+    }
+    else
+    {
+        if ([state.deckStack count] == 0)
+        {
+            [self moveCards:(int)[state.deckFlip count] fromStack:state.deckFlip toStack:state.deckFlipDiscard orderPreserved:YES];
+            [self moveCards:(int)[state.deckFlipDiscard count] fromStack:state.deckFlipDiscard toStack:state.deckStack dealStacked:NO];
+        }
+        if ([state.deckFlip count] < 3)
+        {
+            [self moveCards:1 fromStack:state.deckStack toStack:state.deckFlip dealStacked:NO];
+        }
+        else
+        {
+            [self moveCards:(int)[state.deckFlip count] fromStack:state.deckFlip toStack:state.deckFlipDiscard orderPreserved:YES];
+            [self moveCards:[flipCardsNumber intValue] fromStack:state.deckStack toStack:state.deckFlip dealStacked:NO];
+        }
+    }
+}
+
++(void) dealToStacksInState:(SolitaireGameState*) state
+{
+    [self moveCards:1 fromStack:state.masterDeck toStack:[state.handArray objectAtIndex:0] dealStacked:YES];
+    [self moveCards:2 fromStack:state.masterDeck toStack:[state.handArray objectAtIndex:1] dealStacked:YES];
+    [self moveCards:3 fromStack:state.masterDeck toStack:[state.handArray objectAtIndex:2] dealStacked:YES];
+    [self moveCards:4 fromStack:state.masterDeck toStack:[state.handArray objectAtIndex:3] dealStacked:YES];
+    [self moveCards:5 fromStack:state.masterDeck toStack:[state.handArray objectAtIndex:4] dealStacked:YES];
+    [self moveCards:6 fromStack:state.masterDeck toStack:[state.handArray objectAtIndex:5] dealStacked:YES];
+    [self moveCards:7 fromStack:state.masterDeck toStack:[state.handArray objectAtIndex:6] dealStacked:YES];
+    [self moveCards:(int)[state.masterDeck count] fromStack:state.masterDeck toStack:state.deckStack dealStacked:NO];
+    for (int i = 0; i < [state.deckStack count]; i++)
+    {
+        Card* deckCard = [state.deckStack objectAtIndex:i];
+        [deckCard setIsFacingUp:YES];
+    }
+}
+
++(void) shuffleMasterDeckInState:(SolitaireGameState*) state
+{
+    [state.shuffleDeck removeAllObjects];
+    while([state.masterDeck count] > 0)
+    {
+        int randomIndex = arc4random_uniform((u_int32_t )[state.masterDeck count]);
+        Card* card = [state.masterDeck objectAtIndex:randomIndex];
+        [state.masterDeck removeObject:card];
+        [state.shuffleDeck addObject:card];
+    }
+    while([state.shuffleDeck count] > 0)
+    {
+        int randomIndex = arc4random_uniform((u_int32_t )[state.shuffleDeck count]);
+        Card* card = [state.shuffleDeck objectAtIndex:randomIndex];
+        [state.shuffleDeck removeObject:card];
+        [state.masterDeck addObject:card];
+    }
+}
+@end
 
 @implementation InterfaceController
 
@@ -2381,6 +2532,14 @@ static const NSArray* cardNames;// = @[@"Unknown",@"Ace",@"One",@"Two",@"Three",
     {
         self.deckFlipDiscard = [[NSMutableArray alloc] init];
     }
+
+    self.gameState = [[SolitaireGameState alloc] initWithMasterDeck:self.masterDeck
+                                                        shuffleDeck:self.shuffleDeck
+                                                          deckStack:self.deckStack
+                                                           deckFlip:self.deckFlip
+                                                    deckFlipDiscard:self.deckFlipDiscard
+                                                          handArray:self.handArray
+                                                       discardArray:self.discardArray];
     
     [self clearAllMenuItems];
     [self addMenuItemWithItemIcon:WKMenuItemIconMore title:@"Controls" action:@selector(controlSettings)];
@@ -2594,34 +2753,7 @@ static const NSArray* cardNames;// = @[@"Unknown",@"Ace",@"One",@"Two",@"Three",
 
 -(void) shuffleMasterDeck
 {
-    
-    [self.shuffleDeck removeAllObjects];
-    
-    while([self.masterDeck count] > 0)
-    {
-        int randomIndex = arc4random_uniform((u_int32_t )[self.masterDeck count]);
-        NSLog(@"randomIndex %d count:%lu",randomIndex,(unsigned long)[self.masterDeck count]);
-        Card* card = [self.masterDeck objectAtIndex:randomIndex];
-        [self.masterDeck removeObject:card];
-        [self.shuffleDeck addObject:card];
-        
-    }
-    NSLog(@"done!");
-    while([self.shuffleDeck count] > 0)
-    {
-        int randomIndex = arc4random_uniform((u_int32_t )[self.shuffleDeck count]);
-        NSLog(@"randomIndex suffle %d %lu",randomIndex,(unsigned long)[self.shuffleDeck count]);
-        Card* card = [self.shuffleDeck objectAtIndex:randomIndex];
-        [self.shuffleDeck removeObject:card];
-        [self.masterDeck addObject:card];
-        
-    }
-    
-    for(int i =0; i < [self.masterDeck count]; i++)
-    {
-        Card* card = [self.masterDeck objectAtIndex:i];
-        NSLog(@"Shuffled deck card: %d %@ %ld",i,[card suite],(long)[card value]);
-    }
+    [SolitaireGameEngine shuffleMasterDeckInState:self.gameState];
 }
 
 - (void) setupNewBoard
@@ -2918,129 +3050,23 @@ static const NSArray* cardNames;// = @[@"Unknown",@"Ace",@"One",@"Two",@"Three",
 
 -(void) move:(int) cards CardsFromStack:(NSMutableArray*) fromStack toStack:(NSMutableArray*) toStack orderPreserved:(BOOL) preserved
 {
-    int frontIndex =(int)[fromStack count]-cards;
-    for(int i = 0; i < cards; i++)
-    {
-        Card* card = [fromStack objectAtIndex:frontIndex];
-        
-        if (card != nil)
-        {
-            [fromStack removeObjectAtIndex:frontIndex];
-            [toStack addObject:card];
-        }
-        else
-        {
-            NSLog(@"shouldn't happen!");
-        }
-        
-    }
+    [SolitaireGameEngine moveCards:cards fromStack:fromStack toStack:toStack orderPreserved:preserved];
 }
 
 
 -(void) move:(int) cards CardsFromStack:(NSMutableArray*) fromStack toStack:(NSMutableArray*) toStack dealStacked:(BOOL) dealStacked
 {
-    for(int i = 0; i < cards; i++)
-    {
-        Card* card = [fromStack lastObject];
-        
-        if (card != nil)
-        {
-            if (dealStacked && i == cards-1)
-            {
-                card.isFacingUp = YES;
-            }
-            
-            [fromStack removeLastObject];
-            [toStack addObject:card];
-        }
-        else
-        {
-            NSLog(@"shouldn't happen!");
-        }
-        
-    }
+    [SolitaireGameEngine moveCards:cards fromStack:fromStack toStack:toStack dealStacked:dealStacked];
 }
 
 -(void) flipFromDeck
 {
-    if ([self.flipCardsNumber intValue]== 3)
-    {
-        if ([self.deckStack count] == 0)
-        {
-            
-            //[self move:(int)[self.deckFlipDiscard count] CardsFromStack:self.deckFlipDiscard toStack:self.deckStack orderPreserved:YES];
-            [self move:(int)[self.deckFlip count]  CardsFromStack:self.deckFlip toStack:self.deckFlipDiscard orderPreserved:YES];
-            
-            [self move:(int)[self.deckFlipDiscard count] CardsFromStack:self.deckFlipDiscard toStack:self.deckStack dealStacked:NO];
-        }
-        
-        [self move:(int)[self.deckFlip count]  CardsFromStack:self.deckFlip toStack:self.deckFlipDiscard orderPreserved:YES];
-        // So, first, let's move anything from the flip to the flip discard.
-        //[self move:(int)[self.deckFlip count] CardsFromStack:self.deckFlip toStack:self.deckFlipDiscard dealStacked:NO];
-        NSLog(@"flip cards number:%d",[self.flipCardsNumber intValue]);
-        [self move:[self.flipCardsNumber intValue] CardsFromStack:self.deckStack toStack:self.deckFlip dealStacked:NO];
-        //[self move:3 CardsFromStack:self.deckStack toStack:self.deckFlip orderPreserved:YES];
-    }
-    else
-    {
-        if ([self.deckStack count] == 0)
-        {
-            
-            //[self move:(int)[self.deckFlipDiscard count] CardsFromStack:self.deckFlipDiscard toStack:self.deckStack orderPreserved:YES];
-            [self move:(int)[self.deckFlip count]  CardsFromStack:self.deckFlip toStack:self.deckFlipDiscard orderPreserved:YES];
-            
-            [self move:(int)[self.deckFlipDiscard count] CardsFromStack:self.deckFlipDiscard toStack:self.deckStack dealStacked:NO];
-        }
-        
-        if ([self.deckFlip count] < 3)
-        {
-            [self move:1 CardsFromStack:self.deckStack toStack:self.deckFlip dealStacked:NO];
-        }
-        else
-        {
-            [self move:(int)[self.deckFlip count]  CardsFromStack:self.deckFlip toStack:self.deckFlipDiscard orderPreserved:YES];
-            // So, first, let's move anything from the flip to the flip discard.
-            //[self move:(int)[self.deckFlip count] CardsFromStack:self.deckFlip toStack:self.deckFlipDiscard dealStacked:NO];
-            NSLog(@"flip cards number:%d",[self.flipCardsNumber intValue]);
-            [self move:[self.flipCardsNumber intValue] CardsFromStack:self.deckStack toStack:self.deckFlip dealStacked:NO];
-        }
-        //[self move:3 CardsFromStack:self.deckStack toStack:self.deckFlip orderPreserved:YES];
-    }
-    
-    //[_view setAccessibilityLabel:NSLocalizedString(@"view.label", nil)];
-    //[_view setAccessibilityHint:NSLocalizedString(@"view.hint", nil)];
+    [SolitaireGameEngine flipFromDeckInState:self.gameState flipCardsNumber:self.flipCardsNumber];
 }
 
 -(void) dealToStacks
 {
-    [self move:1 CardsFromStack:self.masterDeck toStack:self.hand0 dealStacked:YES];
-    [self move:2 CardsFromStack:self.masterDeck toStack:self.hand1 dealStacked:YES];
-    [self move:3 CardsFromStack:self.masterDeck toStack:self.hand2 dealStacked:YES];
-    [self move:4 CardsFromStack:self.masterDeck toStack:self.hand3 dealStacked:YES];
-    [self move:5 CardsFromStack:self.masterDeck toStack:self.hand4 dealStacked:YES];
-    [self move:6 CardsFromStack:self.masterDeck toStack:self.hand5 dealStacked:YES];
-    [self move:7 CardsFromStack:self.masterDeck toStack:self.hand6 dealStacked:YES];
-    
-    [self move:(int)[self.masterDeck count] CardsFromStack:self.masterDeck toStack:self.deckStack dealStacked:NO];
-
-    for(int i = 0; i < [self.deckStack count]; i++)
-    {
-        Card* deckCard = [self.deckStack objectAtIndex:i];
-        [deckCard setIsFacingUp:YES];
-    }
-    /*@property (strong, nonatomic) NSMutableArray* hand0;
-    @property (strong, nonatomic) NSMutableArray* hand1;
-    @property (strong, nonatomic) NSMutableArray* hand2;
-    @property (strong, nonatomic) NSMutableArray* hand3;
-    @property (strong, nonatomic) NSMutableArray* hand4;
-    @property (strong, nonatomic) NSMutableArray* hand5;
-    @property (strong, nonatomic) NSMutableArray* hand6;
-    @property (strong, nonatomic) NSMutableArray* discard1;
-    @property (strong, nonatomic) NSMutableArray* discard2;
-    @property (strong, nonatomic) NSMutableArray* discard3;
-    @property (strong, nonatomic) NSMutableArray* discard4;
-    @property (strong, nonatomic) NSMutableArray* deckStack;
-    @property (strong, nonatomic) NSMutableArray* deckFlip;*/
+    [SolitaireGameEngine dealToStacksInState:self.gameState];
 }
 
 -(BOOL) is38
