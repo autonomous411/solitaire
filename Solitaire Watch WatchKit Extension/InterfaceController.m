@@ -18,6 +18,7 @@
 #import "MMWormhole.h"
 #import "PossibleMove.h"
 #import "SolitaireSettings.h"
+#import <math.h>
 
 static BOOL isRemoteControlled = NO;
 static BOOL isVoiceControlled = NO;
@@ -271,6 +272,97 @@ static NSArray *skins;// = @[@"1",@""];
 static const NSArray* cardNames;// = @[@"Unknown",@"Ace",@"One",@"Two",@"Three",@"Four",@"Five",@"Six",@"Seven",@"Eight",@"Nine",@"Ten",@"Jack",@"Queen",@"King"];
 
 @implementation InterfaceController
+
+-(CGFloat) currentWatchLogicalWidth
+{
+    CGRect screenBounds = [[WKInterfaceDevice currentDevice] screenBounds];
+    CGFloat width = MIN(screenBounds.size.width, screenBounds.size.height);
+    if (!isfinite(width) || width <= 0)
+    {
+        width = 136.0f;
+    }
+    return width;
+}
+
+-(CGFloat) layoutScale
+{
+    CGFloat scale = [self currentWatchLogicalWidth] / 136.0f;
+    if (!isfinite(scale) || scale <= 0)
+    {
+        scale = 1.0f;
+    }
+    if (scale < 0.85f)
+    {
+        scale = 0.85f;
+    }
+    if (scale > 1.60f)
+    {
+        scale = 1.60f;
+    }
+    return scale;
+}
+
+-(NSInteger) scaledIntegerFromBase:(CGFloat) base minimum:(NSInteger) minimum maximum:(NSInteger) maximum
+{
+    NSInteger value = (NSInteger)lroundf(base * [self layoutScale]);
+    if (value < minimum)
+    {
+        value = minimum;
+    }
+    if (value > maximum)
+    {
+        value = maximum;
+    }
+    return value;
+}
+
+-(void) applyResponsiveLayout
+{
+    NSInteger discardRowHeight = [self getHeightOfDiscardRow];
+    NSInteger flipRowHeight = [self getHeightOfFlipRow];
+    NSInteger cardSize = [self cardWidth];
+    NSInteger hiddenFlipSize = [self hiddenFlipWidth];
+
+    [self.discardRow setHeight:discardRowHeight];
+    [self.flipDeckRow setHeight:flipRowHeight];
+
+    [self.deckStackButton setWidth:cardSize];
+    [self.deckStackButton setHeight:cardSize];
+    [self.deckFlipButton setWidth:cardSize];
+    [self.deckFlipButton setHeight:cardSize];
+
+    [self.discard1Button setWidth:cardSize];
+    [self.discard1Button setHeight:cardSize];
+    [self.discard2Button setWidth:cardSize];
+    [self.discard2Button setHeight:cardSize];
+    [self.discard3Button setWidth:cardSize];
+    [self.discard3Button setHeight:cardSize];
+    [self.discard4Button setWidth:cardSize];
+    [self.discard4Button setHeight:cardSize];
+
+    [self.deckStack1Image setWidth:cardSize];
+    [self.deckStack1Image setHeight:cardSize];
+    [self.deckStack2Image setWidth:cardSize];
+    [self.deckStack2Image setHeight:cardSize];
+    [self.deckStack3Image setWidth:cardSize];
+    [self.deckStack3Image setHeight:cardSize];
+
+    [self.deckFlip1Image setWidth:hiddenFlipSize];
+    [self.deckFlip1Image setHeight:cardSize];
+    [self.deckFlip2Image setWidth:hiddenFlipSize];
+    [self.deckFlip2Image setHeight:cardSize];
+    [self.deckFlip3Image setWidth:cardSize];
+    [self.deckFlip3Image setHeight:cardSize];
+
+    [self.discard1Image setWidth:cardSize];
+    [self.discard1Image setHeight:cardSize];
+    [self.discard2Image setWidth:cardSize];
+    [self.discard2Image setHeight:cardSize];
+    [self.discard3Image setWidth:cardSize];
+    [self.discard3Image setHeight:cardSize];
+    [self.discard4Image setWidth:cardSize];
+    [self.discard4Image setHeight:cardSize];
+}
 
 -(void) setupAccessibility
 {
@@ -1276,27 +1368,11 @@ static const NSArray* cardNames;// = @[@"Unknown",@"Ace",@"One",@"Two",@"Three",
 {
     if (isVoiceControlled)
     {
-        if ([self is42])
-        {
-        
-            return 36;
-        }
-        else
-        {
-            return 30;
-        }
+        return [self scaledIntegerFromBase:30.0f minimum:28 maximum:46];
     }
     else
     {
-        if ([self is42])
-        {
-            
-            return 44;
-        }
-        else
-        {
-            return 40;
-        }
+        return [self scaledIntegerFromBase:40.0f minimum:36 maximum:58];
     }
 }
 
@@ -1304,123 +1380,37 @@ static const NSArray* cardNames;// = @[@"Unknown",@"Ace",@"One",@"Two",@"Three",
 {
     if (isVoiceControlled)
     {
-        if ([self is42])
-        {
-            
-            return 36;
-        }
-        else
-        {
-            return 30;
-        }
+        return [self scaledIntegerFromBase:30.0f minimum:28 maximum:46];
     }
     else
     {
-        if ([self is42])
-        {
-            
-            return 44;
-        }
-        else
-        {
-            return 40;
-        }
+        return [self scaledIntegerFromBase:40.0f minimum:36 maximum:58];
     }
 }
 
 -(NSInteger) hiddenFlipWidth
 {
-    if([self is42])
-    {
-        return 14;
-    }
-    else
-    {
-    // need to support 42mm!
-    return 14;
-    }
+    return [self scaledIntegerFromBase:14.0f minimum:12 maximum:20];
 }
 
 -(NSInteger) cardWidth
 {
-    if([self is42])
-    {
-        return 22;
-    }
-    else
-    {
-        // Need to support 42mm!
-        return 19;
-    }
+    return [self scaledIntegerFromBase:19.0f minimum:18 maximum:31];
 }
 
 -(NSInteger) handDownFacing
 {
-    //if (isVoiceControlled)
-    {
-        if([self is42])
-        {
-            return 4;
-        }
-        else
-        {
-            // Need to support 42mm!
-            return 4;
-        }
-    }
-    /*else
-    {
-        if([self is42])
-        {
-            return 3;
-        }
-        else
-        {
-            // Need to support 42mm!
-            return 3;
-        }
-    }*/
+    return [self scaledIntegerFromBase:4.0f minimum:3 maximum:7];
 }
 
 -(NSInteger) handUpBehind
 {
-    //if (isVoiceControlled)
-    {
-        if([self is42])
-        {
-            return 14.5;
-        }
-        else
-        {
-            // Need to support 42mm!
-            return 13.5;
-        }
-    }
-    /*else
-    {
-        if([self is42])
-        {
-            return 11;
-        }
-        else
-        {
-            // Need to support 42mm!
-            return 11;
-        }
-    }*/
+    return [self scaledIntegerFromBase:13.5f minimum:12 maximum:21];
 }
 
 -(NSInteger) handUpFront
 {
-    if([self is42])
-    {
-        return 30;
-    }
-    else
-    {
-        // Need to support 42mm!
-        return 25;
-    }
+    return [self scaledIntegerFromBase:25.0f minimum:22 maximum:38];
 }
 
 -(void) moveFlipFromStack
@@ -2417,6 +2407,8 @@ static const NSArray* cardNames;// = @[@"Unknown",@"Ace",@"One",@"Two",@"Three",
                 [self addMenuItemWithItemIcon:WKMenuItemIconShuffle title:@"1 Card Flip" action:@selector(select1card)];
             }
     
+    [self applyResponsiveLayout];
+
     if ([self.sharedDefaults objectForKey:@"savedata"]==nil)
     {
         // Setup all 52 cards test for now.
@@ -2895,6 +2887,7 @@ static const NSArray* cardNames;// = @[@"Unknown",@"Ace",@"One",@"Two",@"Three",
                 else
                 {
                     [handImage setHeight:[self handUpBehind]];
+                    [handImage setWidth:[self cardWidth]];
                 }
             }
             else
@@ -2902,6 +2895,7 @@ static const NSArray* cardNames;// = @[@"Unknown",@"Ace",@"One",@"Two",@"Three",
                 // Set image.
                 [handImage setImageNamed:[self platform:@"facedown.png"]];
                 [handImage setHeight:[self handDownFacing]];
+                [handImage setWidth:[self cardWidth]];
             }
         }
         else
@@ -3373,10 +3367,8 @@ static const NSArray* cardNames;// = @[@"Unknown",@"Ace",@"One",@"Two",@"Three",
         isOneTouch = NO;
     }
     
-    //[self.discardRow setHeight:[self getHeightOfDiscardRow]];
-    //[self.flipDeckRow setHeight:[self getHeightOfFlipRow]];
-                               //-(NSInteger) getHeightOfFlipRow]
-    //});
+    [self applyResponsiveLayout];
+    [self renderFullBoard];
 }
 
 - (void)didDeactivate {
@@ -3385,6 +3377,3 @@ static const NSArray* cardNames;// = @[@"Unknown",@"Ace",@"One",@"Two",@"Three",
 }
 
 @end
-
-
-
