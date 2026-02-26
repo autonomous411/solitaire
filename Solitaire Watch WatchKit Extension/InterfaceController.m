@@ -30,6 +30,11 @@ static int lastFromTouched = 0;
 -(IBAction)resetBoardButton:(id)sender;
 -(IBAction)cardsToggle;
 -(IBAction)redealCards;
+-(void) migrateLegacyDefaultsIfNeeded;
+-(NSArray<NSArray<NSNumber*>*>*) validatedStacksFromSaveJSON:(id) jsonObject;
+-(NSArray<NSMutableArray*>*) boardStackCollections;
+-(BOOL) loadBoardFromValidatedStacks:(NSArray<NSArray<NSNumber*>*>*) stacks;
+-(void) persistStacks:(NSArray<NSArray<NSNumber*>*>*) stacks notifyCompanion:(BOOL) notifyCompanion;
 @property (strong, nonatomic) IBOutlet WKInterfaceButton* deckFlipButton;
 @property (strong, nonatomic) IBOutlet WKInterfaceButton* deckStackButton;
 @property (strong, nonatomic) IBOutlet WKInterfaceButton* discard1Button;
@@ -272,6 +277,17 @@ static const int SELECTED_DISCARD_4 = 10;
 static const int SELECTED_FLIP = 11;
 static NSArray *skins;// = @[@"1",@""];
 static const NSArray* cardNames;// = @[@"Unknown",@"Ace",@"One",@"Two",@"Three",@"Four",@"Five",@"Six",@"Seven",@"Eight",@"Nine",@"Ten",@"Jack",@"Queen",@"King"];
+static NSString* const kSavedDataKey = @"savedata";
+static NSString* const kSavedDataSchemaVersionKey = @"savedata_schema_version";
+static NSString* const kFlipCardNumberKey = @"flipcardnumber";
+static NSString* const kSolvedDealsKey = @"solved_deals";
+static NSString* const kSolvedDealSelectionModeKey = @"solved_deal_selection_mode";
+static NSString* const kSolvedDealFixedIndexKey = @"solved_deal_fixed_index";
+static NSString* const kSolvedDealRoundRobinIndexKey = @"solved_deal_round_robin_index";
+static NSString* const kSolvedDealLastIndexKey = @"solved_deal_last_index";
+static NSInteger const kSaveStateStackCount = 14;
+static NSInteger const kTotalCardsInDeck = 52;
+static NSInteger const kCurrentSaveStateSchemaVersion = 2;
 
 @interface SolitaireGameState : NSObject
 @property (strong, nonatomic) NSMutableArray* masterDeck;
@@ -479,7 +495,7 @@ static const NSArray* cardNames;// = @[@"Unknown",@"Ace",@"One",@"Two",@"Three",
 +(NSArray<NSArray<NSNumber*>*>*) validatedDealsFromDefaults:(NSUserDefaults*) defaults
 {
     NSMutableArray* validDeals = [[NSMutableArray alloc] init];
-    NSArray* rawDeals = [defaults objectForKey:@"solved_deals"];
+    NSArray* rawDeals = [defaults objectForKey:kSolvedDealsKey];
     if ([rawDeals isKindOfClass:[NSArray class]])
     {
         for (id record in rawDeals)
@@ -522,7 +538,7 @@ static const NSArray* cardNames;// = @[@"Unknown",@"Ace",@"One",@"Two",@"Three",
         return nil;
     }
 
-    NSString* mode = [defaults objectForKey:@"solved_deal_selection_mode"];
+    NSString* mode = [defaults objectForKey:kSolvedDealSelectionModeKey];
     if (![mode isKindOfClass:[NSString class]] || [mode length] == 0)
     {
         mode = @"random";
@@ -531,22 +547,22 @@ static const NSArray* cardNames;// = @[@"Unknown",@"Ace",@"One",@"Two",@"Three",
     NSInteger selectedIndex = 0;
     if ([mode isEqualToString:@"fixed"])
     {
-        NSInteger fixed = [[defaults objectForKey:@"solved_deal_fixed_index"] integerValue];
+        NSInteger fixed = [[defaults objectForKey:kSolvedDealFixedIndexKey] integerValue];
         selectedIndex = [self normalizedIndex:fixed count:[deals count]];
     }
     else if ([mode isEqualToString:@"round_robin"])
     {
-        NSInteger cursor = [[defaults objectForKey:@"solved_deal_round_robin_index"] integerValue];
+        NSInteger cursor = [[defaults objectForKey:kSolvedDealRoundRobinIndexKey] integerValue];
         selectedIndex = [self normalizedIndex:cursor count:[deals count]];
         NSInteger nextCursor = [self normalizedIndex:selectedIndex + 1 count:[deals count]];
-        [defaults setObject:@(nextCursor) forKey:@"solved_deal_round_robin_index"];
+        [defaults setObject:@(nextCursor) forKey:kSolvedDealRoundRobinIndexKey];
     }
     else
     {
         selectedIndex = arc4random_uniform((u_int32_t)[deals count]);
     }
 
-    [defaults setObject:@(selectedIndex) forKey:@"solved_deal_last_index"];
+    [defaults setObject:@(selectedIndex) forKey:kSolvedDealLastIndexKey];
     [defaults synchronize];
     return [deals objectAtIndex:selectedIndex];
 }
@@ -829,7 +845,7 @@ static const NSArray* cardNames;// = @[@"Unknown",@"Ace",@"One",@"Two",@"Three",
         // Flip it!
         self.flipCardsNumber = [NSNumber numberWithInt:1];
         
-        [self.sharedDefaults setObject:self.flipCardsNumber forKey:@"flipcardnumber"];
+        [self.sharedDefaults setObject:self.flipCardsNumber forKey:kFlipCardNumberKey];
         [self.sharedDefaults synchronize];
         
         [self resetBoard];
@@ -841,7 +857,7 @@ static const NSArray* cardNames;// = @[@"Unknown",@"Ace",@"One",@"Two",@"Three",
         {
             self.flipCardsNumber = [NSNumber numberWithInt:3];
             
-            [self.sharedDefaults setObject:self.flipCardsNumber forKey:@"flipcardnumber"];
+            [self.sharedDefaults setObject:self.flipCardsNumber forKey:kFlipCardNumberKey];
             [self.sharedDefaults synchronize];
             
             [self resetBoard];
@@ -2561,6 +2577,10 @@ static const NSArray* cardNames;// = @[@"Unknown",@"Ace",@"One",@"Two",@"Three",
 -(void) initSolitaire
 {
     self.sharedDefaults = [[NSUserDefaults alloc] initWithSuiteName:@"group.solitaire"];
+    if (self.sharedDefaults == nil)
+    {
+        self.sharedDefaults = [NSUserDefaults standardUserDefaults];
+    }
     self.wormhole = [[MMWormhole alloc] initWithApplicationGroupIdentifier:@"group.solitaire"
                                                          optionalDirectory:@"wormhole"];
     
@@ -2574,15 +2594,7 @@ static const NSArray* cardNames;// = @[@"Unknown",@"Ace",@"One",@"Two",@"Three",
                                              //[self setupNewBoard];
                                              [self loadBoard];
                                          }];
-    if (self.sharedDefaults != nil)
-    {
-        //[self.sharedDefaults setObject:@"hello" forKey:@"world"];
-        //[self.sharedDefaults synchronize];
-    }
-    else
-    {
-        NSLog(@"nil!");
-    }
+    [self migrateLegacyDefaultsIfNeeded];
     
     // Configure interface objects here.
     self.handCardImages = @[self.card0x0,self.card0x1,self.card0x2,self.card0x3,self.card0x4, self.card0x5, self.card0x6, self.card0x7, self.card0x8, self.card0x9, self.card0x10, self.card0x11, self.card0x12, self.card0x13, self.card0x14, self.card0x15, self.card0x16, self.card0x17, self.card0x18, self.card0x19,
@@ -2699,7 +2711,7 @@ static const NSArray* cardNames;// = @[@"Unknown",@"Ace",@"One",@"Two",@"Three",
     
     [self applyResponsiveLayout];
 
-    if ([self.sharedDefaults objectForKey:@"savedata"]==nil)
+    if ([self.sharedDefaults objectForKey:kSavedDataKey]==nil)
     {
         // Setup all 52 cards test for now.
         [self setupNewBoard];
@@ -2713,12 +2725,12 @@ static const NSArray* cardNames;// = @[@"Unknown",@"Ace",@"One",@"Two",@"Three",
     
     [self addMenuItemWithItemIcon:WKMenuItemIconTrash title:@"Redeal" action:@selector(resetBoard)];
     
-    self.flipCardsNumber = [self.sharedDefaults objectForKey:@"flipcardnumber"];
+    self.flipCardsNumber = [self.sharedDefaults objectForKey:kFlipCardNumberKey];
     
     if (self.flipCardsNumber == nil)
     {
         self.flipCardsNumber = [NSNumber numberWithInt:3];
-        [self.sharedDefaults setObject:self.flipCardsNumber forKey:@"flipcardnumber"];
+        [self.sharedDefaults setObject:self.flipCardsNumber forKey:kFlipCardNumberKey];
         [self.sharedDefaults synchronize];
         //[self.wormhole passMessageObject:@{@"saved" : @"a"}
           //                    identifier:@"loadSavedState"];
@@ -2727,7 +2739,7 @@ static const NSArray* cardNames;// = @[@"Unknown",@"Ace",@"One",@"Two",@"Three",
     if ([self.flipCardsNumber intValue] == 0)
     {
         self.flipCardsNumber = [NSNumber numberWithInt:3];
-        [self.sharedDefaults setObject:self.flipCardsNumber forKey:@"flipcardnumber"];
+        [self.sharedDefaults setObject:self.flipCardsNumber forKey:kFlipCardNumberKey];
         [self.sharedDefaults synchronize];
         
         //[self.wormhole passMessageObject:@{@"saved" : @"a"}
@@ -2768,7 +2780,7 @@ static const NSArray* cardNames;// = @[@"Unknown",@"Ace",@"One",@"Two",@"Three",
     {
         self.flipCardsNumber = [NSNumber numberWithInt:3];
         [self.buttonCardsToggle setTitle:@"1-Card"];
-        [self.sharedDefaults setObject:self.flipCardsNumber forKey:@"flipcardnumber"];
+        [self.sharedDefaults setObject:self.flipCardsNumber forKey:kFlipCardNumberKey];
         [self.sharedDefaults synchronize];
         
         //[self.wormhole passMessageObject:@{}
@@ -2781,7 +2793,7 @@ static const NSArray* cardNames;// = @[@"Unknown",@"Ace",@"One",@"Two",@"Three",
     {
         self.flipCardsNumber = [NSNumber numberWithInt:1];
         
-        [self.sharedDefaults setObject:self.flipCardsNumber forKey:@"flipcardnumber"];
+        [self.sharedDefaults setObject:self.flipCardsNumber forKey:kFlipCardNumberKey];
         [self.sharedDefaults synchronize];
         
         //[self.wormhole passMessageObject:@{}
@@ -3306,6 +3318,124 @@ static const NSArray* cardNames;// = @[@"Unknown",@"Ace",@"One",@"Two",@"Three",
     }
 }
 
+-(NSArray<NSMutableArray*>*) boardStackCollections
+{
+    return @[
+        self.deckStack,
+        self.deckFlip,
+        self.deckFlipDiscard,
+        self.hand0,
+        self.hand1,
+        self.hand2,
+        self.hand3,
+        self.hand4,
+        self.hand5,
+        self.hand6,
+        self.discard1,
+        self.discard2,
+        self.discard3,
+        self.discard4
+    ];
+}
+
+-(void) migrateLegacyDefaultsIfNeeded
+{
+    NSUserDefaults* standardDefaults = [NSUserDefaults standardUserDefaults];
+    if (self.sharedDefaults == nil || self.sharedDefaults == standardDefaults)
+    {
+        return;
+    }
+
+    NSArray* migrationKeys = @[
+        kSavedDataKey,
+        kSavedDataSchemaVersionKey,
+        kFlipCardNumberKey,
+        kSolvedDealsKey,
+        kSolvedDealSelectionModeKey,
+        kSolvedDealFixedIndexKey,
+        kSolvedDealRoundRobinIndexKey,
+        kSolvedDealLastIndexKey
+    ];
+
+    BOOL copiedAnyValue = NO;
+    for (NSString* key in migrationKeys)
+    {
+        if ([self.sharedDefaults objectForKey:key] != nil)
+        {
+            continue;
+        }
+        id legacyValue = [standardDefaults objectForKey:key];
+        if (legacyValue != nil)
+        {
+            [self.sharedDefaults setObject:legacyValue forKey:key];
+            copiedAnyValue = YES;
+        }
+    }
+    if (copiedAnyValue)
+    {
+        [self.sharedDefaults synchronize];
+    }
+}
+
+-(NSArray<NSArray<NSNumber*>*>*) validatedStacksFromSaveJSON:(id) jsonObject
+{
+    NSArray* stackCandidates = nil;
+    if ([jsonObject isKindOfClass:[NSArray class]])
+    {
+        stackCandidates = (NSArray*)jsonObject;
+    }
+    else if ([jsonObject isKindOfClass:[NSDictionary class]])
+    {
+        stackCandidates = [(NSDictionary*)jsonObject objectForKey:@"stacks"];
+    }
+
+    if (![stackCandidates isKindOfClass:[NSArray class]] || [stackCandidates count] != kSaveStateStackCount)
+    {
+        return nil;
+    }
+
+    NSMutableArray<NSArray<NSNumber*>*>* validatedStacks = [[NSMutableArray alloc] initWithCapacity:kSaveStateStackCount];
+    NSMutableSet* uniqueCardIndexes = [[NSMutableSet alloc] initWithCapacity:kTotalCardsInDeck];
+    NSInteger cardCount = 0;
+
+    for (id stack in stackCandidates)
+    {
+        if (![stack isKindOfClass:[NSArray class]])
+        {
+            return nil;
+        }
+        NSMutableArray<NSNumber*>* normalizedStack = [[NSMutableArray alloc] initWithCapacity:[(NSArray*)stack count]];
+        for (id value in (NSArray*)stack)
+        {
+            if (![value isKindOfClass:[NSNumber class]])
+            {
+                return nil;
+            }
+            NSInteger cardIndex = [(NSNumber*)value integerValue];
+            NSInteger absoluteIndex = labs(cardIndex);
+            if (absoluteIndex < 1 || absoluteIndex > kTotalCardsInDeck)
+            {
+                return nil;
+            }
+            NSNumber* absoluteKey = @(absoluteIndex);
+            if ([uniqueCardIndexes containsObject:absoluteKey])
+            {
+                return nil;
+            }
+            [uniqueCardIndexes addObject:absoluteKey];
+            [normalizedStack addObject:@(cardIndex)];
+            cardCount += 1;
+        }
+        [validatedStacks addObject:normalizedStack];
+    }
+
+    if (cardCount != kTotalCardsInDeck || [uniqueCardIndexes count] != kTotalCardsInDeck)
+    {
+        return nil;
+    }
+    return validatedStacks;
+}
+
 -(void) cleanBoardData
 {
     [self.deckStack removeAllObjects];
@@ -3324,176 +3454,86 @@ static const NSArray* cardNames;// = @[@"Unknown",@"Ace",@"One",@"Two",@"Three",
     [self.discard4 removeAllObjects];
 }
 
--(void) loadBoard
+-(BOOL) loadBoardFromValidatedStacks:(NSArray<NSArray<NSNumber*>*>*) stacks
 {
+    if (stacks == nil || [stacks count] != kSaveStateStackCount)
+    {
+        return NO;
+    }
     [self cleanBoardData];
-    NSLog(@"loading board!");
     [self loadMasterDeck];
-    
-    NSData* savedData = [self.sharedDefaults objectForKey:@"savedata"];
-    NSError* error = nil;
-    NSArray* saveArray = [NSJSONSerialization JSONObjectWithData:savedData options:NSJSONReadingAllowFragments error:&error];
-    
-    NSArray* deckStackSaved = [saveArray objectAtIndex:0];
-    
-    [self loadCardsIntoArray:self.deckStack fromIndexArray:deckStackSaved];
-    NSArray* flipStackSaved = [saveArray objectAtIndex:1];
-    [self loadCardsIntoArray:self.deckFlip fromIndexArray:flipStackSaved];
-    NSArray* flipStackDiscardSaved = [saveArray objectAtIndex:2];
-    [self loadCardsIntoArray:self.deckFlipDiscard fromIndexArray:flipStackDiscardSaved];
-    NSArray* hand0Saved = [saveArray objectAtIndex:3];
-    [self loadCardsIntoArray:self.hand0 fromIndexArray:hand0Saved];
-    NSArray* hand1Saved = [saveArray objectAtIndex:4];
-    [self loadCardsIntoArray:self.hand1 fromIndexArray:hand1Saved];
-    NSArray* hand2Saved = [saveArray objectAtIndex:5];
-    [self loadCardsIntoArray:self.hand2 fromIndexArray:hand2Saved];
-    NSArray* hand3Saved = [saveArray objectAtIndex:6];
-    [self loadCardsIntoArray:self.hand3 fromIndexArray:hand3Saved];
-    NSArray* hand4Saved = [saveArray objectAtIndex:7];
-    [self loadCardsIntoArray:self.hand4 fromIndexArray:hand4Saved];
-    NSArray* hand5Saved = [saveArray objectAtIndex:8];
-    [self loadCardsIntoArray:self.hand5 fromIndexArray:hand5Saved];
-    NSArray* hand6Saved = [saveArray objectAtIndex:9];
-    [self loadCardsIntoArray:self.hand6 fromIndexArray:hand6Saved];
-    NSArray* discard1Saved = [saveArray objectAtIndex:10];
-    [self loadCardsIntoArray:self.discard1 fromIndexArray:discard1Saved];
-    NSArray* discard2Saved = [saveArray objectAtIndex:11];
-    [self loadCardsIntoArray:self.discard2 fromIndexArray:discard2Saved];
-    NSArray* discard3Saved = [saveArray objectAtIndex:12];
-    [self loadCardsIntoArray:self.discard3 fromIndexArray:discard3Saved];
-    NSArray* discard4Saved = [saveArray objectAtIndex:13];
-    [self loadCardsIntoArray:self.discard4 fromIndexArray:discard4Saved];
-    NSLog(@"about to savedata!");
-    NSError* e = nil;
-    NSData* saveData = [NSJSONSerialization dataWithJSONObject:saveArray options:NSJSONWritingPrettyPrinted error:&e];
-    NSString* saveString = [[NSString alloc] initWithData:saveData encoding:NSUTF8StringEncoding];
-    NSLog(@"loadedBoard!%@",saveString);
-    NSLog(@"saved data!");
+    NSArray<NSMutableArray*>* destinations = [self boardStackCollections];
+    for (NSInteger i = 0; i < kSaveStateStackCount; i++)
+    {
+        [self loadCardsIntoArray:[destinations objectAtIndex:i] fromIndexArray:[stacks objectAtIndex:i]];
+    }
     [self renderFullBoard];
     [self setupAccessibility];
+    return YES;
+}
+
+-(void) loadBoard
+{
+    NSData* savedData = [self.sharedDefaults objectForKey:kSavedDataKey];
+    if (![savedData isKindOfClass:[NSData class]])
+    {
+        [self setupNewBoard];
+        return;
+    }
+
+    NSError* error = nil;
+    id saveJSON = [NSJSONSerialization JSONObjectWithData:savedData options:NSJSONReadingAllowFragments error:&error];
+    NSArray<NSArray<NSNumber*>*>* stacks = [self validatedStacksFromSaveJSON:saveJSON];
+    if (error != nil || stacks == nil || ![self loadBoardFromValidatedStacks:stacks])
+    {
+        NSLog(@"Saved board data invalid; rebuilding a fresh board to prevent load loop.");
+        [self setupNewBoard];
+        return;
+    }
+
+    NSInteger schemaVersion = [[self.sharedDefaults objectForKey:kSavedDataSchemaVersionKey] integerValue];
+    if (schemaVersion < kCurrentSaveStateSchemaVersion)
+    {
+        [self persistStacks:stacks notifyCompanion:NO];
+    }
 }
 
 -(void) saveBoard
 {
-    // Should be able to create actual arrays?
-    // then use json serializer?  For shortcut.
-    // Steps -
-    NSMutableArray* saveObject = [[NSMutableArray alloc] init];
-    // Get Deck Array indexes
-    NSMutableArray* deckSave = [[NSMutableArray alloc] init];
-    for(int i = 0; i < [self.deckStack count]; i++)
+    NSArray<NSMutableArray*>* boardStacks = [self boardStackCollections];
+    NSMutableArray<NSArray<NSNumber*>*>* stacksToPersist = [[NSMutableArray alloc] initWithCapacity:kSaveStateStackCount];
+    for (NSMutableArray* stack in boardStacks)
     {
-        //NSInteger value = (NSInteger)[((Card*)[self.deckStack objectAtIndex:i]) value]
-        [deckSave addObject:[NSNumber numberWithInteger:(NSInteger)[((Card*)[self.deckStack objectAtIndex:i]) getSaveIndex]*(((Card*)[self.deckStack objectAtIndex:i]).isFacingUp?1:-1)]];
+        NSMutableArray<NSNumber*>* serializedStack = [[NSMutableArray alloc] initWithCapacity:[stack count]];
+        for (Card* card in stack)
+        {
+            NSInteger signedIndex = [card getSaveIndex] * (card.isFacingUp ? 1 : -1);
+            [serializedStack addObject:@(signedIndex)];
+        }
+        [stacksToPersist addObject:serializedStack];
     }
-    [saveObject addObject:deckSave];
-    // Get Flip Array indexes
-    NSMutableArray* flipSave = [[NSMutableArray alloc] init];
-    for(int i = 0; i < [self.deckFlip count]; i++)
-    {
-        [flipSave addObject:[NSNumber numberWithInteger:(NSInteger)[((Card*)[self.deckFlip objectAtIndex:i]) getSaveIndex]*(((Card*)[self.deckFlip objectAtIndex:i]).isFacingUp?1:-1)]];
-        //[flipSave addObject:[self.deckFlip objectAtIndex:i]];
-    }
-    [saveObject addObject:flipSave];
-    // Get Flip Discard Array indexes
-    NSMutableArray* flipDiscardSave = [[NSMutableArray alloc] init];
-    for(int i = 0; i < [self.deckFlipDiscard count]; i++)
-    {
-        [flipDiscardSave addObject:[NSNumber numberWithInteger:(NSInteger)[((Card*)[self.deckFlipDiscard objectAtIndex:i]) getSaveIndex]*(((Card*)[self.deckFlipDiscard objectAtIndex:i]).isFacingUp?1:-1)]];
-        //[flipDiscardSave addObject:[self.deckFlipDiscard objectAtIndex:i]];
-    }
-    [saveObject addObject:flipDiscardSave];
-    // Get All Hands indexes
-    NSMutableArray* hand1Save = [[NSMutableArray alloc] init];
-    for(int i = 0; i < [self.hand0 count]; i++)
-    {
-        [hand1Save addObject:[NSNumber numberWithInteger:(NSInteger)[((Card*)[self.hand0 objectAtIndex:i]) getSaveIndex]*(((Card*)[self.hand0 objectAtIndex:i]).isFacingUp?1:-1)]];
-       // [hand1Save addObject:[self.hand0 objectAtIndex:i]];
-    }
-    [saveObject addObject:hand1Save];
-    NSMutableArray* hand2Save = [[NSMutableArray alloc] init];
-    for(int i = 0; i < [self.hand1 count]; i++)
-    {
-        [hand2Save addObject:[NSNumber numberWithInteger:(NSInteger)[((Card*)[self.hand1 objectAtIndex:i]) getSaveIndex]*(((Card*)[self.hand1 objectAtIndex:i]).isFacingUp?1:-1)]];
-        //[hand2Save addObject:[self.hand1 objectAtIndex:i]];
-    }
-    [saveObject addObject:hand2Save];
-    NSMutableArray* hand3Save = [[NSMutableArray alloc] init];
-    for(int i = 0; i < [self.hand2 count]; i++)
-    {
-        [hand3Save addObject:[NSNumber numberWithInteger:(NSInteger)[((Card*)[self.hand2 objectAtIndex:i]) getSaveIndex]*(((Card*)[self.hand2 objectAtIndex:i]).isFacingUp?1:-1)]];
-        //[hand3Save addObject:[self.hand2 objectAtIndex:i]];
-    }
-    [saveObject addObject:hand3Save];
-    NSMutableArray* hand4Save = [[NSMutableArray alloc] init];
-    for(int i = 0; i < [self.hand3 count]; i++)
-    {
-        [hand4Save addObject:[NSNumber numberWithInteger:(NSInteger)[((Card*)[self.hand3 objectAtIndex:i]) getSaveIndex]*(((Card*)[self.hand3 objectAtIndex:i]).isFacingUp?1:-1)]];
-        //[hand4Save addObject:[self.hand3 objectAtIndex:i]];
-    }
-    [saveObject addObject:hand4Save];
-    NSMutableArray* hand5Save = [[NSMutableArray alloc] init];
-    for(int i = 0; i < [self.hand4 count]; i++)
-    {
-        [hand5Save addObject:[NSNumber numberWithInteger:(NSInteger)[((Card*)[self.hand4 objectAtIndex:i]) getSaveIndex]*(((Card*)[self.hand4 objectAtIndex:i]).isFacingUp?1:-1)]];
-        //[hand5Save addObject:[self.hand4 objectAtIndex:i]];
-    }
-    [saveObject addObject:hand5Save];
-    NSMutableArray* hand6Save = [[NSMutableArray alloc] init];
-    for(int i = 0; i < [self.hand5 count]; i++)
-    {
-        [hand6Save addObject:[NSNumber numberWithInteger:(NSInteger)[((Card*)[self.hand5 objectAtIndex:i]) getSaveIndex]*(((Card*)[self.hand5 objectAtIndex:i]).isFacingUp?1:-1)]];
-        //[hand6Save addObject:[self.hand5 objectAtIndex:i]];
-    }
-    [saveObject addObject:hand6Save];
-    NSMutableArray* hand7Save = [[NSMutableArray alloc] init];
-    for(int i = 0; i < [self.hand6 count]; i++)
-    {
-        [hand7Save addObject:[NSNumber numberWithInteger:(NSInteger)[((Card*)[self.hand6 objectAtIndex:i]) getSaveIndex]*(((Card*)[self.hand6 objectAtIndex:i]).isFacingUp?1:-1)]];
-        //[hand7Save addObject:[self.hand6 objectAtIndex:i]];
-    }
-    [saveObject addObject:hand7Save];
-    // Get All discards indexes
-    NSMutableArray* discard1Save = [[NSMutableArray alloc] init];
-    for(int i = 0; i < [self.discard1 count]; i++)
-    {
-        [discard1Save addObject:[NSNumber numberWithInteger:(NSInteger)[((Card*)[self.discard1 objectAtIndex:i]) getSaveIndex]*(((Card*)[self.discard1 objectAtIndex:i]).isFacingUp?1:-1)]];
-       // [discard1Save addObject:[self.discard1 objectAtIndex:i]];
-    }
-    [saveObject addObject:discard1Save];
-    NSMutableArray* discard2Save = [[NSMutableArray alloc] init];
-    for(int i = 0; i < [self.discard2 count]; i++)
-    {
-        [discard2Save addObject:[NSNumber numberWithInteger:(NSInteger)[((Card*)[self.discard2 objectAtIndex:i]) getSaveIndex]*(((Card*)[self.discard2 objectAtIndex:i]).isFacingUp?1:-1)]];
-       // [discard2Save addObject:[self.discard2 objectAtIndex:i]];
-    }
-    [saveObject addObject:discard2Save];
-    NSMutableArray* discard3Save = [[NSMutableArray alloc] init];
-    for(int i = 0; i < [self.discard3 count]; i++)
-    {
-        [discard3Save addObject:[NSNumber numberWithInteger:(NSInteger)[((Card*)[self.discard3 objectAtIndex:i]) getSaveIndex]*(((Card*)[self.discard3 objectAtIndex:i]).isFacingUp?1:-1)]];
-        //[discard3Save addObject:[self.discard3 objectAtIndex:i]];
-    }
-    [saveObject addObject:discard3Save];
-    NSMutableArray* discard4Save = [[NSMutableArray alloc] init];
-    for(int i = 0; i < [self.discard4 count]; i++)
-    {
-        [discard4Save addObject:[NSNumber numberWithInteger:(NSInteger)[((Card*)[self.discard4 objectAtIndex:i]) getSaveIndex]*(((Card*)[self.discard4 objectAtIndex:i]).isFacingUp?1:-1)]];
-        //[discard4Save addObject:[self.discard4 objectAtIndex:i]];
-    }
-    [saveObject addObject:discard4Save];
-    NSError* e = nil;
-    NSData* saveData = [NSJSONSerialization dataWithJSONObject:saveObject options:NSJSONWritingPrettyPrinted error:&e];
-    //NSString* saveString = [[NSString alloc] initWithData:saveData encoding:NSUTF8StringEncoding];
-    
-    //NSLog(@"save string!:%@",saveString);
-    
-    [self.sharedDefaults setObject:saveData forKey:@"savedata"];
-    [self.sharedDefaults synchronize];
-    [self.wormhole passMessageObject:@{}
-                          identifier:@"loadSavedStateNative"];
-    
+    [self persistStacks:stacksToPersist notifyCompanion:YES];
     [self setupAccessibility];
+}
+
+-(void) persistStacks:(NSArray<NSArray<NSNumber*>*>*) stacks notifyCompanion:(BOOL) notifyCompanion
+{
+    NSError* serializationError = nil;
+    NSData* saveData = [NSJSONSerialization dataWithJSONObject:stacks options:NSJSONWritingPrettyPrinted error:&serializationError];
+    if (serializationError != nil || saveData == nil)
+    {
+        NSLog(@"Unable to persist save data: %@", serializationError);
+        return;
+    }
+    [self.sharedDefaults setObject:saveData forKey:kSavedDataKey];
+    [self.sharedDefaults setObject:@(kCurrentSaveStateSchemaVersion) forKey:kSavedDataSchemaVersionKey];
+    [self.sharedDefaults synchronize];
+
+    if (notifyCompanion)
+    {
+        [self.wormhole passMessageObject:@{}
+                              identifier:@"loadSavedStateNative"];
+    }
 }
 
 -(void) restoreBoard
