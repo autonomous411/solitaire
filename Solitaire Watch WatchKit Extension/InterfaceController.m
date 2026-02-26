@@ -422,6 +422,137 @@ static const NSArray* cardNames;// = @[@"Unknown",@"Ace",@"One",@"Two",@"Three",
 }
 @end
 
+@interface SolitaireSolvedDealProvider : NSObject
++(NSArray<NSNumber*>*) nextDealOrderFromDefaults:(NSUserDefaults*) defaults;
++(BOOL) isValidDealOrder:(NSArray*) candidate;
+@end
+
+@implementation SolitaireSolvedDealProvider
+
++(BOOL) isValidDealOrder:(NSArray*) candidate
+{
+    if (![candidate isKindOfClass:[NSArray class]] || [candidate count] != 52)
+    {
+        return NO;
+    }
+    NSMutableSet* unique = [[NSMutableSet alloc] initWithCapacity:52];
+    for (id value in candidate)
+    {
+        if (![value isKindOfClass:[NSNumber class]])
+        {
+            return NO;
+        }
+        NSInteger index = [value integerValue];
+        if (index < 0 || index > 51)
+        {
+            return NO;
+        }
+        [unique addObject:@(index)];
+    }
+    return [unique count] == 52;
+}
+
++(NSArray<NSNumber*>*) sequenceDealWithOffset:(NSInteger) offset
+{
+    NSMutableArray* sequence = [[NSMutableArray alloc] initWithCapacity:52];
+    for (NSInteger i = 0; i < 52; i++)
+    {
+        [sequence addObject:@((i + offset) % 52)];
+    }
+    return sequence;
+}
+
++(NSArray<NSArray<NSNumber*>*>*) bootstrapDeals
+{
+    NSMutableArray* reverse = [[NSMutableArray alloc] initWithCapacity:52];
+    for (NSInteger i = 51; i >= 0; i--)
+    {
+        [reverse addObject:@(i)];
+    }
+    return @[
+        [self sequenceDealWithOffset:0],
+        [self sequenceDealWithOffset:13],
+        reverse
+    ];
+}
+
++(NSArray<NSArray<NSNumber*>*>*) validatedDealsFromDefaults:(NSUserDefaults*) defaults
+{
+    NSMutableArray* validDeals = [[NSMutableArray alloc] init];
+    NSArray* rawDeals = [defaults objectForKey:@"solved_deals"];
+    if ([rawDeals isKindOfClass:[NSArray class]])
+    {
+        for (id record in rawDeals)
+        {
+            if ([self isValidDealOrder:record])
+            {
+                [validDeals addObject:record];
+            }
+        }
+    }
+    if ([validDeals count] == 0)
+    {
+        for (NSArray<NSNumber*>* fallbackDeal in [self bootstrapDeals])
+        {
+            [validDeals addObject:fallbackDeal];
+        }
+    }
+    return validDeals;
+}
+
++(NSInteger) normalizedIndex:(NSInteger) index count:(NSInteger) count
+{
+    if (count <= 0)
+    {
+        return NSNotFound;
+    }
+    NSInteger normalized = index % count;
+    if (normalized < 0)
+    {
+        normalized += count;
+    }
+    return normalized;
+}
+
++(NSArray<NSNumber*>*) nextDealOrderFromDefaults:(NSUserDefaults*) defaults
+{
+    NSArray<NSArray<NSNumber*>*>* deals = [self validatedDealsFromDefaults:defaults];
+    if ([deals count] == 0)
+    {
+        return nil;
+    }
+
+    NSString* mode = [defaults objectForKey:@"solved_deal_selection_mode"];
+    if (![mode isKindOfClass:[NSString class]] || [mode length] == 0)
+    {
+        mode = @"random";
+    }
+
+    NSInteger selectedIndex = 0;
+    if ([mode isEqualToString:@"fixed"])
+    {
+        NSInteger fixed = [[defaults objectForKey:@"solved_deal_fixed_index"] integerValue];
+        selectedIndex = [self normalizedIndex:fixed count:[deals count]];
+    }
+    else if ([mode isEqualToString:@"round_robin"])
+    {
+        NSInteger cursor = [[defaults objectForKey:@"solved_deal_round_robin_index"] integerValue];
+        selectedIndex = [self normalizedIndex:cursor count:[deals count]];
+        NSInteger nextCursor = [self normalizedIndex:selectedIndex + 1 count:[deals count]];
+        [defaults setObject:@(nextCursor) forKey:@"solved_deal_round_robin_index"];
+    }
+    else
+    {
+        selectedIndex = arc4random_uniform((u_int32_t)[deals count]);
+    }
+
+    [defaults setObject:@(selectedIndex) forKey:@"solved_deal_last_index"];
+    [defaults synchronize];
+    return [deals objectAtIndex:selectedIndex];
+}
+
+@end
+
 @implementation InterfaceController
 
 -(CGFloat) currentWatchLogicalWidth
@@ -2756,6 +2887,26 @@ static const NSArray* cardNames;// = @[@"Unknown",@"Ace",@"One",@"Two",@"Three",
     [SolitaireGameEngine shuffleMasterDeckInState:self.gameState];
 }
 
+-(BOOL) applyDealOrderToMasterDeck:(NSArray<NSNumber*>*) dealOrder
+{
+    if (![SolitaireSolvedDealProvider isValidDealOrder:dealOrder])
+    {
+        return NO;
+    }
+    if ([self.masterDeck count] != 52)
+    {
+        return NO;
+    }
+    NSArray* originalDeck = [NSArray arrayWithArray:self.masterDeck];
+    [self.masterDeck removeAllObjects];
+    for (NSNumber* indexNumber in dealOrder)
+    {
+        NSInteger index = [indexNumber integerValue];
+        [self.masterDeck addObject:[originalDeck objectAtIndex:index]];
+    }
+    return YES;
+}
+
 - (void) setupNewBoard
 {
     if (self.hasSelected)
@@ -2782,8 +2933,18 @@ static const NSArray* cardNames;// = @[@"Unknown",@"Ace",@"One",@"Two",@"Three",
     // First, we need to shuffle a deck.
     // Start with a deck.
     [self loadMasterDeck];
-    
-    [self shuffleMasterDeck];
+
+    NSArray<NSNumber*>* solvedDealOrder = [SolitaireSolvedDealProvider nextDealOrderFromDefaults:self.sharedDefaults];
+    BOOL appliedSolvedDeal = [self applyDealOrderToMasterDeck:solvedDealOrder];
+    if (!appliedSolvedDeal)
+    {
+        NSLog(@"Solved deal unavailable/invalid. Falling back to shuffle path.");
+        [self shuffleMasterDeck];
+    }
+    else
+    {
+        NSLog(@"Applied solved deal ordering for new board.");
+    }
     
     // Deal to all hands.
     [self dealToStacks];
