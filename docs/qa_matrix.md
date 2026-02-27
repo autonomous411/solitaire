@@ -67,6 +67,7 @@
 ## Command-line validation lanes
 - `bash scripts/watch_only_build.sh`
 - `bash scripts/watch_only_archive.sh`
+- `bash scripts/qa_session.sh` to generate a timestamped session report and lane logs under `docs/qa_sessions/`.
 
 Record artifacts:
 - command output summary
