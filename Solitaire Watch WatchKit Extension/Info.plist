@@ -11,7 +11,7 @@
 	<key>MinimumOSVersion</key>
 	<string>$(WATCHOS_DEPLOYMENT_TARGET)</string>
 	<key>CFBundleIdentifier</key>
-	<string>com.autonomous.Solitaire-Watch.watchkitextension</string>
+	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
