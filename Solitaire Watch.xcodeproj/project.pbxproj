@@ -435,7 +435,7 @@
 		20569C511ACB7F5E0087BE8A /* InterfaceController.m in Sources */ = {isa = PBXBuildFile; fileRef = 20569C501ACB7F5E0087BE8A /* InterfaceController.m */; };
 		20569C541ACB7F5E0087BE8A /* GlanceController.m in Sources */ = {isa = PBXBuildFile; fileRef = 20569C531ACB7F5E0087BE8A /* GlanceController.m */; };
 		20569C561ACB7F5E0087BE8A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 20569C551ACB7F5E0087BE8A /* Images.xcassets */; };
-		20569C5A1ACB7F5E0087BE8A /* Solitaire Watch WatchKit App.app in Resources */ = {isa = PBXBuildFile; fileRef = 20569C591ACB7F5E0087BE8A /* Solitaire Watch WatchKit App.app */; };
+		20569C5A1ACB7F5E0087BE8A /* Solitaire Watch WatchKit App.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = 20569C591ACB7F5E0087BE8A /* Solitaire Watch WatchKit App.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		20569C621ACB7F5E0087BE8A /* Interface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 20569C601ACB7F5E0087BE8A /* Interface.storyboard */; };
 		20569C641ACB7F5E0087BE8A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 20569C631ACB7F5E0087BE8A /* Images.xcassets */; };
 		20569C671ACB7F5E0087BE8A /* Solitaire Watch WatchKit Extension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 20569C4B1ACB7F5E0087BE8A /* Solitaire Watch WatchKit Extension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
@@ -561,6 +561,17 @@
 				20569C671ACB7F5E0087BE8A /* Solitaire Watch WatchKit Extension.appex in Embed App Extensions */,
 			);
 			name = "Embed App Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		20A42C2C2D0A610A00A0A001 /* Embed Watch Content */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "$(CONTENTS_FOLDER_PATH)/Watch";
+			dstSubfolderSpec = 16;
+			files = (
+				20569C5A1ACB7F5E0087BE8A /* Solitaire Watch WatchKit App.app in Embed Watch Content */,
+			);
+			name = "Embed Watch Content";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXCopyFilesBuildPhase section */
@@ -1336,7 +1347,6 @@
 			buildRules = (
 			);
 			dependencies = (
-				20569C5C1ACB7F5E0087BE8A /* PBXTargetDependency */,
 			);
 			name = "Solitaire Watch WatchKit Extension";
 			productName = "Solitaire Watch WatchKit Extension";
@@ -1348,10 +1358,12 @@
 			buildConfigurationList = 20569C6C1ACB7F5E0087BE8A /* Build configuration list for PBXNativeTarget "Solitaire Watch WatchKit App" */;
 			buildPhases = (
 				20569C571ACB7F5E0087BE8A /* Resources */,
+				20569C6E1ACB7F5E0087BE8A /* Embed App Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				20569C661ACB7F5E0087BE8A /* PBXTargetDependency */,
 			);
 			name = "Solitaire Watch WatchKit App";
 			productName = "Solitaire Watch WatchKit App";
@@ -1365,12 +1377,12 @@
 				206EFAC01AB2C49F00EE1DE2 /* Sources */,
 				206EFAC11AB2C49F00EE1DE2 /* Frameworks */,
 				206EFAC21AB2C49F00EE1DE2 /* Resources */,
-				20569C6E1ACB7F5E0087BE8A /* Embed App Extensions */,
+				20A42C2C2D0A610A00A0A001 /* Embed Watch Content */,
 			);
 			buildRules = (
 			);
 			dependencies = (
-				20569C661ACB7F5E0087BE8A /* PBXTargetDependency */,
+				20569C5C1ACB7F5E0087BE8A /* PBXTargetDependency */,
 			);
 			name = "Solitaire Watch";
 			productName = "Solitaire Watch";
@@ -1460,7 +1472,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				20569C5A1ACB7F5E0087BE8A /* Solitaire Watch WatchKit App.app in Resources */,
 				20569C561ACB7F5E0087BE8A /* Images.xcassets in Resources */,
 				20555C9F1ACCB2690060A914 /* glanceanim1@2x.png in Resources */,
 				20555C9E1ACCB2690060A914 /* glanceanim0@2x.png in Resources */,
