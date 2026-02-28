@@ -8,7 +8,7 @@
         <!--Solitaire-->
         <scene sceneID="aou-V4-d1y">
             <objects>
-                <controller title="Solitaire" id="AgC-eL-Hgc" customClass="InterfaceController">
+                <controller title="" id="AgC-eL-Hgc" customClass="InterfaceController">
                     <items>
                         <group width="1" alignment="left" layout="vertical" radius="0.0" spacing="0.0" id="n5z-Aj-6Qf" userLabel="root">
                             <items>
@@ -148,7 +148,7 @@
                                         <group width="0.1428571429" alignment="left" layout="vertical" radius="0.0" spacing="0.0" id="wts-8n-aEH" userLabel="HandStack1">
                                             <items>
                                                 <button alignment="center" accessibilityLabel="First Pile" id="C4E-Dd-9TB" userLabel="HandStack1Button">
-                                                    <group key="contentGroup" width="1" height="180" alignment="left" layout="vertical" radius="0.0" spacing="0.0" id="FDa-LU-Uks" userLabel="HandStack1ButtonGroup">
+                                                    <group key="contentGroup" width="1" height="1" alignment="left" layout="vertical" radius="0.0" spacing="0.0" id="FDa-LU-Uks" userLabel="HandStack1ButtonGroup">
                                                         <items>
                                                             <imageView width="1" height="2" alignment="left" contentMode="top" id="Mny-b4-GvW" userLabel="Spacer"/>
                                                             <imageView height="25" alignment="left" image="heart10.png" contentMode="top" id="BUQ-kg-BXP" userLabel="Card0">
@@ -175,8 +175,6 @@
                                                             <imageView height="25" alignment="left" hidden="YES" image="spade2.png" contentMode="top" id="Paw-LL-gs2" userLabel="Card19"/>
                                                         </items>
                                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                                                        <variation key="device=watch38mm" height="200"/>
-                                                        <variation key="device=watch42mm" height="220"/>
                                                     </group>
                                                     <connections>
                                                         <action selector="handStack1Action:" destination="AgC-eL-Hgc" id="g1Z-SR-LgA"/>
@@ -188,7 +186,7 @@
                                         <group width="0.1428571429" alignment="left" layout="vertical" radius="0.0" spacing="0.0" id="21H-dP-xLd" userLabel="HandStack2">
                                             <items>
                                                 <button alignment="center" accessibilityLabel="Second Pile" id="Jur-lX-dQV" userLabel="HandStack2Button">
-                                                    <group key="contentGroup" width="1" height="180" alignment="left" layout="vertical" radius="0.0" spacing="0.0" id="3vg-rc-EKK" userLabel="HandStack2ButtonGroup">
+                                                    <group key="contentGroup" width="1" height="1" alignment="left" layout="vertical" radius="0.0" spacing="0.0" id="3vg-rc-EKK" userLabel="HandStack2ButtonGroup">
                                                         <items>
                                                             <imageView width="1" height="2" alignment="left" contentMode="top" id="Jyf-Kj-QBT" userLabel="Spacer"/>
                                                             <imageView height="6" alignment="left" image="facedown.png" contentMode="top" id="jNk-cr-Ruh" userLabel="Card0"/>
@@ -216,8 +214,6 @@
                                                             <imageView height="25" alignment="left" hidden="YES" image="spade2.png" contentMode="top" id="OdB-4w-h3Q" userLabel="Card19"/>
                                                         </items>
                                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                                                        <variation key="device=watch38mm" height="200"/>
-                                                        <variation key="device=watch42mm" height="220"/>
                                                     </group>
                                                     <connections>
                                                         <action selector="handStack2Action:" destination="AgC-eL-Hgc" id="Kpf-by-LSv"/>
@@ -229,7 +225,7 @@
                                         <group width="0.1428571429" alignment="left" layout="vertical" radius="0.0" spacing="0.0" id="Idi-pj-KoL" userLabel="HandStack3">
                                             <items>
                                                 <button alignment="center" accessibilityLabel="Third Pile" id="O0K-RL-X15" userLabel="HandStack3Button">
-                                                    <group key="contentGroup" width="1" height="180" alignment="left" layout="vertical" radius="0.0" spacing="0.0" id="ibc-E6-gXQ" userLabel="HandStack3ButtonGroup">
+                                                    <group key="contentGroup" width="1" height="1" alignment="left" layout="vertical" radius="0.0" spacing="0.0" id="ibc-E6-gXQ" userLabel="HandStack3ButtonGroup">
                                                         <items>
                                                             <imageView width="1" height="2" alignment="left" contentMode="top" id="g9t-Eq-wDz" userLabel="Spacer"/>
                                                             <imageView height="6" alignment="left" image="facedown.png" contentMode="top" id="cgv-2T-MDz" userLabel="Card0"/>
@@ -257,8 +253,6 @@
                                                             <imageView height="25" alignment="left" hidden="YES" image="spade2.png" contentMode="top" id="yP9-md-s55" userLabel="Card19"/>
                                                         </items>
                                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                                                        <variation key="device=watch38mm" height="200"/>
-                                                        <variation key="device=watch42mm" height="220"/>
                                                     </group>
                                                     <connections>
                                                         <action selector="handStack3Action:" destination="AgC-eL-Hgc" id="kh4-wY-Zxz"/>
@@ -270,7 +264,7 @@
                                         <group width="0.1428571429" alignment="left" layout="vertical" radius="0.0" spacing="0.0" id="Isd-VY-y7f" userLabel="HandStack4">
                                             <items>
                                                 <button alignment="center" accessibilityLabel="Fourth Pile" id="YSJ-d0-2Fn" userLabel="HandStack4Button">
-                                                    <group key="contentGroup" width="1" height="180" alignment="left" layout="vertical" radius="0.0" spacing="0.0" id="l7f-PS-XQK" userLabel="HandStack4ButtonGroup">
+                                                    <group key="contentGroup" width="1" height="1" alignment="left" layout="vertical" radius="0.0" spacing="0.0" id="l7f-PS-XQK" userLabel="HandStack4ButtonGroup">
                                                         <items>
                                                             <imageView width="1" height="2" alignment="left" contentMode="top" id="xPf-9O-2Le" userLabel="Spacer"/>
                                                             <imageView height="6" alignment="left" image="facedown.png" contentMode="top" id="d2f-OH-XYw" userLabel="Card0"/>
@@ -298,8 +292,6 @@
                                                             <imageView height="25" alignment="left" hidden="YES" image="spade2.png" contentMode="top" id="9jR-ox-RId" userLabel="Card19"/>
                                                         </items>
                                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                                                        <variation key="device=watch38mm" height="200"/>
-                                                        <variation key="device=watch42mm" height="220"/>
                                                     </group>
                                                     <connections>
                                                         <action selector="handStack4Action:" destination="AgC-eL-Hgc" id="obL-KL-8w8"/>
@@ -311,7 +303,7 @@
                                         <group width="0.1428571429" alignment="left" layout="vertical" radius="0.0" spacing="0.0" id="bkf-sy-9Nx" userLabel="HandStack5">
                                             <items>
                                                 <button alignment="center" accessibilityLabel="Fifth Pile" id="I25-c9-k5B" userLabel="HandStack5Button">
-                                                    <group key="contentGroup" width="1" height="180" alignment="left" layout="vertical" radius="0.0" spacing="0.0" id="Y1t-KA-Tox" userLabel="HandStack5ButtonGroup">
+                                                    <group key="contentGroup" width="1" height="1" alignment="left" layout="vertical" radius="0.0" spacing="0.0" id="Y1t-KA-Tox" userLabel="HandStack5ButtonGroup">
                                                         <items>
                                                             <imageView width="1" height="2" alignment="left" contentMode="top" id="gao-49-lEH" userLabel="Spacer"/>
                                                             <imageView height="6" alignment="left" image="facedown.png" contentMode="top" id="KRR-sZ-5kZ" userLabel="Card0"/>
@@ -339,8 +331,6 @@
                                                             <imageView height="25" alignment="left" hidden="YES" image="spade2.png" contentMode="top" id="F9d-yh-QJo" userLabel="Card19"/>
                                                         </items>
                                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                                                        <variation key="device=watch38mm" height="200"/>
-                                                        <variation key="device=watch42mm" height="220"/>
                                                     </group>
                                                     <connections>
                                                         <action selector="handStack5Action:" destination="AgC-eL-Hgc" id="DCf-fG-887"/>
@@ -352,7 +342,7 @@
                                         <group width="0.1428571429" alignment="left" layout="vertical" radius="0.0" spacing="0.0" id="6Nu-xR-QcN" userLabel="HandStack6">
                                             <items>
                                                 <button alignment="center" accessibilityLabel="Sixth Pile" id="flG-Ye-tXV" userLabel="HandStack6Button">
-                                                    <group key="contentGroup" width="1" height="180" alignment="left" layout="vertical" radius="0.0" spacing="0.0" id="Lnu-uw-jz9" userLabel="HandStack6ButtonGroup">
+                                                    <group key="contentGroup" width="1" height="1" alignment="left" layout="vertical" radius="0.0" spacing="0.0" id="Lnu-uw-jz9" userLabel="HandStack6ButtonGroup">
                                                         <items>
                                                             <imageView width="1" height="2" alignment="left" contentMode="top" id="s1Q-nc-UWT" userLabel="Spacer"/>
                                                             <imageView height="6" alignment="left" image="facedown.png" contentMode="top" id="Upe-yw-q87" userLabel="Card0">
@@ -390,8 +380,6 @@
                                                             <imageView height="25" alignment="left" hidden="YES" image="spade2.png" contentMode="top" id="43P-a8-8aP" userLabel="Card19"/>
                                                         </items>
                                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                                                        <variation key="device=watch38mm" height="200"/>
-                                                        <variation key="device=watch42mm" height="220"/>
                                                     </group>
                                                     <connections>
                                                         <action selector="handStack6Action:" destination="AgC-eL-Hgc" id="Ld0-aK-BhH"/>
@@ -403,7 +391,7 @@
                                         <group width="0.1428571429" alignment="left" layout="vertical" radius="0.0" spacing="0.0" id="gfp-uG-N1E" userLabel="HandStack7">
                                             <items>
                                                 <button alignment="center" accessibilityLabel="Seventh Pile" id="t7V-d1-GgW" userLabel="HandStack7Button">
-                                                    <group key="contentGroup" width="1" height="180" alignment="left" layout="vertical" radius="0.0" spacing="0.0" id="M1i-2Z-DVT" userLabel="HandStack7ButtonGroup">
+                                                    <group key="contentGroup" width="1" height="1" alignment="left" layout="vertical" radius="0.0" spacing="0.0" id="M1i-2Z-DVT" userLabel="HandStack7ButtonGroup">
                                                         <items>
                                                             <imageView width="1" height="2" alignment="left" contentMode="top" id="7j2-Xq-pmp" userLabel="Spacer"/>
                                                             <imageView height="6" alignment="left" image="facedown.png" contentMode="top" id="zfw-2k-58S" userLabel="Card0">
@@ -443,8 +431,6 @@
                                                             <imageView height="25" alignment="left" hidden="YES" image="spade2.png" contentMode="top" id="6XJ-2Y-uYg" userLabel="Card19"/>
                                                         </items>
                                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                                                        <variation key="device=watch38mm" height="200"/>
-                                                        <variation key="device=watch42mm" height="220"/>
                                                     </group>
                                                     <connections>
                                                         <action selector="handStack7Action:" destination="AgC-eL-Hgc" id="aIE-tZ-2N9"/>
@@ -490,8 +476,8 @@
                         </group>
                     </items>
                     <color key="backgroundColor" red="0.32326907040000002" green="0.92130761169999997" blue="0.41929591710000003" alpha="0.47999999999999998" colorSpace="calibratedRGB"/>
-                    <variation key="device=watch38mm" title="Solitaire"/>
-                    <variation key="device=watch42mm" title="Solitaire"/>
+                    
+                    
                     <connections>
                         <outlet property="buttonCardsToggle" destination="zec-Fh-Uox" id="e4o-vg-tue"/>
                         <outlet property="buttonRedeal" destination="Sk7-0E-sbq" id="IUU-sc-hVA"/>

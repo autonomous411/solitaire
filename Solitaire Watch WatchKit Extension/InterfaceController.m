@@ -593,6 +593,21 @@ static NSInteger const kCurrentSaveStateSchemaVersion = 2;
     return height;
 }
 
+-(CGFloat) topChromeReservedHeight
+{
+    CGFloat width = [self currentWatchLogicalWidth];
+    CGFloat reserved = width * 0.32f;
+    if (reserved < 44.0f)
+    {
+        reserved = 44.0f;
+    }
+    if (reserved > 62.0f)
+    {
+        reserved = 62.0f;
+    }
+    return reserved;
+}
+
 -(CGFloat) layoutScale
 {
     CGFloat scale = [self currentWatchLogicalWidth] / 136.0f;
@@ -631,14 +646,14 @@ static NSInteger const kCurrentSaveStateSchemaVersion = 2;
     NSInteger flipRowHeight = [self getHeightOfFlipRow];
     NSInteger cardSize = [self cardWidth];
     NSInteger hiddenFlipSize = [self hiddenFlipWidth];
-    NSInteger boardHeight = (NSInteger)lroundf([self currentWatchLogicalHeight] - discardRowHeight - flipRowHeight);
-    if (boardHeight < 120)
+    NSInteger boardHeight = (NSInteger)lroundf([self currentWatchLogicalHeight] - [self topChromeReservedHeight] - discardRowHeight - flipRowHeight);
+    if (boardHeight < 108)
     {
-        boardHeight = 120;
+        boardHeight = 108;
     }
-    if (boardHeight > 280)
+    if (boardHeight > 238)
     {
-        boardHeight = 280;
+        boardHeight = 238;
     }
 
     [self.discardRow setHeight:discardRowHeight];
@@ -1692,26 +1707,38 @@ static NSInteger const kCurrentSaveStateSchemaVersion = 2;
 
 -(NSInteger) getHeightOfDiscardRow
 {
+    NSInteger base = [self cardWidth] + 8;
     if (isVoiceControlled)
     {
-        return [self scaledIntegerFromBase:30.0f minimum:28 maximum:46];
+        base -= 2;
     }
-    else
+    if (base < 24)
     {
-        return [self scaledIntegerFromBase:40.0f minimum:36 maximum:58];
+        base = 24;
     }
+    if (base > 38)
+    {
+        base = 38;
+    }
+    return base;
 }
 
 -(NSInteger) getHeightOfFlipRow
 {
+    NSInteger base = [self cardWidth] + 8;
     if (isVoiceControlled)
     {
-        return [self scaledIntegerFromBase:30.0f minimum:28 maximum:46];
+        base -= 2;
     }
-    else
+    if (base < 24)
     {
-        return [self scaledIntegerFromBase:40.0f minimum:36 maximum:58];
+        base = 24;
     }
+    if (base > 38)
+    {
+        base = 38;
+    }
+    return base;
 }
 
 -(NSInteger) hiddenFlipWidth
@@ -3624,6 +3651,7 @@ static NSInteger const kCurrentSaveStateSchemaVersion = 2;
 - (void)willActivate {
     // This method is called when watch view controller is about to be visible to user
     [super willActivate];
+    [self setTitle:@""];
     //dispatch_async(dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
     [self initSolitaire];
     
