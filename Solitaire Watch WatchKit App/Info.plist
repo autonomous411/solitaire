@@ -8,6 +8,8 @@
 	<string>Solitaire Watch</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
+	<key>MinimumOSVersion</key>
+	<string>$(WATCHOS_DEPLOYMENT_TARGET)</string>
 	<key>CFBundleIdentifier</key>
 	<string>com.autonomous.Solitaire-Watch.watchkitapp</string>
 	<key>CFBundleInfoDictionaryVersion</key>

@@ -2085,7 +2085,7 @@
 				INFOPLIST_FILE = "Solitaire Watch WatchKit Extension/Info.plist";
 				SDKROOT = watchos;
 				SUPPORTED_PLATFORMS = "watchos watchsimulator";
-				WATCHOS_DEPLOYMENT_TARGET = 8.0;
+				WATCHOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.autonomous.Solitaire-Watch.watchkitextension";
 				PRODUCT_NAME = "${TARGET_NAME}";
@@ -2103,7 +2103,7 @@
 				INFOPLIST_FILE = "Solitaire Watch WatchKit Extension/Info.plist";
 				SDKROOT = watchos;
 				SUPPORTED_PLATFORMS = "watchos watchsimulator";
-				WATCHOS_DEPLOYMENT_TARGET = 8.0;
+				WATCHOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.autonomous.Solitaire-Watch.watchkitextension";
 				PRODUCT_NAME = "${TARGET_NAME}";
@@ -2126,7 +2126,7 @@
 				INFOPLIST_FILE = "Solitaire Watch WatchKit App/Info.plist";
 				SDKROOT = watchos;
 				SUPPORTED_PLATFORMS = "watchos watchsimulator";
-				WATCHOS_DEPLOYMENT_TARGET = 8.0;
+				WATCHOS_DEPLOYMENT_TARGET = 9.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.autonomous.Solitaire-Watch.watchkitapp";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
@@ -2146,7 +2146,7 @@
 				INFOPLIST_FILE = "Solitaire Watch WatchKit App/Info.plist";
 				SDKROOT = watchos;
 				SUPPORTED_PLATFORMS = "watchos watchsimulator";
-				WATCHOS_DEPLOYMENT_TARGET = 8.0;
+				WATCHOS_DEPLOYMENT_TARGET = 9.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.autonomous.Solitaire-Watch.watchkitapp";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";

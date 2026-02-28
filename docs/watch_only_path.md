@@ -30,6 +30,7 @@ CODE_SIGNING_ALLOWED_VALUE=YES bash scripts/watch_only_archive.sh
 ## Notes
 
 - This path intentionally avoids the iOS host target for faster watch-only iteration.
+- Watch targets are pinned to `WATCHOS_DEPLOYMENT_TARGET=9.0`, and watch app/extension `Info.plist` files explicitly set `MinimumOSVersion=$(WATCHOS_DEPLOYMENT_TARGET)`.
 - Current known warnings/blockers (tracked in issues):
   - Watch storyboard deprecation warning on modern watchOS (migration tracked separately).
   - Watch app icon catalog requires modern App Store icon completeness.
