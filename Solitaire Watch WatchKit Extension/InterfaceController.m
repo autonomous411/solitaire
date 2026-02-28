@@ -647,6 +647,7 @@ static NSInteger const kCurrentSaveStateSchemaVersion = 2;
     NSInteger cardWidth = [self cardWidth];
     NSInteger cardHeight = [self cardHeight];
     NSInteger hiddenFlipSize = [self hiddenFlipWidth];
+    NSInteger stackPeekSize = [self stackPeekWidth];
     NSInteger boardHeight = (NSInteger)lroundf([self currentWatchLogicalHeight] - [self topChromeReservedHeight] - discardRowHeight - flipRowHeight);
     if (boardHeight < 108)
     {
@@ -660,9 +661,9 @@ static NSInteger const kCurrentSaveStateSchemaVersion = 2;
     [self.discardRow setHeight:discardRowHeight];
     [self.flipDeckRow setHeight:flipRowHeight];
 
-    [self.deckStackButton setWidth:cardWidth];
+    [self.deckStackButton setWidth:(cardWidth + (stackPeekSize * 2))];
     [self.deckStackButton setHeight:cardHeight];
-    [self.deckFlipButton setWidth:cardWidth];
+    [self.deckFlipButton setWidth:(cardWidth + (hiddenFlipSize * 2))];
     [self.deckFlipButton setHeight:cardHeight];
 
     [self.discard1Button setWidth:cardWidth];
@@ -676,9 +677,9 @@ static NSInteger const kCurrentSaveStateSchemaVersion = 2;
 
     [self.deckStack1Image setWidth:cardWidth];
     [self.deckStack1Image setHeight:cardHeight];
-    [self.deckStack2Image setWidth:cardWidth];
+    [self.deckStack2Image setWidth:stackPeekSize];
     [self.deckStack2Image setHeight:cardHeight];
-    [self.deckStack3Image setWidth:cardWidth];
+    [self.deckStack3Image setWidth:stackPeekSize];
     [self.deckStack3Image setHeight:cardHeight];
 
     [self.deckFlip1Image setWidth:hiddenFlipSize];
@@ -1748,6 +1749,11 @@ static NSInteger const kCurrentSaveStateSchemaVersion = 2;
     return [self is42] ? 16 : 14;
 }
 
+-(NSInteger) stackPeekWidth
+{
+    return [self is42] ? 6 : 3;
+}
+
 -(NSInteger) cardWidth
 {
     return [self is42] ? 22 : 19;
@@ -2663,24 +2669,14 @@ static NSInteger const kCurrentSaveStateSchemaVersion = 2;
 
 -(void) refreshInteractionModeFromSettings
 {
-    // Default to legacy two-tap interaction unless settings explicitly choose otherwise.
+    // Force touch interaction for watch-first gameplay reliability.
     isRemoteControlled = NO;
     isVoiceControlled = NO;
     isUsingMoves = NO;
     isOneTouch = NO;
 
     NSString* uiSetting = [SolitaireSettings getUISetting];
-    if ([uiSetting isEqualToString:VOICEANDMOVES])
-    {
-        isVoiceControlled = YES;
-        isUsingMoves = YES;
-    }
-    else if ([uiSetting isEqualToString:VOICEONLY])
-    {
-        isVoiceControlled = YES;
-        isUsingMoves = NO;
-    }
-    else if ([uiSetting isEqualToString:TOUCHONE])
+    if ([uiSetting isEqualToString:TOUCHONE])
     {
         isVoiceControlled = NO;
         isOneTouch = YES;
