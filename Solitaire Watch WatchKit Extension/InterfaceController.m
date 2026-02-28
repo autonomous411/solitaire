@@ -582,6 +582,17 @@ static NSInteger const kCurrentSaveStateSchemaVersion = 2;
     return width;
 }
 
+-(CGFloat) currentWatchLogicalHeight
+{
+    CGRect screenBounds = [[WKInterfaceDevice currentDevice] screenBounds];
+    CGFloat height = MAX(screenBounds.size.width, screenBounds.size.height);
+    if (!isfinite(height) || height <= 0)
+    {
+        height = 170.0f;
+    }
+    return height;
+}
+
 -(CGFloat) layoutScale
 {
     CGFloat scale = [self currentWatchLogicalWidth] / 136.0f;
@@ -620,6 +631,15 @@ static NSInteger const kCurrentSaveStateSchemaVersion = 2;
     NSInteger flipRowHeight = [self getHeightOfFlipRow];
     NSInteger cardSize = [self cardWidth];
     NSInteger hiddenFlipSize = [self hiddenFlipWidth];
+    NSInteger boardHeight = (NSInteger)lroundf([self currentWatchLogicalHeight] - discardRowHeight - flipRowHeight);
+    if (boardHeight < 120)
+    {
+        boardHeight = 120;
+    }
+    if (boardHeight > 280)
+    {
+        boardHeight = 280;
+    }
 
     [self.discardRow setHeight:discardRowHeight];
     [self.flipDeckRow setHeight:flipRowHeight];
@@ -660,6 +680,14 @@ static NSInteger const kCurrentSaveStateSchemaVersion = 2;
     [self.discard3Image setHeight:cardSize];
     [self.discard4Image setWidth:cardSize];
     [self.discard4Image setHeight:cardSize];
+
+    [self.hand0Button setHeight:boardHeight];
+    [self.hand1Button setHeight:boardHeight];
+    [self.hand2Button setHeight:boardHeight];
+    [self.hand3Button setHeight:boardHeight];
+    [self.hand4Button setHeight:boardHeight];
+    [self.hand5Button setHeight:boardHeight];
+    [self.hand6Button setHeight:boardHeight];
 }
 
 -(void) setupAccessibility
@@ -1688,27 +1716,73 @@ static NSInteger const kCurrentSaveStateSchemaVersion = 2;
 
 -(NSInteger) hiddenFlipWidth
 {
-    return [self scaledIntegerFromBase:14.0f minimum:12 maximum:20];
+    NSInteger value = (NSInteger)lroundf([self cardWidth] * 0.7f);
+    if (value < 11)
+    {
+        value = 11;
+    }
+    if (value > 20)
+    {
+        value = 20;
+    }
+    return value;
 }
 
 -(NSInteger) cardWidth
 {
-    return [self scaledIntegerFromBase:19.0f minimum:18 maximum:31];
+    CGFloat usableWidth = [self currentWatchLogicalWidth] - [self scaledIntegerFromBase:10.0f minimum:6 maximum:16];
+    NSInteger value = (NSInteger)floorf(usableWidth / 7.0f);
+    if (value < 17)
+    {
+        value = 17;
+    }
+    if (value > 28)
+    {
+        value = 28;
+    }
+    return value;
 }
 
 -(NSInteger) handDownFacing
 {
-    return [self scaledIntegerFromBase:4.0f minimum:3 maximum:7];
+    NSInteger value = (NSInteger)lroundf([self cardWidth] * 0.23f);
+    if (value < 3)
+    {
+        value = 3;
+    }
+    if (value > 8)
+    {
+        value = 8;
+    }
+    return value;
 }
 
 -(NSInteger) handUpBehind
 {
-    return [self scaledIntegerFromBase:13.5f minimum:12 maximum:21];
+    NSInteger value = [self cardWidth] - 5;
+    if (value < 12)
+    {
+        value = 12;
+    }
+    if (value > 24)
+    {
+        value = 24;
+    }
+    return value;
 }
 
 -(NSInteger) handUpFront
 {
-    return [self scaledIntegerFromBase:25.0f minimum:22 maximum:38];
+    NSInteger value = [self cardWidth] + 4;
+    if (value < 21)
+    {
+        value = 21;
+    }
+    if (value > 34)
+    {
+        value = 34;
+    }
+    return value;
 }
 
 -(void) moveFlipFromStack

@@ -12,7 +12,7 @@
                     <items>
                         <group width="1" alignment="left" layout="vertical" radius="0.0" spacing="0.0" id="n5z-Aj-6Qf" userLabel="root">
                             <items>
-                                <group width="136" height="40" alignment="left" backgroundImage="deckbackground_44mm.png" contentMode="center" radius="0.0" spacing="0.0" id="Ecd-9N-vau" userLabel="Deck">
+                                <group width="1" height="40" alignment="left" backgroundImage="deckbackground_44mm.png" contentMode="center" radius="0.0" spacing="0.0" id="Ecd-9N-vau" userLabel="Deck">
                                     <items>
                                         <button alignment="left" accessibilityLabel="Flip from Deck" accessibilityHint="Flip 1 or 3 cards onto the stack." id="3Jf-Js-fRI" userLabel="Deck Stack">
                                             <group key="contentGroup" width="1" height="1" alignment="left" radius="0.0" id="4dO-Ha-Ygg">
@@ -65,8 +65,8 @@
                                             </items>
                                         </group>
                                     </items>
-                                    <variation key="device=watch38mm" height="30" width="136"/>
-                                    <variation key="device=watch42mm" height="36" width="156"/>
+                                    <variation key="device=watch38mm" height="30"/>
+                                    <variation key="device=watch42mm" height="36"/>
                                 </group>
                                 <group width="1" height="40" alignment="left" backgroundImage="discardbackground_44mm.png" contentMode="center" radius="0.0" spacing="0.0" id="WOt-F3-nBa" userLabel="Discard">
                                     <items>
@@ -145,7 +145,7 @@
                                 </group>
                                 <group width="1" alignment="left" backgroundImage="deckbackground_44mm.png" contentMode="redraw" radius="0.0" spacing="0.0" id="DCQ-cm-h8O" userLabel="Hand">
                                     <items>
-                                        <group width="19" alignment="left" layout="vertical" radius="0.0" spacing="0.0" id="wts-8n-aEH" userLabel="HandStack1">
+                                        <group width="0.1428571429" alignment="left" layout="vertical" radius="0.0" spacing="0.0" id="wts-8n-aEH" userLabel="HandStack1">
                                             <items>
                                                 <button alignment="center" accessibilityLabel="First Pile" id="C4E-Dd-9TB" userLabel="HandStack1Button">
                                                     <group key="contentGroup" width="1" height="180" alignment="left" layout="vertical" radius="0.0" spacing="0.0" id="FDa-LU-Uks" userLabel="HandStack1ButtonGroup">
@@ -184,10 +184,8 @@
                                                 </button>
                                             </items>
                                             <edgeInsets key="margins" left="0.0" right="0.0" top="0.0" bottom="0.0"/>
-                                            <variation key="device=watch38mm" width="19"/>
-                                            <variation key="device=watch42mm" width="22"/>
                                         </group>
-                                        <group width="19" alignment="left" layout="vertical" radius="0.0" spacing="0.0" id="21H-dP-xLd" userLabel="HandStack2">
+                                        <group width="0.1428571429" alignment="left" layout="vertical" radius="0.0" spacing="0.0" id="21H-dP-xLd" userLabel="HandStack2">
                                             <items>
                                                 <button alignment="center" accessibilityLabel="Second Pile" id="Jur-lX-dQV" userLabel="HandStack2Button">
                                                     <group key="contentGroup" width="1" height="180" alignment="left" layout="vertical" radius="0.0" spacing="0.0" id="3vg-rc-EKK" userLabel="HandStack2ButtonGroup">
@@ -227,10 +225,8 @@
                                                 </button>
                                             </items>
                                             <edgeInsets key="margins" left="0.0" right="0.0" top="0.0" bottom="0.0"/>
-                                            <variation key="device=watch38mm" width="19"/>
-                                            <variation key="device=watch42mm" width="22"/>
                                         </group>
-                                        <group width="19" alignment="left" layout="vertical" radius="0.0" spacing="0.0" id="Idi-pj-KoL" userLabel="HandStack3">
+                                        <group width="0.1428571429" alignment="left" layout="vertical" radius="0.0" spacing="0.0" id="Idi-pj-KoL" userLabel="HandStack3">
                                             <items>
                                                 <button alignment="center" accessibilityLabel="Third Pile" id="O0K-RL-X15" userLabel="HandStack3Button">
                                                     <group key="contentGroup" width="1" height="180" alignment="left" layout="vertical" radius="0.0" spacing="0.0" id="ibc-E6-gXQ" userLabel="HandStack3ButtonGroup">
@@ -270,10 +266,8 @@
                                                 </button>
                                             </items>
                                             <edgeInsets key="margins" left="0.0" right="0.0" top="0.0" bottom="0.0"/>
-                                            <variation key="device=watch38mm" width="19"/>
-                                            <variation key="device=watch42mm" width="22"/>
                                         </group>
-                                        <group width="19" alignment="left" layout="vertical" radius="0.0" spacing="0.0" id="Isd-VY-y7f" userLabel="HandStack4">
+                                        <group width="0.1428571429" alignment="left" layout="vertical" radius="0.0" spacing="0.0" id="Isd-VY-y7f" userLabel="HandStack4">
                                             <items>
                                                 <button alignment="center" accessibilityLabel="Fourth Pile" id="YSJ-d0-2Fn" userLabel="HandStack4Button">
                                                     <group key="contentGroup" width="1" height="180" alignment="left" layout="vertical" radius="0.0" spacing="0.0" id="l7f-PS-XQK" userLabel="HandStack4ButtonGroup">
@@ -313,10 +307,8 @@
                                                 </button>
                                             </items>
                                             <edgeInsets key="margins" left="0.0" right="0.0" top="0.0" bottom="0.0"/>
-                                            <variation key="device=watch38mm" width="19"/>
-                                            <variation key="device=watch42mm" width="22"/>
                                         </group>
-                                        <group width="19" alignment="left" layout="vertical" radius="0.0" spacing="0.0" id="bkf-sy-9Nx" userLabel="HandStack5">
+                                        <group width="0.1428571429" alignment="left" layout="vertical" radius="0.0" spacing="0.0" id="bkf-sy-9Nx" userLabel="HandStack5">
                                             <items>
                                                 <button alignment="center" accessibilityLabel="Fifth Pile" id="I25-c9-k5B" userLabel="HandStack5Button">
                                                     <group key="contentGroup" width="1" height="180" alignment="left" layout="vertical" radius="0.0" spacing="0.0" id="Y1t-KA-Tox" userLabel="HandStack5ButtonGroup">
@@ -356,10 +348,8 @@
                                                 </button>
                                             </items>
                                             <edgeInsets key="margins" left="0.0" right="0.0" top="0.0" bottom="0.0"/>
-                                            <variation key="device=watch38mm" width="19"/>
-                                            <variation key="device=watch42mm" width="22"/>
                                         </group>
-                                        <group width="19" alignment="left" layout="vertical" radius="0.0" spacing="0.0" id="6Nu-xR-QcN" userLabel="HandStack6">
+                                        <group width="0.1428571429" alignment="left" layout="vertical" radius="0.0" spacing="0.0" id="6Nu-xR-QcN" userLabel="HandStack6">
                                             <items>
                                                 <button alignment="center" accessibilityLabel="Sixth Pile" id="flG-Ye-tXV" userLabel="HandStack6Button">
                                                     <group key="contentGroup" width="1" height="180" alignment="left" layout="vertical" radius="0.0" spacing="0.0" id="Lnu-uw-jz9" userLabel="HandStack6ButtonGroup">
@@ -409,10 +399,8 @@
                                                 </button>
                                             </items>
                                             <edgeInsets key="margins" left="0.0" right="0.0" top="0.0" bottom="0.0"/>
-                                            <variation key="device=watch38mm" width="19"/>
-                                            <variation key="device=watch42mm" width="22"/>
                                         </group>
-                                        <group width="19" alignment="left" layout="vertical" radius="0.0" spacing="0.0" id="gfp-uG-N1E" userLabel="HandStack7">
+                                        <group width="0.1428571429" alignment="left" layout="vertical" radius="0.0" spacing="0.0" id="gfp-uG-N1E" userLabel="HandStack7">
                                             <items>
                                                 <button alignment="center" accessibilityLabel="Seventh Pile" id="t7V-d1-GgW" userLabel="HandStack7Button">
                                                     <group key="contentGroup" width="1" height="180" alignment="left" layout="vertical" radius="0.0" spacing="0.0" id="M1i-2Z-DVT" userLabel="HandStack7ButtonGroup">
@@ -464,12 +452,10 @@
                                                 </button>
                                             </items>
                                             <edgeInsets key="margins" left="0.0" right="0.0" top="0.0" bottom="0.0"/>
-                                            <variation key="device=watch38mm" width="19"/>
-                                            <variation key="device=watch42mm" width="22"/>
                                         </group>
                                     </items>
                                 </group>
-                                <group width="1" height="40" alignment="left" id="MdF-OZ-Qvm">
+                                <group width="1" height="0.01" alignment="left" hidden="YES" id="MdF-OZ-Qvm">
                                     <items>
                                         <button width="0.5" height="1" alignment="left" title="Redeal" id="Sk7-0E-sbq">
                                             <color key="titleColor" red="0.1529411765" green="0.43921568630000002" blue="0.20000000000000001" alpha="1" colorSpace="calibratedRGB"/>
@@ -487,7 +473,7 @@
                                         </button>
                                     </items>
                                 </group>
-                                <group width="1" height="40" alignment="left" layout="vertical" spacing="1" id="5hM-Zg-TBq">
+                                <group width="1" height="0.01" alignment="left" layout="vertical" spacing="1" hidden="YES" id="5hM-Zg-TBq">
                                     <items>
                                         <group width="1" height="2" alignment="left" id="Kc8-Q0-tw4"/>
                                         <button width="1" height="1" alignment="left" title="Change Deck" id="9o0-B9-akF">

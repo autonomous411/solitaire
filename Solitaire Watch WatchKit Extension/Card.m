@@ -20,6 +20,28 @@ static NSString* SWNormalizedSkinName(NSString* skin)
     return skin;
 }
 
+static NSArray<NSBundle*>* SWCandidateResourceBundles(void)
+{
+    NSMutableArray<NSBundle*>* bundles = [[NSMutableArray alloc] init];
+    NSBundle* mainBundle = [NSBundle mainBundle];
+    if (mainBundle != nil)
+    {
+        [bundles addObject:mainBundle];
+        NSString* bundlePath = [mainBundle bundlePath];
+        NSString* pluginsPath = [bundlePath stringByDeletingLastPathComponent];
+        NSString* watchAppPath = [pluginsPath stringByDeletingLastPathComponent];
+        if ([watchAppPath length] > 0)
+        {
+            NSBundle* watchAppBundle = [NSBundle bundleWithPath:watchAppPath];
+            if (watchAppBundle != nil && watchAppBundle != mainBundle)
+            {
+                [bundles addObject:watchAppBundle];
+            }
+        }
+    }
+    return bundles;
+}
+
 static BOOL SWBundleHasImageNamed(NSString* filename)
 {
     if (filename == nil || [filename length] == 0)
@@ -33,7 +55,14 @@ static BOOL SWBundleHasImageNamed(NSString* filename)
         extension = @"png";
         nameWithoutExtension = filename;
     }
-    return ([[NSBundle mainBundle] pathForResource:nameWithoutExtension ofType:extension] != nil);
+    for (NSBundle* bundle in SWCandidateResourceBundles())
+    {
+        if ([bundle pathForResource:nameWithoutExtension ofType:extension] != nil)
+        {
+            return YES;
+        }
+    }
+    return NO;
 }
 
 static NSString* SWBuildFilename(NSString* baseFilename, NSString* suffix)
