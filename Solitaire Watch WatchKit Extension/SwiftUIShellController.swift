@@ -1,7 +1,6 @@
 import SwiftUI
 import WatchKit
 
-private let watchUIModeKey = "watch_ui_mode"
 private let watchUIModeLegacy = "legacy"
 private let watchUIModeSwiftUI = "swiftui"
 
@@ -32,86 +31,163 @@ private struct CardMetrics {
     let deckDepthWidth: CGFloat
     let fanOffset: CGFloat
     let hiddenStep: CGFloat
+    let sizeSuffix: String
 }
 
 private func metrics(for proxy: GeometryProxy) -> CardMetrics {
-    // Keep card raster dimensions fixed to legacy sizes.
     if proxy.size.width <= 176 {
-        return CardMetrics(width: 19, height: 25, deckDepthWidth: 3, fanOffset: 4, hiddenStep: 5)
+        return CardMetrics(width: 19, height: 25, deckDepthWidth: 3, fanOffset: 4, hiddenStep: 5, sizeSuffix: "38mm")
     }
-    return CardMetrics(width: 22, height: 30, deckDepthWidth: 6, fanOffset: 5, hiddenStep: 6)
+    return CardMetrics(width: 22, height: 30, deckDepthWidth: 6, fanOffset: 5, hiddenStep: 6, sizeSuffix: "44mm")
 }
 
-private struct ArtSet {
-    let faceDown: String
-    let cardBack: String
-    let sampleA: String
-    let sampleB: String
-    let sampleC: String
+private enum CardSuit: String, CaseIterable {
+    case spade
+    case club
+    case diamond
+    case heart
+
+    var isRed: Bool {
+        self == .diamond || self == .heart
+    }
 }
 
-private func art(for card: CardMetrics) -> ArtSet {
-    if card.width == 19 {
-        return ArtSet(
-            faceDown: "facedown_38mm.png",
-            cardBack: "cardback_38mm.png",
-            sampleA: "heart10_38mm.png",
-            sampleB: "club2_38mm.png",
-            sampleC: "heart2_38mm.png"
-        )
+private struct SwiftCard: Equatable {
+    let suit: CardSuit
+    let rank: Int
+}
+
+private struct TableauPile {
+    var hiddenCount: Int
+    var faceUp: [SwiftCard]
+}
+
+private enum Selection: Equatable {
+    case waste
+    case tableau(Int)
+    case foundation(Int)
+}
+
+private func rankToken(_ rank: Int) -> String {
+    switch rank {
+    case 1: return "A"
+    case 11: return "J"
+    case 12: return "Q"
+    case 13: return "K"
+    default: return "\(rank)"
     }
-    return ArtSet(
-        faceDown: "facedown_44mm.png",
-        cardBack: "cardback_44mm.png",
-        sampleA: "heart10_44mm.png",
-        sampleB: "club2_44mm.png",
-        sampleC: "heart2_44mm.png"
-    )
+}
+
+private func cardImageName(_ card: SwiftCard, sizeSuffix: String) -> String {
+    "\(card.suit.rawValue)\(rankToken(card.rank))_\(sizeSuffix).png"
+}
+
+private func shuffledDeck() -> [SwiftCard] {
+    var deck: [SwiftCard] = []
+    for suit in CardSuit.allCases {
+        for rank in 1...13 {
+            deck.append(SwiftCard(suit: suit, rank: rank))
+        }
+    }
+    return deck.shuffled()
+}
+
+private func makeInitialBoard() -> ([SwiftCard], [SwiftCard], [[SwiftCard]], [TableauPile]) {
+    var deck = shuffledDeck()
+    var tableau: [TableauPile] = []
+    for i in 0..<7 {
+        var pile: [SwiftCard] = []
+        for _ in 0...i {
+            if let c = deck.popLast() { pile.append(c) }
+        }
+        let top = pile.isEmpty ? [] : [pile.removeLast()]
+        tableau.append(TableauPile(hiddenCount: i, faceUp: top))
+    }
+    var waste: [SwiftCard] = []
+    for _ in 0..<3 {
+        if let c = deck.popLast() { waste.append(c) }
+    }
+    return (deck, waste, Array(repeating: [], count: 4), tableau)
+}
+
+private func canMoveToFoundation(_ card: SwiftCard, foundation: [SwiftCard]) -> Bool {
+    if let top = foundation.last {
+        return top.suit == card.suit && card.rank == top.rank + 1
+    }
+    return card.rank == 1
+}
+
+private func canMoveToTableau(_ card: SwiftCard, pile: TableauPile) -> Bool {
+    guard let top = pile.faceUp.last else {
+        return card.rank == 13
+    }
+    return top.suit.isRed != card.suit.isRed && card.rank == top.rank - 1
 }
 
 struct SwiftUIShellView: View {
     @State private var snapshot = BridgeSnapshot.load()
+    @State private var stock: [SwiftCard] = makeInitialBoard().0
+    @State private var waste: [SwiftCard] = makeInitialBoard().1
+    @State private var foundations: [[SwiftCard]] = makeInitialBoard().2
+    @State private var tableau: [TableauPile] = makeInitialBoard().3
+    @State private var selection: Selection?
 
     var body: some View {
         GeometryReader { proxy in
             let card = metrics(for: proxy)
-            let assets = art(for: card)
-            VStack(spacing: 0) {
-                VStack(spacing: 0) {
-                    HStack {
-                        HStack(spacing: 0) {
-                            PixelCard(name: assets.faceDown, card: card)
-                            CardStrip(name: assets.faceDown, card: card, stripWidth: card.deckDepthWidth)
-                            CardStrip(name: assets.faceDown, card: card, stripWidth: card.deckDepthWidth)
-                        }
-                        Spacer(minLength: 6)
-                        DeckFlipFan(card: card, assets: assets)
-                    }
-                    .padding(.horizontal, 2)
-                    .frame(height: card.height + 6)
-                    .background(Color(red: 0.20, green: 0.53, blue: 0.28))
+            let facedown = "facedown_\(card.sizeSuffix).png"
+            let cardback = "cardback_\(card.sizeSuffix).png"
 
-                    HStack(spacing: 0) {
-                        FoundationSlot(card: card, imageName: assets.cardBack)
-                        FoundationSlot(card: card, imageName: assets.cardBack)
-                        FoundationSlot(card: card, imageName: assets.cardBack)
-                        FoundationSlot(card: card, imageName: assets.cardBack)
-                    }
-                    .frame(height: card.height + 10)
-                    .background(Color(red: 0.31, green: 0.60, blue: 0.23))
-                    .padding(.top, 2)
+            VStack(spacing: 0) {
+                HStack {
+                    DeckStackView(card: card, imageName: facedown, stockCount: stock.count, selected: selection == .waste && waste.isEmpty)
+                        .onTapGesture {
+                            drawFromStock(count: max(1, snapshot.flipCards))
+                        }
+
+                    Spacer(minLength: 6)
+
+                    WasteFanView(card: card, cards: Array(waste.suffix(3)), selected: selection == .waste)
+                        .onTapGesture {
+                            if !waste.isEmpty {
+                                selection = selection == .waste ? nil : .waste
+                            }
+                        }
                 }
+                .padding(.horizontal, 2)
+                .padding(.top, 2)
+                .frame(height: card.height + 8)
+                .background(Color(red: 0.20, green: 0.53, blue: 0.28))
+
+                HStack(spacing: 0) {
+                    ForEach(0..<4, id: \.self) { i in
+                        FoundationSlot(
+                            card: card,
+                            imageName: foundations[i].last.map { cardImageName($0, sizeSuffix: card.sizeSuffix) } ?? cardback,
+                            highlighted: selection == .foundation(i)
+                        )
+                        .onTapGesture {
+                            foundationTapped(i)
+                        }
+                    }
+                }
+                .frame(height: card.height + 10)
+                .background(Color(red: 0.31, green: 0.60, blue: 0.23))
                 .padding(.top, 2)
                 .padding(.horizontal, 1)
 
                 HStack(alignment: .top, spacing: 2) {
-                    ForEach(0..<7, id: \.self) { index in
+                    ForEach(0..<7, id: \.self) { i in
                         TableauColumn(
                             card: card,
-                            hiddenCount: index,
-                            hiddenImage: assets.faceDown,
-                            faceImage: index % 2 == 0 ? assets.sampleC : assets.sampleA
+                            hiddenCount: tableau[i].hiddenCount,
+                            hiddenImage: facedown,
+                            topImage: tableau[i].faceUp.last.map { cardImageName($0, sizeSuffix: card.sizeSuffix) } ?? cardback,
+                            highlighted: selection == .tableau(i)
                         )
+                        .onTapGesture {
+                            tableauTapped(i)
+                        }
                     }
                 }
                 .padding(.horizontal, 2)
@@ -119,7 +195,7 @@ struct SwiftUIShellView: View {
 
                 Spacer(minLength: 4)
 
-                VStack(spacing: 4) {
+                VStack(spacing: 3) {
                     Text("Flip: \(snapshot.flipCards)-Card | Saved: \(snapshot.hasSavedBoard ? "Yes" : "No")")
                         .font(.caption2)
                     Text("Mode: \(snapshot.uiMode)")
@@ -149,53 +225,95 @@ struct SwiftUIShellView: View {
             }
         }
     }
-}
 
-private struct FoundationSlot: View {
-    let card: CardMetrics
-    let imageName: String
-
-    var body: some View {
-        ZStack {
-            Color.clear
-            PixelCard(name: imageName, card: card)
+    private func drawFromStock(count: Int) {
+        if stock.isEmpty {
+            stock = waste.reversed()
+            waste.removeAll()
+            selection = nil
+            return
         }
-        .frame(maxWidth: .infinity)
-    }
-}
 
-private struct DeckFlipFan: View {
-    let card: CardMetrics
-    let assets: ArtSet
-
-    var body: some View {
-        ZStack(alignment: .leading) {
-            PixelCard(name: assets.sampleC, card: card)
-                .offset(x: card.fanOffset * 2)
-            PixelCard(name: assets.sampleB, card: card)
-                .offset(x: card.fanOffset)
-            PixelCard(name: assets.sampleA, card: card)
+        for _ in 0..<count {
+            guard let next = stock.popLast() else { break }
+            waste.append(next)
         }
-        .frame(width: card.width + (card.fanOffset * 2), height: card.height, alignment: .leading)
+        selection = nil
     }
-}
 
-private struct TableauColumn: View {
-    let card: CardMetrics
-    let hiddenCount: Int
-    let hiddenImage: String
-    let faceImage: String
+    private func selectedCard() -> SwiftCard? {
+        switch selection {
+        case .waste:
+            return waste.last
+        case .tableau(let i):
+            return tableau[i].faceUp.last
+        case .foundation(let i):
+            return foundations[i].last
+        case .none:
+            return nil
+        }
+    }
 
-    var body: some View {
-        ZStack(alignment: .topLeading) {
-            ForEach(0..<hiddenCount, id: \.self) { idx in
-                PixelCard(name: hiddenImage, card: card)
-                    .offset(y: CGFloat(idx) * card.hiddenStep)
+    private func popSelectedCard() {
+        switch selection {
+        case .waste:
+            _ = waste.popLast()
+        case .tableau(let i):
+            _ = tableau[i].faceUp.popLast()
+            if tableau[i].faceUp.isEmpty && tableau[i].hiddenCount > 0 {
+                tableau[i].hiddenCount -= 1
+                // Placeholder flip to keep interactions moving; full engine parity comes next.
+                tableau[i].faceUp = [SwiftCard(suit: .spade, rank: 1)]
             }
-            PixelCard(name: faceImage, card: card)
-                .offset(y: CGFloat(hiddenCount) * card.hiddenStep)
+        case .foundation(let i):
+            _ = foundations[i].popLast()
+        case .none:
+            break
         }
-        .frame(width: card.width, height: CGFloat(hiddenCount) * card.hiddenStep + card.height, alignment: .top)
+    }
+
+    private func foundationTapped(_ index: Int) {
+        if selection == .foundation(index) {
+            selection = nil
+            return
+        }
+
+        guard let moving = selectedCard() else {
+            if !foundations[index].isEmpty {
+                selection = .foundation(index)
+            }
+            return
+        }
+
+        if canMoveToFoundation(moving, foundation: foundations[index]) {
+            popSelectedCard()
+            foundations[index].append(moving)
+            selection = nil
+        } else if !foundations[index].isEmpty {
+            selection = .foundation(index)
+        }
+    }
+
+    private func tableauTapped(_ index: Int) {
+        if selection == .tableau(index) {
+            selection = nil
+            return
+        }
+
+        guard let moving = selectedCard() else {
+            if !tableau[index].faceUp.isEmpty {
+                selection = .tableau(index)
+            }
+            return
+        }
+
+        if canMoveToTableau(moving, pile: tableau[index]) {
+            popSelectedCard()
+            tableau[index].faceUp.append(moving)
+            selection = nil
+        } else if !tableau[index].faceUp.isEmpty {
+            selection = .tableau(index)
+        }
     }
 }
 
@@ -222,5 +340,89 @@ private struct CardStrip: View {
         PixelCard(name: name, card: card)
             .frame(width: stripWidth, height: card.height, alignment: .leading)
             .clipped()
+    }
+}
+
+private struct DeckStackView: View {
+    let card: CardMetrics
+    let imageName: String
+    let stockCount: Int
+    let selected: Bool
+
+    var body: some View {
+        ZStack(alignment: .leading) {
+            PixelCard(name: imageName, card: card)
+            CardStrip(name: imageName, card: card, stripWidth: card.deckDepthWidth)
+                .offset(x: card.deckDepthWidth)
+            CardStrip(name: imageName, card: card, stripWidth: card.deckDepthWidth)
+                .offset(x: card.deckDepthWidth * 2)
+            if stockCount == 0 {
+                Rectangle().stroke(Color.white.opacity(0.45), lineWidth: 1)
+                    .frame(width: card.width, height: card.height)
+            }
+        }
+        .frame(width: card.width + (card.deckDepthWidth * 2), height: card.height, alignment: .leading)
+        .overlay(
+            RoundedRectangle(cornerRadius: 2).stroke(selected ? Color.yellow : Color.clear, lineWidth: 1)
+        )
+    }
+}
+
+private struct WasteFanView: View {
+    let card: CardMetrics
+    let cards: [SwiftCard]
+    let selected: Bool
+
+    var body: some View {
+        ZStack(alignment: .leading) {
+            ForEach(Array(cards.enumerated()), id: \.offset) { idx, c in
+                PixelCard(name: cardImageName(c, sizeSuffix: card.sizeSuffix), card: card)
+                    .offset(x: CGFloat(idx) * card.fanOffset)
+            }
+        }
+        .frame(width: card.width + (card.fanOffset * 2), height: card.height, alignment: .leading)
+        .overlay(
+            RoundedRectangle(cornerRadius: 2).stroke(selected ? Color.yellow : Color.clear, lineWidth: 1)
+        )
+    }
+}
+
+private struct FoundationSlot: View {
+    let card: CardMetrics
+    let imageName: String
+    let highlighted: Bool
+
+    var body: some View {
+        ZStack {
+            Color.clear
+            PixelCard(name: imageName, card: card)
+        }
+        .frame(maxWidth: .infinity)
+        .overlay(
+            RoundedRectangle(cornerRadius: 2).stroke(highlighted ? Color.yellow : Color.clear, lineWidth: 1)
+        )
+    }
+}
+
+private struct TableauColumn: View {
+    let card: CardMetrics
+    let hiddenCount: Int
+    let hiddenImage: String
+    let topImage: String
+    let highlighted: Bool
+
+    var body: some View {
+        ZStack(alignment: .topLeading) {
+            ForEach(0..<hiddenCount, id: \.self) { idx in
+                PixelCard(name: hiddenImage, card: card)
+                    .offset(y: CGFloat(idx) * card.hiddenStep)
+            }
+            PixelCard(name: topImage, card: card)
+                .offset(y: CGFloat(hiddenCount) * card.hiddenStep)
+        }
+        .frame(width: card.width, height: CGFloat(hiddenCount) * card.hiddenStep + card.height, alignment: .top)
+        .overlay(
+            RoundedRectangle(cornerRadius: 2).stroke(highlighted ? Color.yellow : Color.clear, lineWidth: 1)
+        )
     }
 }
