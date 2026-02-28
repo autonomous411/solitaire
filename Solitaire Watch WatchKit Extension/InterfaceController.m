@@ -644,7 +644,8 @@ static NSInteger const kCurrentSaveStateSchemaVersion = 2;
 {
     NSInteger discardRowHeight = [self getHeightOfDiscardRow];
     NSInteger flipRowHeight = [self getHeightOfFlipRow];
-    NSInteger cardSize = [self cardWidth];
+    NSInteger cardWidth = [self cardWidth];
+    NSInteger cardHeight = [self cardHeight];
     NSInteger hiddenFlipSize = [self hiddenFlipWidth];
     NSInteger boardHeight = (NSInteger)lroundf([self currentWatchLogicalHeight] - [self topChromeReservedHeight] - discardRowHeight - flipRowHeight);
     if (boardHeight < 108)
@@ -659,42 +660,42 @@ static NSInteger const kCurrentSaveStateSchemaVersion = 2;
     [self.discardRow setHeight:discardRowHeight];
     [self.flipDeckRow setHeight:flipRowHeight];
 
-    [self.deckStackButton setWidth:cardSize];
-    [self.deckStackButton setHeight:cardSize];
-    [self.deckFlipButton setWidth:cardSize];
-    [self.deckFlipButton setHeight:cardSize];
+    [self.deckStackButton setWidth:cardWidth];
+    [self.deckStackButton setHeight:cardHeight];
+    [self.deckFlipButton setWidth:cardWidth];
+    [self.deckFlipButton setHeight:cardHeight];
 
-    [self.discard1Button setWidth:cardSize];
-    [self.discard1Button setHeight:cardSize];
-    [self.discard2Button setWidth:cardSize];
-    [self.discard2Button setHeight:cardSize];
-    [self.discard3Button setWidth:cardSize];
-    [self.discard3Button setHeight:cardSize];
-    [self.discard4Button setWidth:cardSize];
-    [self.discard4Button setHeight:cardSize];
+    [self.discard1Button setWidth:cardWidth];
+    [self.discard1Button setHeight:cardHeight];
+    [self.discard2Button setWidth:cardWidth];
+    [self.discard2Button setHeight:cardHeight];
+    [self.discard3Button setWidth:cardWidth];
+    [self.discard3Button setHeight:cardHeight];
+    [self.discard4Button setWidth:cardWidth];
+    [self.discard4Button setHeight:cardHeight];
 
-    [self.deckStack1Image setWidth:cardSize];
-    [self.deckStack1Image setHeight:cardSize];
-    [self.deckStack2Image setWidth:cardSize];
-    [self.deckStack2Image setHeight:cardSize];
-    [self.deckStack3Image setWidth:cardSize];
-    [self.deckStack3Image setHeight:cardSize];
+    [self.deckStack1Image setWidth:cardWidth];
+    [self.deckStack1Image setHeight:cardHeight];
+    [self.deckStack2Image setWidth:cardWidth];
+    [self.deckStack2Image setHeight:cardHeight];
+    [self.deckStack3Image setWidth:cardWidth];
+    [self.deckStack3Image setHeight:cardHeight];
 
     [self.deckFlip1Image setWidth:hiddenFlipSize];
-    [self.deckFlip1Image setHeight:cardSize];
+    [self.deckFlip1Image setHeight:cardHeight];
     [self.deckFlip2Image setWidth:hiddenFlipSize];
-    [self.deckFlip2Image setHeight:cardSize];
-    [self.deckFlip3Image setWidth:cardSize];
-    [self.deckFlip3Image setHeight:cardSize];
+    [self.deckFlip2Image setHeight:cardHeight];
+    [self.deckFlip3Image setWidth:cardWidth];
+    [self.deckFlip3Image setHeight:cardHeight];
 
-    [self.discard1Image setWidth:cardSize];
-    [self.discard1Image setHeight:cardSize];
-    [self.discard2Image setWidth:cardSize];
-    [self.discard2Image setHeight:cardSize];
-    [self.discard3Image setWidth:cardSize];
-    [self.discard3Image setHeight:cardSize];
-    [self.discard4Image setWidth:cardSize];
-    [self.discard4Image setHeight:cardSize];
+    [self.discard1Image setWidth:cardWidth];
+    [self.discard1Image setHeight:cardHeight];
+    [self.discard2Image setWidth:cardWidth];
+    [self.discard2Image setHeight:cardHeight];
+    [self.discard3Image setWidth:cardWidth];
+    [self.discard3Image setHeight:cardHeight];
+    [self.discard4Image setWidth:cardWidth];
+    [self.discard4Image setHeight:cardHeight];
 
     [self.hand0Button setHeight:boardHeight];
     [self.hand1Button setHeight:boardHeight];
@@ -1708,7 +1709,7 @@ static NSInteger const kCurrentSaveStateSchemaVersion = 2;
 
 -(NSInteger) getHeightOfDiscardRow
 {
-    NSInteger base = [self cardWidth] + 8;
+    NSInteger base = [self cardHeight] + 6;
     if (isVoiceControlled)
     {
         base -= 2;
@@ -1726,7 +1727,7 @@ static NSInteger const kCurrentSaveStateSchemaVersion = 2;
 
 -(NSInteger) getHeightOfFlipRow
 {
-    NSInteger base = [self cardWidth] + 8;
+    NSInteger base = [self cardHeight] + 6;
     if (isVoiceControlled)
     {
         base -= 2;
@@ -1744,73 +1745,32 @@ static NSInteger const kCurrentSaveStateSchemaVersion = 2;
 
 -(NSInteger) hiddenFlipWidth
 {
-    NSInteger value = (NSInteger)lroundf([self cardWidth] * 0.7f);
-    if (value < 11)
-    {
-        value = 11;
-    }
-    if (value > 20)
-    {
-        value = 20;
-    }
-    return value;
+    return [self is42] ? 16 : 14;
 }
 
 -(NSInteger) cardWidth
 {
-    CGFloat usableWidth = [self currentWatchLogicalWidth] - [self scaledIntegerFromBase:10.0f minimum:6 maximum:16];
-    NSInteger value = (NSInteger)floorf(usableWidth / 7.0f);
-    if (value < 17)
-    {
-        value = 17;
-    }
-    if (value > 28)
-    {
-        value = 28;
-    }
-    return value;
+    return [self is42] ? 22 : 19;
+}
+
+-(NSInteger) cardHeight
+{
+    return [self is42] ? 30 : 25;
 }
 
 -(NSInteger) handDownFacing
 {
-    NSInteger value = (NSInteger)lroundf([self cardWidth] * 0.23f);
-    if (value < 3)
-    {
-        value = 3;
-    }
-    if (value > 8)
-    {
-        value = 8;
-    }
-    return value;
+    return [self is42] ? 6 : 4;
 }
 
 -(NSInteger) handUpBehind
 {
-    NSInteger value = [self cardWidth] - 5;
-    if (value < 12)
-    {
-        value = 12;
-    }
-    if (value > 24)
-    {
-        value = 24;
-    }
-    return value;
+    return [self is42] ? 16 : 13;
 }
 
 -(NSInteger) handUpFront
 {
-    NSInteger value = [self cardWidth] + 4;
-    if (value < 21)
-    {
-        value = 21;
-    }
-    if (value > 34)
-    {
-        value = 34;
-    }
-    return value;
+    return [self cardHeight];
 }
 
 -(void) moveFlipFromStack
@@ -3329,7 +3289,7 @@ static NSInteger const kCurrentSaveStateSchemaVersion = 2;
                 if (i == [handFromArray count]-1)
                 {
                     [handImage setHeight:[self handUpFront]];
-                    [handImage setWidth:[self handUpFront]];
+                    [handImage setWidth:[self cardWidth]];
                 }
                 else
                 {
