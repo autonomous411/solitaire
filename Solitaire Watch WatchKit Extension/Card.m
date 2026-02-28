@@ -55,11 +55,31 @@ static BOOL SWBundleHasImageNamed(NSString* filename)
         extension = @"png";
         nameWithoutExtension = filename;
     }
+    NSMutableArray<NSString*>* candidateNames = [[NSMutableArray alloc] init];
+    [candidateNames addObject:nameWithoutExtension];
+    [candidateNames addObject:[nameWithoutExtension stringByAppendingString:@"@2x"]];
+    [candidateNames addObject:[nameWithoutExtension stringByAppendingString:@"@3x"]];
+    if ([nameWithoutExtension hasSuffix:@"@2x"] || [nameWithoutExtension hasSuffix:@"@3x"])
+    {
+        NSRange atRange = [nameWithoutExtension rangeOfString:@"@" options:NSBackwardsSearch];
+        if (atRange.location != NSNotFound)
+        {
+            NSString* strippedName = [nameWithoutExtension substringToIndex:atRange.location];
+            if ([strippedName length] > 0)
+            {
+                [candidateNames addObject:strippedName];
+            }
+        }
+    }
+
     for (NSBundle* bundle in SWCandidateResourceBundles())
     {
-        if ([bundle pathForResource:nameWithoutExtension ofType:extension] != nil)
+        for (NSString* candidateName in candidateNames)
         {
-            return YES;
+            if ([bundle pathForResource:candidateName ofType:extension] != nil)
+            {
+                return YES;
+            }
         }
     }
     return NO;
