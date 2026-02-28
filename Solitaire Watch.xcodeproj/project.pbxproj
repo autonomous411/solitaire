@@ -525,6 +525,7 @@
 		20F5DD501B21476F00103AB2 /* discardbackground_44mm1@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 20F5DD491B21476F00103AB2 /* discardbackground_44mm1@2x.png */; };
 		20F5DD511B21476F00103AB2 /* cardback_44mm1@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 20F5DD4A1B21476F00103AB2 /* cardback_44mm1@2x.png */; };
 		20F5DD521B21476F00103AB2 /* cardback_44mm1@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 20F5DD4A1B21476F00103AB2 /* cardback_44mm1@2x.png */; };
+		7E1D8891DE727A10AF4A4610 /* LegacyGameBridge.m in Sources */ = {isa = PBXBuildFile; fileRef = DB62CA52767DF2C0DBC6A0FB /* LegacyGameBridge.m */; };
 		F44C7AB0C1D6F4B7EEF6C653 /* SwiftUIShellController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8DF766FEC00E1C6E3E34632A /* SwiftUIShellController.swift */; };
 /* End PBXBuildFile section */
 
@@ -900,6 +901,9 @@
 		20F5DD491B21476F00103AB2 /* discardbackground_44mm1@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "discardbackground_44mm1@2x.png"; sourceTree = "<group>"; };
 		20F5DD4A1B21476F00103AB2 /* cardback_44mm1@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cardback_44mm1@2x.png"; sourceTree = "<group>"; };
 		8DF766FEC00E1C6E3E34632A /* SwiftUIShellController.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SwiftUIShellController.swift; sourceTree = "<group>"; };
+		9314D789149C336A7D80A091 /* LegacyGameBridge.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = LegacyGameBridge.h; sourceTree = "<group>"; };
+		DB62CA52767DF2C0DBC6A0FB /* LegacyGameBridge.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = LegacyGameBridge.m; sourceTree = "<group>"; };
+		F90633A473B7565BCBAD6EB5 /* SolitaireWatchExtension-Bridging-Header.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "SolitaireWatchExtension-Bridging-Header.h"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -949,6 +953,9 @@
 				20F3DD1D1AEC14120098ED23 /* SolitaireSettings.h */,
 				20F3DD1E1AEC14120098ED23 /* SolitaireSettings.m */,
 				8DF766FEC00E1C6E3E34632A /* SwiftUIShellController.swift */,
+				9314D789149C336A7D80A091 /* LegacyGameBridge.h */,
+				DB62CA52767DF2C0DBC6A0FB /* LegacyGameBridge.m */,
+				F90633A473B7565BCBAD6EB5 /* SolitaireWatchExtension-Bridging-Header.h */,
 			);
 			path = "Solitaire Watch WatchKit Extension";
 			sourceTree = "<group>";
@@ -2014,6 +2021,7 @@
 				20569C731ACB830B0087BE8A /* Card.m in Sources */,
 				20F3DD1F1AEC14120098ED23 /* SolitaireSettings.m in Sources */,
 				F44C7AB0C1D6F4B7EEF6C653 /* SwiftUIShellController.swift in Sources */,
+				7E1D8891DE727A10AF4A4610 /* LegacyGameBridge.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2105,6 +2113,7 @@
 				SDKROOT = watchos;
 				SKIP_INSTALL = YES;
 				SUPPORTED_PLATFORMS = "watchos watchsimulator";
+				SWIFT_OBJC_BRIDGING_HEADER = "Solitaire Watch WatchKit Extension/SolitaireWatchExtension-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				WATCHOS_DEPLOYMENT_TARGET = 9.0;
 			};
@@ -2124,6 +2133,7 @@
 				SDKROOT = watchos;
 				SKIP_INSTALL = YES;
 				SUPPORTED_PLATFORMS = "watchos watchsimulator";
+				SWIFT_OBJC_BRIDGING_HEADER = "Solitaire Watch WatchKit Extension/SolitaireWatchExtension-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				WATCHOS_DEPLOYMENT_TARGET = 9.0;
 			};

@@ -11,6 +11,23 @@ final class SwiftUIShellController: WKHostingController<SwiftUIShellView> {
     }
 }
 
+private struct BridgeSnapshot {
+    let flipCards: Int
+    let uiMode: String
+    let hasSavedBoard: Bool
+
+    static func load() -> BridgeSnapshot {
+        guard let dict = LegacyGameBridge.snapshot() as? [String: Any] else {
+            return BridgeSnapshot(flipCards: 3, uiMode: watchUIModeSwiftUI, hasSavedBoard: false)
+        }
+        return BridgeSnapshot(
+            flipCards: (dict["flipCards"] as? NSNumber)?.intValue ?? 3,
+            uiMode: (dict["uiMode"] as? String) ?? watchUIModeSwiftUI,
+            hasSavedBoard: (dict["hasSavedBoard"] as? NSNumber)?.boolValue ?? false
+        )
+    }
+}
+
 private struct CardMetrics {
     let width: CGFloat
     let height: CGFloat
@@ -26,6 +43,8 @@ private func metrics(for proxy: GeometryProxy) -> CardMetrics {
 }
 
 struct SwiftUIShellView: View {
+    @State private var snapshot = BridgeSnapshot.load()
+
     var body: some View {
         GeometryReader { proxy in
             let card = metrics(for: proxy)
@@ -77,19 +96,22 @@ struct SwiftUIShellView: View {
                 Spacer(minLength: 4)
 
                 VStack(spacing: 4) {
+                    Text("Flip: \(snapshot.flipCards)-Card | Saved: \(snapshot.hasSavedBoard ? "Yes" : "No")")
+                        .font(.caption2)
+                    Text("Mode: \(snapshot.uiMode)")
+                        .font(.caption2)
+
                     Button("Switch To Legacy") {
-                        let defaults = UserDefaults(suiteName: "group.solitaire") ?? .standard
-                        defaults.set(watchUIModeLegacy, forKey: watchUIModeKey)
-                        defaults.synchronize()
+                        LegacyGameBridge.setUIModeToLegacy()
+                        snapshot = BridgeSnapshot.load()
                         WKInterfaceController.reloadRootControllers(withNames: ["legacyRoot"], contexts: nil)
                     }
                     .buttonStyle(.borderedProminent)
                     .font(.footnote)
 
                     Button("Keep SwiftUI") {
-                        let defaults = UserDefaults(suiteName: "group.solitaire") ?? .standard
-                        defaults.set(watchUIModeSwiftUI, forKey: watchUIModeKey)
-                        defaults.synchronize()
+                        LegacyGameBridge.setUIModeToSwiftUI()
+                        snapshot = BridgeSnapshot.load()
                     }
                     .buttonStyle(.bordered)
                     .font(.footnote)
@@ -98,6 +120,9 @@ struct SwiftUIShellView: View {
             }
             .background(Color(red: 0.08, green: 0.49, blue: 0.22))
             .ignoresSafeArea()
+            .onAppear {
+                snapshot = BridgeSnapshot.load()
+            }
         }
     }
 }
