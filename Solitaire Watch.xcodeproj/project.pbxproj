@@ -525,6 +525,7 @@
 		20F5DD501B21476F00103AB2 /* discardbackground_44mm1@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 20F5DD491B21476F00103AB2 /* discardbackground_44mm1@2x.png */; };
 		20F5DD511B21476F00103AB2 /* cardback_44mm1@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 20F5DD4A1B21476F00103AB2 /* cardback_44mm1@2x.png */; };
 		20F5DD521B21476F00103AB2 /* cardback_44mm1@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 20F5DD4A1B21476F00103AB2 /* cardback_44mm1@2x.png */; };
+		F44C7AB0C1D6F4B7EEF6C653 /* SwiftUIShellController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8DF766FEC00E1C6E3E34632A /* SwiftUIShellController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -898,6 +899,7 @@
 		20F5DD481B21476F00103AB2 /* deckbackground_44mm1@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "deckbackground_44mm1@2x.png"; sourceTree = "<group>"; };
 		20F5DD491B21476F00103AB2 /* discardbackground_44mm1@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "discardbackground_44mm1@2x.png"; sourceTree = "<group>"; };
 		20F5DD4A1B21476F00103AB2 /* cardback_44mm1@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cardback_44mm1@2x.png"; sourceTree = "<group>"; };
+		8DF766FEC00E1C6E3E34632A /* SwiftUIShellController.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SwiftUIShellController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -946,6 +948,7 @@
 				2059891A1AD4C8E10067177A /* PossibleMove.m */,
 				20F3DD1D1AEC14120098ED23 /* SolitaireSettings.h */,
 				20F3DD1E1AEC14120098ED23 /* SolitaireSettings.m */,
+				8DF766FEC00E1C6E3E34632A /* SwiftUIShellController.swift */,
 			);
 			path = "Solitaire Watch WatchKit Extension";
 			sourceTree = "<group>";
@@ -1351,7 +1354,7 @@
 			name = "Solitaire Watch WatchKit Extension";
 			productName = "Solitaire Watch WatchKit Extension";
 			productReference = 20569C4B1ACB7F5E0087BE8A /* Solitaire Watch WatchKit Extension.appex */;
-				productType = "com.apple.product-type.watchkit2-extension";
+			productType = "com.apple.product-type.watchkit2-extension";
 		};
 		20569C581ACB7F5E0087BE8A /* Solitaire Watch WatchKit App */ = {
 			isa = PBXNativeTarget;
@@ -1368,7 +1371,7 @@
 			name = "Solitaire Watch WatchKit App";
 			productName = "Solitaire Watch WatchKit App";
 			productReference = 20569C591ACB7F5E0087BE8A /* Solitaire Watch WatchKit App.app */;
-				productType = "com.apple.product-type.application.watchapp2";
+			productType = "com.apple.product-type.application.watchapp2";
 		};
 		206EFAC31AB2C49F00EE1DE2 /* Solitaire Watch */ = {
 			isa = PBXNativeTarget;
@@ -2010,6 +2013,7 @@
 				20569C541ACB7F5E0087BE8A /* GlanceController.m in Sources */,
 				20569C731ACB830B0087BE8A /* Card.m in Sources */,
 				20F3DD1F1AEC14120098ED23 /* SolitaireSettings.m in Sources */,
+				F44C7AB0C1D6F4B7EEF6C653 /* SwiftUIShellController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2094,14 +2098,15 @@
 					"$(inherited)",
 				);
 				INFOPLIST_FILE = "Solitaire Watch WatchKit Extension/Info.plist";
-				SDKROOT = watchos;
-				SUPPORTED_PLATFORMS = "watchos watchsimulator";
-				WATCHOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.autonomous.Solitaire-Watch.watchkitapp.watchkitextension";
 				PRODUCT_NAME = "${TARGET_NAME}";
 				PROVISIONING_PROFILE = "";
+				SDKROOT = watchos;
 				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = "watchos watchsimulator";
+				SWIFT_VERSION = 5.0;
+				WATCHOS_DEPLOYMENT_TARGET = 9.0;
 			};
 			name = Debug;
 		};
@@ -2112,14 +2117,15 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				INFOPLIST_FILE = "Solitaire Watch WatchKit Extension/Info.plist";
-				SDKROOT = watchos;
-				SUPPORTED_PLATFORMS = "watchos watchsimulator";
-				WATCHOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.autonomous.Solitaire-Watch.watchkitapp.watchkitextension";
 				PRODUCT_NAME = "${TARGET_NAME}";
 				PROVISIONING_PROFILE = "";
+				SDKROOT = watchos;
 				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = "watchos watchsimulator";
+				SWIFT_VERSION = 5.0;
+				WATCHOS_DEPLOYMENT_TARGET = 9.0;
 			};
 			name = Release;
 		};
@@ -2135,15 +2141,15 @@
 				);
 				IBSC_MODULE = Solitaire_Watch_WatchKit_Extension;
 				INFOPLIST_FILE = "Solitaire Watch WatchKit App/Info.plist";
-				SDKROOT = watchos;
-				SUPPORTED_PLATFORMS = "watchos watchsimulator";
-				WATCHOS_DEPLOYMENT_TARGET = 9.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.autonomous.Solitaire-Watch.watchkitapp";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
+				SDKROOT = watchos;
 				SKIP_INSTALL = NO;
+				SUPPORTED_PLATFORMS = "watchos watchsimulator";
 				TARGETED_DEVICE_FAMILY = 4;
 				"TARGETED_DEVICE_FAMILY[sdk=iphonesimulator*]" = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 9.0;
 			};
 			name = Debug;
 		};
@@ -2155,15 +2161,15 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				IBSC_MODULE = Solitaire_Watch_WatchKit_Extension;
 				INFOPLIST_FILE = "Solitaire Watch WatchKit App/Info.plist";
-				SDKROOT = watchos;
-				SUPPORTED_PLATFORMS = "watchos watchsimulator";
-				WATCHOS_DEPLOYMENT_TARGET = 9.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.autonomous.Solitaire-Watch.watchkitapp";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
+				SDKROOT = watchos;
 				SKIP_INSTALL = NO;
+				SUPPORTED_PLATFORMS = "watchos watchsimulator";
 				TARGETED_DEVICE_FAMILY = 4;
 				"TARGETED_DEVICE_FAMILY[sdk=iphonesimulator*]" = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 9.0;
 			};
 			name = Release;
 		};
@@ -2201,7 +2207,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-					IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -2236,7 +2242,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-					IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
@@ -2251,13 +2257,13 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEVELOPMENT_TEAM = 5A33EB27R8;
-					INFOPLIST_FILE = "Solitaire Watch/Info.plist";
-					IPHONEOS_DEPLOYMENT_TARGET = 12.0;
-					LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-					PRODUCT_BUNDLE_IDENTIFIER = "com.autonomous.Solitaire-Watch";
-					PRODUCT_NAME = "$(TARGET_NAME)";
-					PROVISIONING_PROFILE = "";
-					TARGETED_DEVICE_FAMILY = 1;
+				INFOPLIST_FILE = "Solitaire Watch/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.autonomous.Solitaire-Watch";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -2269,13 +2275,13 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEVELOPMENT_TEAM = 5A33EB27R8;
-					INFOPLIST_FILE = "Solitaire Watch/Info.plist";
-					IPHONEOS_DEPLOYMENT_TARGET = 12.0;
-					LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-					PRODUCT_BUNDLE_IDENTIFIER = "com.autonomous.Solitaire-Watch";
-					PRODUCT_NAME = "$(TARGET_NAME)";
-					PROVISIONING_PROFILE = "";
-					TARGETED_DEVICE_FAMILY = 1;
+				INFOPLIST_FILE = "Solitaire Watch/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.autonomous.Solitaire-Watch";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};

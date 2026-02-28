@@ -1,14 +1,15 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder.WatchKit.Storyboard" version="3.0" toolsVersion="7706" systemVersion="14A389" targetRuntime="watchKit" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="AgC-eL-Hgc">
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder.WatchKit.Storyboard" version="3.0" toolsVersion="24128" targetRuntime="watchKit" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="AgC-eL-Hgc">
+    <device id="watch38"/>
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7703"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBWatchKitPlugin" version="7701"/>
+        <deployment identifier="watchOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBWatchKitPlugin" version="24017"/>
     </dependencies>
     <scenes>
         <!--Solitaire-->
         <scene sceneID="aou-V4-d1y">
             <objects>
-                <controller title="" id="AgC-eL-Hgc" customClass="InterfaceController">
+                <controller identifier="legacyRoot" title="Solitaire" alwaysBounce="YES" fullBounds="YES" fullScreen="YES" id="AgC-eL-Hgc" customClass="InterfaceController">
                     <items>
                         <group width="1" alignment="left" layout="vertical" radius="0.0" spacing="0.0" id="n5z-Aj-6Qf" userLabel="root">
                             <items>
@@ -139,13 +140,13 @@
                                             </items>
                                         </group>
                                     </items>
-                                    <color key="backgroundColor" red="1" green="0.99318945075829168" blue="0.17960122590772065" alpha="0.17999999999999999" colorSpace="calibratedRGB"/>
+                                    <color key="backgroundColor" red="1" green="0.99318945075829168" blue="0.17960122590772065" alpha="0.17999999999999999" colorSpace="custom" customColorSpace="sRGB"/>
                                     <variation key="device=watch38mm" height="30"/>
                                     <variation key="device=watch42mm" height="36"/>
                                 </group>
                                 <group width="1" alignment="left" backgroundImage="deckbackground_44mm.png" contentMode="redraw" radius="0.0" spacing="0.0" id="DCQ-cm-h8O" userLabel="Hand">
                                     <items>
-                                        <group width="0.1428571429" alignment="left" layout="vertical" radius="0.0" spacing="0.0" id="wts-8n-aEH" userLabel="HandStack1">
+                                        <group width="0.14285714290000001" alignment="left" layout="vertical" radius="0.0" spacing="0.0" id="wts-8n-aEH" userLabel="HandStack1">
                                             <items>
                                                 <button alignment="center" accessibilityLabel="First Pile" id="C4E-Dd-9TB" userLabel="HandStack1Button">
                                                     <group key="contentGroup" width="1" height="1" alignment="left" layout="vertical" radius="0.0" spacing="0.0" id="FDa-LU-Uks" userLabel="HandStack1ButtonGroup">
@@ -174,7 +175,7 @@
                                                             <imageView height="25" alignment="left" hidden="YES" image="spade2.png" contentMode="top" id="SEF-By-vj1" userLabel="Card18"/>
                                                             <imageView height="25" alignment="left" hidden="YES" image="spade2.png" contentMode="top" id="Paw-LL-gs2" userLabel="Card19"/>
                                                         </items>
-                                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                                        <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.0" colorSpace="custom" customColorSpace="sRGB"/>
                                                     </group>
                                                     <connections>
                                                         <action selector="handStack1Action:" destination="AgC-eL-Hgc" id="g1Z-SR-LgA"/>
@@ -183,7 +184,7 @@
                                             </items>
                                             <edgeInsets key="margins" left="0.0" right="0.0" top="0.0" bottom="0.0"/>
                                         </group>
-                                        <group width="0.1428571429" alignment="left" layout="vertical" radius="0.0" spacing="0.0" id="21H-dP-xLd" userLabel="HandStack2">
+                                        <group width="0.14285714290000001" alignment="left" layout="vertical" radius="0.0" spacing="0.0" id="21H-dP-xLd" userLabel="HandStack2">
                                             <items>
                                                 <button alignment="center" accessibilityLabel="Second Pile" id="Jur-lX-dQV" userLabel="HandStack2Button">
                                                     <group key="contentGroup" width="1" height="1" alignment="left" layout="vertical" radius="0.0" spacing="0.0" id="3vg-rc-EKK" userLabel="HandStack2ButtonGroup">
@@ -213,7 +214,7 @@
                                                             <imageView height="25" alignment="left" hidden="YES" image="spade2.png" contentMode="top" id="WOM-4D-SqM" userLabel="Card18"/>
                                                             <imageView height="25" alignment="left" hidden="YES" image="spade2.png" contentMode="top" id="OdB-4w-h3Q" userLabel="Card19"/>
                                                         </items>
-                                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                                        <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.0" colorSpace="custom" customColorSpace="sRGB"/>
                                                     </group>
                                                     <connections>
                                                         <action selector="handStack2Action:" destination="AgC-eL-Hgc" id="Kpf-by-LSv"/>
@@ -222,7 +223,7 @@
                                             </items>
                                             <edgeInsets key="margins" left="0.0" right="0.0" top="0.0" bottom="0.0"/>
                                         </group>
-                                        <group width="0.1428571429" alignment="left" layout="vertical" radius="0.0" spacing="0.0" id="Idi-pj-KoL" userLabel="HandStack3">
+                                        <group width="0.14285714290000001" alignment="left" layout="vertical" radius="0.0" spacing="0.0" id="Idi-pj-KoL" userLabel="HandStack3">
                                             <items>
                                                 <button alignment="center" accessibilityLabel="Third Pile" id="O0K-RL-X15" userLabel="HandStack3Button">
                                                     <group key="contentGroup" width="1" height="1" alignment="left" layout="vertical" radius="0.0" spacing="0.0" id="ibc-E6-gXQ" userLabel="HandStack3ButtonGroup">
@@ -252,7 +253,7 @@
                                                             <imageView height="25" alignment="left" hidden="YES" image="spade2.png" contentMode="top" id="QNm-Zn-I3b" userLabel="Card18"/>
                                                             <imageView height="25" alignment="left" hidden="YES" image="spade2.png" contentMode="top" id="yP9-md-s55" userLabel="Card19"/>
                                                         </items>
-                                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                                        <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.0" colorSpace="custom" customColorSpace="sRGB"/>
                                                     </group>
                                                     <connections>
                                                         <action selector="handStack3Action:" destination="AgC-eL-Hgc" id="kh4-wY-Zxz"/>
@@ -261,7 +262,7 @@
                                             </items>
                                             <edgeInsets key="margins" left="0.0" right="0.0" top="0.0" bottom="0.0"/>
                                         </group>
-                                        <group width="0.1428571429" alignment="left" layout="vertical" radius="0.0" spacing="0.0" id="Isd-VY-y7f" userLabel="HandStack4">
+                                        <group width="0.14285714290000001" alignment="left" layout="vertical" radius="0.0" spacing="0.0" id="Isd-VY-y7f" userLabel="HandStack4">
                                             <items>
                                                 <button alignment="center" accessibilityLabel="Fourth Pile" id="YSJ-d0-2Fn" userLabel="HandStack4Button">
                                                     <group key="contentGroup" width="1" height="1" alignment="left" layout="vertical" radius="0.0" spacing="0.0" id="l7f-PS-XQK" userLabel="HandStack4ButtonGroup">
@@ -291,7 +292,7 @@
                                                             <imageView height="25" alignment="left" hidden="YES" image="spade2.png" contentMode="top" id="Crt-rA-WzZ" userLabel="Card18"/>
                                                             <imageView height="25" alignment="left" hidden="YES" image="spade2.png" contentMode="top" id="9jR-ox-RId" userLabel="Card19"/>
                                                         </items>
-                                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                                        <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.0" colorSpace="custom" customColorSpace="sRGB"/>
                                                     </group>
                                                     <connections>
                                                         <action selector="handStack4Action:" destination="AgC-eL-Hgc" id="obL-KL-8w8"/>
@@ -300,7 +301,7 @@
                                             </items>
                                             <edgeInsets key="margins" left="0.0" right="0.0" top="0.0" bottom="0.0"/>
                                         </group>
-                                        <group width="0.1428571429" alignment="left" layout="vertical" radius="0.0" spacing="0.0" id="bkf-sy-9Nx" userLabel="HandStack5">
+                                        <group width="0.14285714290000001" alignment="left" layout="vertical" radius="0.0" spacing="0.0" id="bkf-sy-9Nx" userLabel="HandStack5">
                                             <items>
                                                 <button alignment="center" accessibilityLabel="Fifth Pile" id="I25-c9-k5B" userLabel="HandStack5Button">
                                                     <group key="contentGroup" width="1" height="1" alignment="left" layout="vertical" radius="0.0" spacing="0.0" id="Y1t-KA-Tox" userLabel="HandStack5ButtonGroup">
@@ -330,7 +331,7 @@
                                                             <imageView height="25" alignment="left" hidden="YES" image="spade2.png" contentMode="top" id="FkB-7p-en1" userLabel="Card18"/>
                                                             <imageView height="25" alignment="left" hidden="YES" image="spade2.png" contentMode="top" id="F9d-yh-QJo" userLabel="Card19"/>
                                                         </items>
-                                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                                        <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.0" colorSpace="custom" customColorSpace="sRGB"/>
                                                     </group>
                                                     <connections>
                                                         <action selector="handStack5Action:" destination="AgC-eL-Hgc" id="DCf-fG-887"/>
@@ -339,7 +340,7 @@
                                             </items>
                                             <edgeInsets key="margins" left="0.0" right="0.0" top="0.0" bottom="0.0"/>
                                         </group>
-                                        <group width="0.1428571429" alignment="left" layout="vertical" radius="0.0" spacing="0.0" id="6Nu-xR-QcN" userLabel="HandStack6">
+                                        <group width="0.14285714290000001" alignment="left" layout="vertical" radius="0.0" spacing="0.0" id="6Nu-xR-QcN" userLabel="HandStack6">
                                             <items>
                                                 <button alignment="center" accessibilityLabel="Sixth Pile" id="flG-Ye-tXV" userLabel="HandStack6Button">
                                                     <group key="contentGroup" width="1" height="1" alignment="left" layout="vertical" radius="0.0" spacing="0.0" id="Lnu-uw-jz9" userLabel="HandStack6ButtonGroup">
@@ -379,7 +380,7 @@
                                                             <imageView height="25" alignment="left" hidden="YES" image="spade2.png" contentMode="top" id="0CE-Kf-w8Z" userLabel="Card18"/>
                                                             <imageView height="25" alignment="left" hidden="YES" image="spade2.png" contentMode="top" id="43P-a8-8aP" userLabel="Card19"/>
                                                         </items>
-                                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                                        <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.0" colorSpace="custom" customColorSpace="sRGB"/>
                                                     </group>
                                                     <connections>
                                                         <action selector="handStack6Action:" destination="AgC-eL-Hgc" id="Ld0-aK-BhH"/>
@@ -388,7 +389,7 @@
                                             </items>
                                             <edgeInsets key="margins" left="0.0" right="0.0" top="0.0" bottom="0.0"/>
                                         </group>
-                                        <group width="0.1428571429" alignment="left" layout="vertical" radius="0.0" spacing="0.0" id="gfp-uG-N1E" userLabel="HandStack7">
+                                        <group width="0.14285714290000001" alignment="left" layout="vertical" radius="0.0" spacing="0.0" id="gfp-uG-N1E" userLabel="HandStack7">
                                             <items>
                                                 <button alignment="center" accessibilityLabel="Seventh Pile" id="t7V-d1-GgW" userLabel="HandStack7Button">
                                                     <group key="contentGroup" width="1" height="1" alignment="left" layout="vertical" radius="0.0" spacing="0.0" id="M1i-2Z-DVT" userLabel="HandStack7ButtonGroup">
@@ -430,7 +431,7 @@
                                                             <imageView height="25" alignment="left" hidden="YES" image="spade2.png" contentMode="top" id="5bH-LO-wgX" userLabel="Card18"/>
                                                             <imageView height="25" alignment="left" hidden="YES" image="spade2.png" contentMode="top" id="6XJ-2Y-uYg" userLabel="Card19"/>
                                                         </items>
-                                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                                        <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.0" colorSpace="custom" customColorSpace="sRGB"/>
                                                     </group>
                                                     <connections>
                                                         <action selector="handStack7Action:" destination="AgC-eL-Hgc" id="aIE-tZ-2N9"/>
@@ -444,27 +445,27 @@
                                 <group width="1" height="0.01" alignment="left" hidden="YES" id="MdF-OZ-Qvm">
                                     <items>
                                         <button width="0.5" height="1" alignment="left" title="Redeal" id="Sk7-0E-sbq">
-                                            <color key="titleColor" red="0.1529411765" green="0.43921568630000002" blue="0.20000000000000001" alpha="1" colorSpace="calibratedRGB"/>
-                                            <color key="backgroundColor" red="1" green="1" blue="1" alpha="0.59999999999999998" colorSpace="calibratedRGB"/>
+                                            <color key="titleColor" red="0.1529411765" green="0.43921568630000002" blue="0.20000000000000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                            <color key="backgroundColor" red="1" green="1" blue="1" alpha="0.59999999999999998" colorSpace="custom" customColorSpace="sRGB"/>
                                             <connections>
                                                 <action selector="redealCards" destination="AgC-eL-Hgc" id="w7k-BL-rsY"/>
                                             </connections>
                                         </button>
                                         <button width="0.5" height="1" alignment="left" title="1-Card" id="zec-Fh-Uox">
-                                            <color key="titleColor" red="0.1529411765" green="0.43921568630000002" blue="0.20000000000000001" alpha="1" colorSpace="calibratedRGB"/>
-                                            <color key="backgroundColor" red="1" green="1" blue="1" alpha="0.59999999999999998" colorSpace="calibratedRGB"/>
+                                            <color key="titleColor" red="0.1529411765" green="0.43921568630000002" blue="0.20000000000000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                            <color key="backgroundColor" red="1" green="1" blue="1" alpha="0.59999999999999998" colorSpace="custom" customColorSpace="sRGB"/>
                                             <connections>
                                                 <action selector="cardsToggle" destination="AgC-eL-Hgc" id="2WG-Vp-xnP"/>
                                             </connections>
                                         </button>
                                     </items>
                                 </group>
-                                <group width="1" height="0.01" alignment="left" layout="vertical" spacing="1" hidden="YES" id="5hM-Zg-TBq">
+                                <group width="1" height="0.01" alignment="left" hidden="YES" layout="vertical" spacing="1" id="5hM-Zg-TBq">
                                     <items>
                                         <group width="1" height="2" alignment="left" id="Kc8-Q0-tw4"/>
                                         <button width="1" height="1" alignment="left" title="Change Deck" id="9o0-B9-akF">
-                                            <color key="titleColor" red="0.1529411765" green="0.43921568630000002" blue="0.20000000000000001" alpha="1" colorSpace="calibratedRGB"/>
-                                            <color key="backgroundColor" red="1" green="1" blue="1" alpha="0.59999999999999998" colorSpace="calibratedRGB"/>
+                                            <color key="titleColor" red="0.1529411765" green="0.43921568630000002" blue="0.20000000000000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                            <color key="backgroundColor" red="1" green="1" blue="1" alpha="0.59999999999999998" colorSpace="custom" customColorSpace="sRGB"/>
                                             <connections>
                                                 <action selector="changeCardSkin" destination="AgC-eL-Hgc" id="TKL-3y-jrN"/>
                                             </connections>
@@ -475,9 +476,7 @@
                             <edgeInsets key="margins" left="0.0" right="0.0" top="0.0" bottom="0.0"/>
                         </group>
                     </items>
-                    <color key="backgroundColor" red="0.32326907040000002" green="0.92130761169999997" blue="0.41929591710000003" alpha="0.47999999999999998" colorSpace="calibratedRGB"/>
-                    
-                    
+                    <color key="backgroundColor" red="0.32326907040000002" green="0.92130761169999997" blue="0.41929591710000003" alpha="0.47999999999999998" colorSpace="custom" customColorSpace="sRGB"/>
                     <connections>
                         <outlet property="buttonCardsToggle" destination="zec-Fh-Uox" id="e4o-vg-tue"/>
                         <outlet property="buttonRedeal" destination="Sk7-0E-sbq" id="IUU-sc-hVA"/>
@@ -654,7 +653,7 @@
         <!--Controls-->
         <scene sceneID="50A-1f-wdN">
             <objects>
-                <controller identifier="settings" title="Controls" id="mbQ-PN-Qog" customClass="SolitaireSettings">
+                <controller identifier="settings" title="Controls" fullBounds="YES" fullScreen="YES" id="mbQ-PN-Qog" customClass="SolitaireSettings">
                     <items>
                         <group width="1" alignment="left" layout="vertical" spacing="0.0" id="VgD-UG-xLZ">
                             <items>
@@ -698,12 +697,12 @@
                     </connections>
                 </controller>
             </objects>
-            <point key="canvasLocation" x="946" y="380"/>
+            <point key="canvasLocation" x="1031" y="395"/>
         </scene>
         <!--Winner!-->
         <scene sceneID="Dtw-do-IKq">
             <objects>
-                <controller identifier="winner" title="Winner!" id="trc-cu-hxN" customClass="ModalHelperClass">
+                <controller identifier="winner" title="Winner!" fullBounds="YES" fullScreen="YES" id="trc-cu-hxN" customClass="ModalHelperClass">
                     <items>
                         <group width="1" height="1" alignment="left" backgroundImage="s2_small.png" contentMode="scaleAspectFill" layout="vertical" spacing="6" id="R8H-lq-jbv" userLabel="Background">
                             <items>
@@ -717,8 +716,8 @@
                                     </variation>
                                 </label>
                                 <button width="0.80000000000000004" alignment="center" verticalAlignment="bottom" alpha="0.90000000000000002" title="♠️♥️♣️♦️" id="Nax-i8-SIq">
-                                    <color key="titleColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
-                                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                    <color key="titleColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                    <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                     <fontDescription key="font" name="HelveticaNeue" family="Helvetica Neue" pointSize="16"/>
                                     <connections>
                                         <action selector="done:" destination="trc-cu-hxN" id="Uvb-IE-5jo"/>
@@ -734,7 +733,40 @@
                     </connections>
                 </controller>
             </objects>
-            <point key="canvasLocation" x="461" y="339"/>
+            <point key="canvasLocation" x="408" y="395"/>
+        </scene>
+        <!--SwiftUI Renderer-->
+        <scene sceneID="n7U-7G-y80">
+            <objects>
+                <controller identifier="swiftuiRoot" title="SwiftUI Renderer" fullBounds="YES" fullScreen="YES" id="kA0-QY-0QP" customClass="SwiftUIShellController" customModuleProvider="target"/>
+            </objects>
+            <point key="canvasLocation" x="1362" y="395"/>
         </scene>
     </scenes>
+    <resources>
+        <image name="cardback_44mm.png" width="128" height="128"/>
+        <image name="club2.png" width="128" height="128"/>
+        <image name="club2_38mm.png" width="128" height="128"/>
+        <image name="club2_44mm.png" width="128" height="128"/>
+        <image name="club3.png" width="128" height="128"/>
+        <image name="clubJ_44mm.png" width="128" height="128"/>
+        <image name="deckbackground_44mm.png" width="128" height="128"/>
+        <image name="diamond2.png" width="128" height="128"/>
+        <image name="diamondK.png" width="128" height="128"/>
+        <image name="discardbackground_44mm.png" width="128" height="128"/>
+        <image name="facedown.png" width="128" height="128"/>
+        <image name="facedown_38mm.png" width="128" height="128"/>
+        <image name="facedown_44mm.png" width="128" height="128"/>
+        <image name="heart10.png" width="128" height="128"/>
+        <image name="heart10_38mm.png" width="128" height="128"/>
+        <image name="heart10_38zmm.png" width="128" height="128"/>
+        <image name="heart10_44mm.png" width="128" height="128"/>
+        <image name="heart2_38mm.png" width="128" height="128"/>
+        <image name="heart2_44mm.png" width="128" height="128"/>
+        <image name="heart9.png" width="128" height="128"/>
+        <image name="s2_small.png" width="128" height="128"/>
+        <image name="spade2.png" width="128" height="128"/>
+        <image name="spade2_38mm.png" width="128" height="128"/>
+        <image name="spade6.png" width="128" height="128"/>
+    </resources>
 </document>
