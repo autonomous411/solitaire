@@ -17,9 +17,7 @@ private struct BridgeSnapshot {
     let hasSavedBoard: Bool
 
     static func load() -> BridgeSnapshot {
-        guard let dict = LegacyGameBridge.snapshot() as? [String: Any] else {
-            return BridgeSnapshot(flipCards: 3, uiMode: watchUIModeSwiftUI, hasSavedBoard: false)
-        }
+        let dict = LegacyGameBridge.snapshot()
         return BridgeSnapshot(
             flipCards: (dict["flipCards"] as? NSNumber)?.intValue ?? 3,
             uiMode: (dict["uiMode"] as? String) ?? watchUIModeSwiftUI,
@@ -32,14 +30,43 @@ private struct CardMetrics {
     let width: CGFloat
     let height: CGFloat
     let deckDepthWidth: CGFloat
+    let fanOffset: CGFloat
+    let hiddenStep: CGFloat
 }
 
 private func metrics(for proxy: GeometryProxy) -> CardMetrics {
     // Keep card raster dimensions fixed to legacy sizes.
     if proxy.size.width <= 176 {
-        return CardMetrics(width: 19, height: 25, deckDepthWidth: 3)
+        return CardMetrics(width: 19, height: 25, deckDepthWidth: 3, fanOffset: 4, hiddenStep: 5)
     }
-    return CardMetrics(width: 22, height: 30, deckDepthWidth: 6)
+    return CardMetrics(width: 22, height: 30, deckDepthWidth: 6, fanOffset: 5, hiddenStep: 6)
+}
+
+private struct ArtSet {
+    let faceDown: String
+    let cardBack: String
+    let sampleA: String
+    let sampleB: String
+    let sampleC: String
+}
+
+private func art(for card: CardMetrics) -> ArtSet {
+    if card.width == 19 {
+        return ArtSet(
+            faceDown: "facedown_38mm.png",
+            cardBack: "cardback_38mm.png",
+            sampleA: "heart10_38mm.png",
+            sampleB: "club2_38mm.png",
+            sampleC: "heart2_38mm.png"
+        )
+    }
+    return ArtSet(
+        faceDown: "facedown_44mm.png",
+        cardBack: "cardback_44mm.png",
+        sampleA: "heart10_44mm.png",
+        sampleB: "club2_44mm.png",
+        sampleC: "heart2_44mm.png"
+    )
 }
 
 struct SwiftUIShellView: View {
@@ -48,30 +75,27 @@ struct SwiftUIShellView: View {
     var body: some View {
         GeometryReader { proxy in
             let card = metrics(for: proxy)
+            let assets = art(for: card)
             VStack(spacing: 0) {
                 VStack(spacing: 0) {
                     HStack {
                         HStack(spacing: 0) {
-                            CardFace(name: card.width == 19 ? "facedown_38mm.png" : "facedown_44mm.png", width: card.width, height: card.height)
-                            CardFace(name: card.width == 19 ? "facedown_38mm.png" : "facedown_44mm.png", width: card.deckDepthWidth, height: card.height)
-                            CardFace(name: card.width == 19 ? "facedown_38mm.png" : "facedown_44mm.png", width: card.deckDepthWidth, height: card.height)
+                            PixelCard(name: assets.faceDown, card: card)
+                            CardStrip(name: assets.faceDown, card: card, stripWidth: card.deckDepthWidth)
+                            CardStrip(name: assets.faceDown, card: card, stripWidth: card.deckDepthWidth)
                         }
                         Spacer(minLength: 6)
-                        HStack(spacing: 0) {
-                            CardFace(name: card.width == 19 ? "heart10_38mm.png" : "heart10_44mm.png", width: card.width * 0.75, height: card.height)
-                            CardFace(name: card.width == 19 ? "club2_38mm.png" : "club2_44mm.png", width: card.width * 0.75, height: card.height)
-                            CardFace(name: card.width == 19 ? "heart2_38mm.png" : "heart2_44mm.png", width: card.width, height: card.height)
-                        }
+                        DeckFlipFan(card: card, assets: assets)
                     }
                     .padding(.horizontal, 2)
                     .frame(height: card.height + 6)
                     .background(Color(red: 0.20, green: 0.53, blue: 0.28))
 
                     HStack(spacing: 0) {
-                        FoundationSlot(card: card)
-                        FoundationSlot(card: card)
-                        FoundationSlot(card: card)
-                        FoundationSlot(card: card)
+                        FoundationSlot(card: card, imageName: assets.cardBack)
+                        FoundationSlot(card: card, imageName: assets.cardBack)
+                        FoundationSlot(card: card, imageName: assets.cardBack)
+                        FoundationSlot(card: card, imageName: assets.cardBack)
                     }
                     .frame(height: card.height + 10)
                     .background(Color(red: 0.31, green: 0.60, blue: 0.23))
@@ -82,12 +106,12 @@ struct SwiftUIShellView: View {
 
                 HStack(alignment: .top, spacing: 2) {
                     ForEach(0..<7, id: \.self) { index in
-                        VStack(alignment: .leading, spacing: 0) {
-                            CardFace(name: index % 2 == 0 ? (card.width == 19 ? "heart2_38mm.png" : "heart2_44mm.png") : (card.width == 19 ? "heart10_38mm.png" : "heart10_44mm.png"), width: card.width, height: card.height)
-                            ForEach(0..<5, id: \.self) { _ in
-                                CardFace(name: card.width == 19 ? "facedown_38mm.png" : "facedown_44mm.png", width: card.width, height: card.height * 0.35)
-                            }
-                        }
+                        TableauColumn(
+                            card: card,
+                            hiddenCount: index,
+                            hiddenImage: assets.faceDown,
+                            faceImage: index % 2 == 0 ? assets.sampleC : assets.sampleA
+                        )
                     }
                 }
                 .padding(.horizontal, 2)
@@ -104,7 +128,7 @@ struct SwiftUIShellView: View {
                     Button("Switch To Legacy") {
                         LegacyGameBridge.setUIModeToLegacy()
                         snapshot = BridgeSnapshot.load()
-                        WKInterfaceController.reloadRootControllers(withNames: ["legacyRoot"], contexts: nil)
+                        WKInterfaceController.reloadRootPageControllers(withNames: ["legacyRoot"], contexts: nil, orientation: .horizontal, pageIndex: 0)
                     }
                     .buttonStyle(.borderedProminent)
                     .font(.footnote)
@@ -129,25 +153,74 @@ struct SwiftUIShellView: View {
 
 private struct FoundationSlot: View {
     let card: CardMetrics
+    let imageName: String
 
     var body: some View {
         ZStack {
             Color.clear
-            CardFace(name: "cardback_44mm.png", width: card.width, height: card.height)
+            PixelCard(name: imageName, card: card)
         }
         .frame(maxWidth: .infinity)
     }
 }
 
-private struct CardFace: View {
+private struct DeckFlipFan: View {
+    let card: CardMetrics
+    let assets: ArtSet
+
+    var body: some View {
+        ZStack(alignment: .leading) {
+            PixelCard(name: assets.sampleC, card: card)
+                .offset(x: card.fanOffset * 2)
+            PixelCard(name: assets.sampleB, card: card)
+                .offset(x: card.fanOffset)
+            PixelCard(name: assets.sampleA, card: card)
+        }
+        .frame(width: card.width + (card.fanOffset * 2), height: card.height, alignment: .leading)
+    }
+}
+
+private struct TableauColumn: View {
+    let card: CardMetrics
+    let hiddenCount: Int
+    let hiddenImage: String
+    let faceImage: String
+
+    var body: some View {
+        ZStack(alignment: .topLeading) {
+            ForEach(0..<hiddenCount, id: \.self) { idx in
+                PixelCard(name: hiddenImage, card: card)
+                    .offset(y: CGFloat(idx) * card.hiddenStep)
+            }
+            PixelCard(name: faceImage, card: card)
+                .offset(y: CGFloat(hiddenCount) * card.hiddenStep)
+        }
+        .frame(width: card.width, height: CGFloat(hiddenCount) * card.hiddenStep + card.height, alignment: .top)
+    }
+}
+
+private struct PixelCard: View {
     let name: String
-    let width: CGFloat
-    let height: CGFloat
+    let card: CardMetrics
 
     var body: some View {
         Image(name)
             .resizable()
             .interpolation(.none)
-            .frame(width: width, height: height)
+            .antialiased(false)
+            .aspectRatio(card.width / card.height, contentMode: .fit)
+            .frame(width: card.width, height: card.height)
+    }
+}
+
+private struct CardStrip: View {
+    let name: String
+    let card: CardMetrics
+    let stripWidth: CGFloat
+
+    var body: some View {
+        PixelCard(name: name, card: card)
+            .frame(width: stripWidth, height: card.height, alignment: .leading)
+            .clipped()
     }
 }
