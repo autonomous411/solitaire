@@ -858,7 +858,7 @@ static NSInteger const kCurrentSaveStateSchemaVersion = 2;
     return -1;
 }
 
--(void) processOneTouch:(int)touchIndex
+-(BOOL) processOneTouch:(int)touchIndex
 {
     NSArray* moves = [self determinePossibleMovesOnBoard];
     PossibleMove* possible = nil;
@@ -875,8 +875,9 @@ static NSInteger const kCurrentSaveStateSchemaVersion = 2;
     if (possible != nil)
     {
         [self handleMoveFrom:possible.fromIndex to:possible.toIndex];
+        return YES;
     }
-   
+    return NO;
 }
 
 -(void) processVoiceResponse
@@ -1851,8 +1852,10 @@ static NSInteger const kCurrentSaveStateSchemaVersion = 2;
     {
         if (isOneTouch)
         {
-            [self processOneTouch:SELECTED_FLIP];
-            return;
+            if ([self processOneTouch:SELECTED_FLIP])
+            {
+                return;
+            }
         }
         
         if (self.hasSelected)
@@ -1904,8 +1907,10 @@ static NSInteger const kCurrentSaveStateSchemaVersion = 2;
     {
         if (isOneTouch)
         {
-            [self processOneTouch:SELECTED_DISCARD_1];
-            return;
+            if ([self processOneTouch:SELECTED_DISCARD_1])
+            {
+                return;
+            }
         }
         
         if (self.hasSelected)
@@ -1932,8 +1937,10 @@ static NSInteger const kCurrentSaveStateSchemaVersion = 2;
     {
         if (isOneTouch)
         {
-            [self processOneTouch:SELECTED_DISCARD_2];
-            return;
+            if ([self processOneTouch:SELECTED_DISCARD_2])
+            {
+                return;
+            }
         }
         
         if (self.hasSelected)
@@ -1962,8 +1969,10 @@ static NSInteger const kCurrentSaveStateSchemaVersion = 2;
     {
         if (isOneTouch)
         {
-            [self processOneTouch:SELECTED_DISCARD_3];
-            return;
+            if ([self processOneTouch:SELECTED_DISCARD_3])
+            {
+                return;
+            }
         }
         
         if (self.hasSelected)
@@ -1990,8 +1999,10 @@ static NSInteger const kCurrentSaveStateSchemaVersion = 2;
     {
         if (isOneTouch)
         {
-            [self processOneTouch:SELECTED_DISCARD_4];
-            return;
+            if ([self processOneTouch:SELECTED_DISCARD_4])
+            {
+                return;
+            }
         }
         
         if (self.hasSelected)
@@ -2431,8 +2442,10 @@ static NSInteger const kCurrentSaveStateSchemaVersion = 2;
     {
         if (isOneTouch)
         {
-            [self processOneTouch:SELECTED_STACK_0];
-            return;
+            if ([self processOneTouch:SELECTED_STACK_0])
+            {
+                return;
+            }
         }
         
         if (self.hasSelected)
@@ -2467,8 +2480,10 @@ static NSInteger const kCurrentSaveStateSchemaVersion = 2;
     {
         if (isOneTouch)
         {
-            [self processOneTouch:SELECTED_STACK_1];
-            return;
+            if ([self processOneTouch:SELECTED_STACK_1])
+            {
+                return;
+            }
         }
         if (self.hasSelected)
         {
@@ -2502,8 +2517,10 @@ static NSInteger const kCurrentSaveStateSchemaVersion = 2;
     {
         if (isOneTouch)
         {
-            [self processOneTouch:SELECTED_STACK_2];
-            return;
+            if ([self processOneTouch:SELECTED_STACK_2])
+            {
+                return;
+            }
         }
         if (self.hasSelected)
         {
@@ -2537,8 +2554,10 @@ static NSInteger const kCurrentSaveStateSchemaVersion = 2;
     {
         if (isOneTouch)
         {
-            [self processOneTouch:SELECTED_STACK_3];
-            return;
+            if ([self processOneTouch:SELECTED_STACK_3])
+            {
+                return;
+            }
         }
         if (self.hasSelected)
         {
@@ -2572,8 +2591,10 @@ static NSInteger const kCurrentSaveStateSchemaVersion = 2;
     {
         if (isOneTouch)
         {
-            [self processOneTouch:SELECTED_STACK_4];
-            return;
+            if ([self processOneTouch:SELECTED_STACK_4])
+            {
+                return;
+            }
         }
         if (self.hasSelected)
         {
@@ -2607,8 +2628,10 @@ static NSInteger const kCurrentSaveStateSchemaVersion = 2;
     {
         if (isOneTouch)
         {
-            [self processOneTouch:SELECTED_STACK_5];
-            return;
+            if ([self processOneTouch:SELECTED_STACK_5])
+            {
+                return;
+            }
         }
         if (self.hasSelected)
         {
@@ -2642,8 +2665,10 @@ static NSInteger const kCurrentSaveStateSchemaVersion = 2;
     {
         if (isOneTouch)
         {
-            [self processOneTouch:SELECTED_STACK_6];
-            return;
+            if ([self processOneTouch:SELECTED_STACK_6])
+            {
+                return;
+            }
         }
         if (self.hasSelected)
         {
@@ -2675,6 +2700,38 @@ static NSInteger const kCurrentSaveStateSchemaVersion = 2;
 {
     [self pushControllerWithName:@"settings" context:nil];
 }
+
+-(void) refreshInteractionModeFromSettings
+{
+    // Default to legacy two-tap interaction unless settings explicitly choose otherwise.
+    isRemoteControlled = NO;
+    isVoiceControlled = NO;
+    isUsingMoves = NO;
+    isOneTouch = NO;
+
+    NSString* uiSetting = [SolitaireSettings getUISetting];
+    if ([uiSetting isEqualToString:VOICEANDMOVES])
+    {
+        isVoiceControlled = YES;
+        isUsingMoves = YES;
+    }
+    else if ([uiSetting isEqualToString:VOICEONLY])
+    {
+        isVoiceControlled = YES;
+        isUsingMoves = NO;
+    }
+    else if ([uiSetting isEqualToString:TOUCHONE])
+    {
+        isVoiceControlled = NO;
+        isOneTouch = YES;
+    }
+    else
+    {
+        isVoiceControlled = NO;
+        isOneTouch = NO;
+    }
+}
+
 -(void) initSolitaire
 {
     self.sharedDefaults = [[NSUserDefaults alloc] initWithSuiteName:@"group.solitaire"];
@@ -3654,31 +3711,7 @@ static NSInteger const kCurrentSaveStateSchemaVersion = 2;
     [self setTitle:@""];
     //dispatch_async(dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
     [self initSolitaire];
-    
-    // Set the settings.
-    if ([[SolitaireSettings getUISetting] isEqualToString:VOICEANDMOVES])
-    {
-        isVoiceControlled = YES;
-        isUsingMoves = YES;
-    }
-    
-    if ([[SolitaireSettings getUISetting] isEqualToString:VOICEONLY])
-    {
-        isVoiceControlled = YES;
-        isUsingMoves = NO;
-    }
-    
-    if ([[SolitaireSettings getUISetting] isEqualToString:TOUCHONE])
-    {
-        isVoiceControlled = NO;
-        isOneTouch = YES;
-    }
-    
-    if ([[SolitaireSettings getUISetting] isEqualToString:TOUCHTWO])
-    {
-        isVoiceControlled = NO;
-        isOneTouch = NO;
-    }
+    [self refreshInteractionModeFromSettings];
     
     [self applyResponsiveLayout];
     [self renderFullBoard];
