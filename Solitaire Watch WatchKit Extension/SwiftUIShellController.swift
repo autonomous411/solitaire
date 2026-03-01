@@ -382,6 +382,14 @@ struct SwiftUIShellView: View {
             return
         }
 
+        if case .waste = selection {
+            // Waste cards only move to foundation/tableau, not between foundation piles.
+            if !foundations[index].isEmpty {
+                selection = .foundation(index)
+            }
+            return
+        }
+
         if canMoveToFoundation(moving, foundation: foundations[index]) {
             if let source = selection {
                 popOneFromSource(source)
@@ -395,6 +403,13 @@ struct SwiftUIShellView: View {
     }
 
     private func tableauTapped(_ index: Int) {
+        if case .waste = selection, tableau[index].faceUp.isEmpty {
+            // In legacy flow, tapping empty tableau while waste selected only works for a legal King move.
+            guard let wasteTop = waste.last, canMoveToTableau(wasteTop, pile: tableau[index]) else {
+                return
+            }
+        }
+
         if selection == .tableau(index) {
             selection = nil
             return
@@ -404,6 +419,11 @@ struct SwiftUIShellView: View {
             if !tableau[index].faceUp.isEmpty {
                 selection = .tableau(index)
             }
+            return
+        }
+
+        if case .foundation = selection, tableau[index].faceUp.isEmpty, moving.rank != 13 {
+            // Foundation card can only go to empty tableau if it is a King.
             return
         }
 
