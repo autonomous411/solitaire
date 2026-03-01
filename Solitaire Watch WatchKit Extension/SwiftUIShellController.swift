@@ -349,22 +349,25 @@ struct SwiftUIShellView: View {
                 VStack(spacing: 1) {
                     let topInset: CGFloat = 4
 
-                    HStack(spacing: 10) {
+                    ZStack {
                         WasteFanView(card: card, cards: Array(waste.suffix(3)), selected: selection == .waste, preferLarge: preferLarge, skin: skin)
                             .onTapGesture {
                                 if !waste.isEmpty {
                                     selection = selection == .waste ? nil : .waste
                                 }
                             }
-                            .frame(maxWidth: .infinity, alignment: .center)
+                            .offset(x: 10)
 
-                        DeckStackView(card: card, imageName: facedown, stockCount: stock.count, selected: selection == .waste && waste.isEmpty, preferLarge: preferLarge, skin: skin)
-                            .onTapGesture {
-                                drawFromStock(count: snapshot.flipCards == 1 ? 1 : 3)
-                            }
+                        HStack {
+                            DeckStackView(card: card, imageName: facedown, stockCount: stock.count, selected: selection == .waste && waste.isEmpty, preferLarge: preferLarge, skin: skin)
+                                .onTapGesture {
+                                    drawFromStock(count: snapshot.flipCards == 1 ? 1 : 3)
+                                }
+                            Spacer(minLength: 0)
+                        }
                     }
-                    .padding(.leading, 18)
-                    .padding(.trailing, 8)
+                    .padding(.leading, 10)
+                    .padding(.trailing, 6)
                     .padding(.top, topInset)
                     .frame(height: card.height + 4)
 
