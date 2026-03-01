@@ -1,5 +1,6 @@
 import SwiftUI
 import WatchKit
+import ImageIO
 
 final class SwiftUIShellController: WKHostingController<SwiftUIShellView> {
     override var body: SwiftUIShellView {
@@ -35,7 +36,7 @@ private struct CardMetrics {
 }
 
 private struct ResolvedImageKey {
-    let name: String
+    let filename: String
     let bundle: Bundle
 }
 
@@ -177,11 +178,47 @@ private func resolveImage(for baseFilename: String, preferLarge: Bool, skin: Str
     for candidate in candidates where !seen.contains(candidate) {
         seen.insert(candidate)
         for bundle in bundles where bundleHasImage(named: candidate, in: bundle) {
-            return ResolvedImageKey(name: normalizedAssetName(candidate), bundle: bundle)
+            return ResolvedImageKey(filename: candidate, bundle: bundle)
         }
     }
 
-    return ResolvedImageKey(name: normalizedAssetName(baseFilename), bundle: Bundle.main)
+    return ResolvedImageKey(filename: baseFilename, bundle: Bundle.main)
+}
+
+private func candidateResourceNames(for filename: String) -> (names: [String], ext: String) {
+    let ns = filename as NSString
+    var ext = ns.pathExtension
+    var base = ns.deletingPathExtension
+    if ext.isEmpty {
+        ext = "png"
+        base = filename
+    }
+
+    var names = [base, "\(base)@2x", "\(base)@3x"]
+    if (base.hasSuffix("@2x") || base.hasSuffix("@3x")), let at = base.lastIndex(of: "@") {
+        let stripped = String(base[..<at])
+        if !stripped.isEmpty {
+            names.append(stripped)
+        }
+    }
+    return (names: names, ext: ext)
+}
+
+private func loadCGImage(named filename: String, in bundle: Bundle) -> CGImage? {
+    let parts = candidateResourceNames(for: filename)
+    for name in parts.names {
+        guard let path = bundle.path(forResource: name, ofType: parts.ext) else {
+            continue
+        }
+        let url = URL(fileURLWithPath: path) as CFURL
+        guard let source = CGImageSourceCreateWithURL(url, nil) else {
+            continue
+        }
+        if let image = CGImageSourceCreateImageAtIndex(source, 0, nil) {
+            return image
+        }
+    }
+    return nil
 }
 
 private func shuffledDeck() -> [SwiftCard] {
@@ -589,12 +626,18 @@ private struct PixelCard: View {
 
     var body: some View {
         let resolved = resolveImage(for: name, preferLarge: preferLarge, skin: skin)
-        Image(resolved.name, bundle: resolved.bundle)
-            .resizable()
-            .interpolation(.none)
-            .antialiased(false)
-            .aspectRatio(card.width / card.height, contentMode: .fit)
-            .frame(width: card.width, height: card.height)
+        if let cg = loadCGImage(named: resolved.filename, in: resolved.bundle) {
+            Image(decorative: cg, scale: 1, orientation: .up)
+                .resizable()
+                .interpolation(.none)
+                .antialiased(false)
+                .aspectRatio(card.width / card.height, contentMode: .fit)
+                .frame(width: card.width, height: card.height)
+        } else {
+            Rectangle()
+                .fill(Color.clear)
+                .frame(width: card.width, height: card.height)
+        }
     }
 }
 
