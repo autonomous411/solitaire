@@ -154,6 +154,7 @@ struct SwiftUIShellView: View {
     @State private var foundations: [[SwiftCard]]
     @State private var tableau: [TableauPile]
     @State private var selection: Selection?
+    @State private var winBannerVisible = false
 
     init() {
         let initialBoard = makeInitialBoard()
@@ -227,6 +228,11 @@ struct SwiftUIShellView: View {
                 Spacer(minLength: 4)
 
                 VStack(spacing: 3) {
+                    if winBannerVisible {
+                        Text("You won")
+                            .font(.footnote)
+                            .foregroundStyle(.yellow)
+                    }
                     Text("Flip: \(snapshot.flipCards)-Card | Saved: \(snapshot.hasSavedBoard ? "Yes" : "No")")
                         .font(.caption2)
                     Text("Mode: \(snapshot.uiMode)")
@@ -254,6 +260,13 @@ struct SwiftUIShellView: View {
                         foundations = board.foundations
                         tableau = board.tableau
                         selection = nil
+                        winBannerVisible = false
+                    }
+                    .buttonStyle(.bordered)
+                    .font(.footnote)
+
+                    Button("Auto Move") {
+                        autoMoveToFoundations()
                     }
                     .buttonStyle(.bordered)
                     .font(.footnote)
@@ -269,18 +282,20 @@ struct SwiftUIShellView: View {
     }
 
     private func drawFromStock(count: Int) {
-        if stock.isEmpty {
-            stock = waste.reversed()
-            waste.removeAll()
-            selection = nil
-            return
-        }
+            if stock.isEmpty {
+                stock = waste.reversed()
+                waste.removeAll()
+                selection = nil
+                updateWinState()
+                return
+            }
 
         for _ in 0..<count {
             guard let next = stock.popLast() else { break }
             waste.append(next)
         }
         selection = nil
+        updateWinState()
     }
 
     private func selectedCard() -> SwiftCard? {
@@ -345,6 +360,7 @@ struct SwiftUIShellView: View {
             }
             foundations[index].append(moving)
             selection = nil
+            updateWinState()
         } else if !foundations[index].isEmpty {
             selection = .foundation(index)
         }
@@ -374,9 +390,48 @@ struct SwiftUIShellView: View {
             popOneFromSource(source)
             tableau[index].faceUp.append(moving)
             selection = nil
+            updateWinState()
         } else if !tableau[index].faceUp.isEmpty {
             selection = .tableau(index)
         }
+    }
+
+    private func updateWinState() {
+        let total = foundations.reduce(0) { $0 + $1.count }
+        winBannerVisible = (total == 52)
+    }
+
+    private func autoMoveToFoundations() {
+        var movedAny = true
+        while movedAny {
+            movedAny = false
+
+            if let wasteCard = waste.last {
+                for i in 0..<4 where canMoveToFoundation(wasteCard, foundation: foundations[i]) {
+                    _ = waste.popLast()
+                    foundations[i].append(wasteCard)
+                    movedAny = true
+                    break
+                }
+                if movedAny { continue }
+            }
+
+            for t in 0..<7 {
+                guard let card = tableau[t].faceUp.last else { continue }
+                var movedFromTableau = false
+                for i in 0..<4 where canMoveToFoundation(card, foundation: foundations[i]) {
+                    _ = tableau[t].faceUp.popLast()
+                    revealIfNeeded(afterTableauRemovalAt: t)
+                    foundations[i].append(card)
+                    movedAny = true
+                    movedFromTableau = true
+                    break
+                }
+                if movedFromTableau { break }
+            }
+        }
+        selection = nil
+        updateWinState()
     }
 }
 
