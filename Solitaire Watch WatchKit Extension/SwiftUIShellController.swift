@@ -347,7 +347,7 @@ struct SwiftUIShellView: View {
                     .ignoresSafeArea()
 
                 VStack(spacing: 1) {
-                    let safeTopInset: CGFloat = proxy.safeAreaInsets.top
+                    let safeTopInset: CGFloat = max(8, proxy.safeAreaInsets.top * 0.35)
 
                     Color.clear
                         .frame(height: safeTopInset)
