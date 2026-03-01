@@ -89,6 +89,13 @@ private func cardImageName(_ card: SwiftCard, sizeSuffix: String) -> String {
     "\(card.suit.rawValue)\(rankToken(card.rank))_\(sizeSuffix).png"
 }
 
+private func normalizedAssetName(_ name: String) -> String {
+    if name.hasSuffix(".png") {
+        return String(name.dropLast(4))
+    }
+    return name
+}
+
 private func shuffledDeck() -> [SwiftCard] {
     var deck: [SwiftCard] = []
     for suit in CardSuit.allCases {
@@ -482,7 +489,7 @@ private struct PixelCard: View {
     let card: CardMetrics
 
     var body: some View {
-        Image(name)
+        Image(normalizedAssetName(name))
             .resizable()
             .interpolation(.none)
             .antialiased(false)
