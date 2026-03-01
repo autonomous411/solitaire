@@ -29,6 +29,11 @@ private struct CardMetrics {
     let sizeSuffix: String
 }
 
+private struct ResolvedImageKey {
+    let name: String
+    let bundle: Bundle
+}
+
 private func metrics(for proxy: GeometryProxy) -> CardMetrics {
     if proxy.size.width <= 176 {
         return CardMetrics(width: 19, height: 25, deckDepthWidth: 3, fanOffset: 4, hiddenStep: 5, sizeSuffix: "38mm")
@@ -86,7 +91,8 @@ private func rankToken(_ rank: Int) -> String {
 }
 
 private func cardImageName(_ card: SwiftCard, sizeSuffix: String) -> String {
-    "\(card.suit.rawValue)\(rankToken(card.rank))_\(sizeSuffix).png"
+    _ = sizeSuffix
+    return "\(card.suit.rawValue)\(rankToken(card.rank)).png"
 }
 
 private func normalizedAssetName(_ name: String) -> String {
@@ -94,6 +100,83 @@ private func normalizedAssetName(_ name: String) -> String {
         return String(name.dropLast(4))
     }
     return name
+}
+
+private func normalizedSkinName(_ skin: String?) -> String {
+    guard let skin, !skin.isEmpty, skin != "1" else {
+        return "classic"
+    }
+    return skin
+}
+
+private func candidateResourceBundles() -> [Bundle] {
+    var bundles: [Bundle] = [Bundle.main]
+    let mainPath = Bundle.main.bundlePath as NSString
+    let pluginsPath = mainPath.deletingLastPathComponent as NSString
+    let watchAppPath = pluginsPath.deletingLastPathComponent
+    if let watchAppBundle = Bundle(path: watchAppPath), watchAppBundle.bundlePath != Bundle.main.bundlePath {
+        bundles.append(watchAppBundle)
+    }
+    return bundles
+}
+
+private func bundleHasImage(named filename: String, in bundle: Bundle) -> Bool {
+    if filename.isEmpty {
+        return false
+    }
+
+    let ns = filename as NSString
+    var ext = ns.pathExtension
+    var base = ns.deletingPathExtension
+    if ext.isEmpty {
+        ext = "png"
+        base = filename
+    }
+
+    var candidates = [base, "\(base)@2x", "\(base)@3x"]
+    if (base.hasSuffix("@2x") || base.hasSuffix("@3x")), let at = base.lastIndex(of: "@") {
+        let stripped = String(base[..<at])
+        if !stripped.isEmpty {
+            candidates.append(stripped)
+        }
+    }
+
+    for candidate in candidates {
+        if bundle.path(forResource: candidate, ofType: ext) != nil {
+            return true
+        }
+    }
+    return false
+}
+
+private func buildFilename(baseFilename: String, suffix: String) -> String {
+    let ns = baseFilename as NSString
+    let ext = ns.pathExtension.isEmpty ? "png" : ns.pathExtension
+    let root = ns.deletingPathExtension
+    return "\(root)\(suffix).\(ext)"
+}
+
+private func resolveImage(for baseFilename: String, preferLarge: Bool, skin: String?) -> ResolvedImageKey {
+    let normalizedSkin = normalizedSkinName(skin)
+    let sizeTokens = preferLarge ? ["44mm", "38mm"] : ["38mm", "44mm"]
+    var candidates: [String] = [baseFilename, buildFilename(baseFilename: baseFilename, suffix: "_\(normalizedSkin)")]
+
+    for token in sizeTokens {
+        candidates.append(buildFilename(baseFilename: baseFilename, suffix: "_\(token)\(normalizedSkin)"))
+        candidates.append(buildFilename(baseFilename: baseFilename, suffix: "_\(token)"))
+        candidates.append(buildFilename(baseFilename: baseFilename, suffix: "_\(token)classic"))
+    }
+
+    let bundles = candidateResourceBundles()
+    var seen = Set<String>()
+    for candidate in candidates where !seen.contains(candidate) {
+        seen.insert(candidate)
+        for bundle in bundles where bundleHasImage(named: candidate, in: bundle) {
+            return ResolvedImageKey(name: normalizedAssetName(candidate), bundle: bundle)
+        }
+    }
+
+    return ResolvedImageKey(name: normalizedAssetName(baseFilename), bundle: Bundle.main)
 }
 
 private func shuffledDeck() -> [SwiftCard] {
@@ -181,19 +264,21 @@ struct SwiftUIShellView: View {
     var body: some View {
         GeometryReader { proxy in
             let card = metrics(for: proxy)
-            let facedown = "facedown_\(card.sizeSuffix).png"
-            let cardback = "cardback_\(card.sizeSuffix).png"
+            let preferLarge = card.sizeSuffix == "44mm"
+            let skin = UserDefaults(suiteName: "group.solitaire")?.string(forKey: "cardskin")
+            let facedown = "facedown.png"
+            let cardback = "cardback.png"
 
             VStack(spacing: 0) {
                 HStack {
-                    DeckStackView(card: card, imageName: facedown, stockCount: stock.count, selected: selection == .waste && waste.isEmpty)
+                    DeckStackView(card: card, imageName: facedown, stockCount: stock.count, selected: selection == .waste && waste.isEmpty, preferLarge: preferLarge, skin: skin)
                         .onTapGesture {
                             drawFromStock(count: snapshot.flipCards == 1 ? 1 : 3)
                         }
 
                     Spacer(minLength: 6)
 
-                    WasteFanView(card: card, cards: Array(waste.suffix(3)), selected: selection == .waste)
+                    WasteFanView(card: card, cards: Array(waste.suffix(3)), selected: selection == .waste, preferLarge: preferLarge, skin: skin)
                         .onTapGesture {
                             if !waste.isEmpty {
                                 selection = selection == .waste ? nil : .waste
@@ -210,6 +295,8 @@ struct SwiftUIShellView: View {
                         FoundationSlot(
                             card: card,
                             imageName: foundations[i].last.map { cardImageName($0, sizeSuffix: card.sizeSuffix) } ?? cardback,
+                            preferLarge: preferLarge,
+                            skin: skin,
                             highlighted: selection == .foundation(i)
                         )
                         .onTapGesture {
@@ -229,6 +316,8 @@ struct SwiftUIShellView: View {
                             hiddenCount: tableau[i].hiddenCount,
                             hiddenImage: facedown,
                             topImage: tableau[i].faceUp.last.map { cardImageName($0, sizeSuffix: card.sizeSuffix) } ?? cardback,
+                            preferLarge: preferLarge,
+                            skin: skin,
                             highlighted: selection == .tableau(i)
                         )
                         .onTapGesture {
@@ -367,8 +456,8 @@ struct SwiftUIShellView: View {
             return
         }
 
-        if case .waste = selection {
-            // Waste cards only move to foundation/tableau, not between foundation piles.
+        if case .foundation = selection {
+            // Legacy allows foundation -> tableau, but not foundation -> foundation.
             if !foundations[index].isEmpty {
                 selection = .foundation(index)
             }
@@ -487,9 +576,12 @@ private func moveCardsStacked(_ from: inout [SwiftCard], to: inout [SwiftCard], 
 private struct PixelCard: View {
     let name: String
     let card: CardMetrics
+    let preferLarge: Bool
+    let skin: String?
 
     var body: some View {
-        Image(normalizedAssetName(name))
+        let resolved = resolveImage(for: name, preferLarge: preferLarge, skin: skin)
+        Image(resolved.name, bundle: resolved.bundle)
             .resizable()
             .interpolation(.none)
             .antialiased(false)
@@ -502,9 +594,11 @@ private struct CardStrip: View {
     let name: String
     let card: CardMetrics
     let stripWidth: CGFloat
+    let preferLarge: Bool
+    let skin: String?
 
     var body: some View {
-        PixelCard(name: name, card: card)
+        PixelCard(name: name, card: card, preferLarge: preferLarge, skin: skin)
             .frame(width: stripWidth, height: card.height, alignment: .leading)
             .clipped()
     }
@@ -515,13 +609,15 @@ private struct DeckStackView: View {
     let imageName: String
     let stockCount: Int
     let selected: Bool
+    let preferLarge: Bool
+    let skin: String?
 
     var body: some View {
         ZStack(alignment: .leading) {
-            PixelCard(name: imageName, card: card)
-            CardStrip(name: imageName, card: card, stripWidth: card.deckDepthWidth)
+            PixelCard(name: imageName, card: card, preferLarge: preferLarge, skin: skin)
+            CardStrip(name: imageName, card: card, stripWidth: card.deckDepthWidth, preferLarge: preferLarge, skin: skin)
                 .offset(x: card.deckDepthWidth)
-            CardStrip(name: imageName, card: card, stripWidth: card.deckDepthWidth)
+            CardStrip(name: imageName, card: card, stripWidth: card.deckDepthWidth, preferLarge: preferLarge, skin: skin)
                 .offset(x: card.deckDepthWidth * 2)
             if stockCount == 0 {
                 Rectangle().stroke(Color.white.opacity(0.45), lineWidth: 1)
@@ -539,11 +635,13 @@ private struct WasteFanView: View {
     let card: CardMetrics
     let cards: [SwiftCard]
     let selected: Bool
+    let preferLarge: Bool
+    let skin: String?
 
     var body: some View {
         ZStack(alignment: .leading) {
             ForEach(Array(cards.enumerated()), id: \.offset) { idx, c in
-                PixelCard(name: cardImageName(c, sizeSuffix: card.sizeSuffix), card: card)
+                PixelCard(name: cardImageName(c, sizeSuffix: card.sizeSuffix), card: card, preferLarge: preferLarge, skin: skin)
                     .offset(x: CGFloat(idx) * card.fanOffset)
             }
         }
@@ -557,12 +655,14 @@ private struct WasteFanView: View {
 private struct FoundationSlot: View {
     let card: CardMetrics
     let imageName: String
+    let preferLarge: Bool
+    let skin: String?
     let highlighted: Bool
 
     var body: some View {
         ZStack {
             Color.clear
-            PixelCard(name: imageName, card: card)
+            PixelCard(name: imageName, card: card, preferLarge: preferLarge, skin: skin)
         }
         .frame(maxWidth: .infinity)
         .overlay(
@@ -576,15 +676,17 @@ private struct TableauColumn: View {
     let hiddenCount: Int
     let hiddenImage: String
     let topImage: String
+    let preferLarge: Bool
+    let skin: String?
     let highlighted: Bool
 
     var body: some View {
         ZStack(alignment: .topLeading) {
             ForEach(0..<hiddenCount, id: \.self) { idx in
-                PixelCard(name: hiddenImage, card: card)
+                PixelCard(name: hiddenImage, card: card, preferLarge: preferLarge, skin: skin)
                     .offset(y: CGFloat(idx) * card.hiddenStep)
             }
-            PixelCard(name: topImage, card: card)
+            PixelCard(name: topImage, card: card, preferLarge: preferLarge, skin: skin)
                 .offset(y: CGFloat(hiddenCount) * card.hiddenStep)
         }
         .frame(width: card.width, height: CGFloat(hiddenCount) * card.hiddenStep + card.height, alignment: .top)
