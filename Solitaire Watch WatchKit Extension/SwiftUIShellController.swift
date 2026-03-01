@@ -546,7 +546,7 @@ struct SwiftUIShellView: View {
             return
         }
 
-        guard let moving = selectedCard() else {
+        guard selectedCard() != nil else {
             if !foundations[index].isEmpty {
                 selection = .foundation(index)
             }
@@ -559,17 +559,34 @@ struct SwiftUIShellView: View {
             return
         }
 
-        if canMoveToFoundation(moving, foundation: foundations[index]) {
-            if let source = selection {
-                popOneFromSource(source)
-            }
-            foundations[index].append(moving)
-            selection = nil
-            updateWinState()
+        if moveSelectionToFoundation(preferredIndex: index) {
+            return
         } else {
             // Clear selection on illegal second tap.
             selection = nil
         }
+    }
+
+    private func moveSelectionToFoundation(preferredIndex: Int?) -> Bool {
+        guard let source = selection else { return false }
+        guard let moving = selectedCard() else { return false }
+
+        let candidateIndices: [Int]
+        if let preferredIndex {
+            candidateIndices = [preferredIndex]
+        } else {
+            candidateIndices = Array(0..<4)
+        }
+
+        guard let destination = candidateIndices.first(where: { canMoveToFoundation(moving, foundation: foundations[$0]) }) else {
+            return false
+        }
+
+        popOneFromSource(source)
+        foundations[destination].append(moving)
+        selection = nil
+        updateWinState()
+        return true
     }
 
     private func tableauTapped(_ index: Int) {
@@ -861,6 +878,7 @@ private struct FoundationSlot: View {
             }
         }
         .frame(maxWidth: .infinity)
+        .contentShape(Rectangle())
         .overlay(
             RoundedRectangle(cornerRadius: 2).stroke(highlighted ? Color.yellow : Color.clear, lineWidth: highlighted ? 2.5 : 0)
         )
@@ -904,6 +922,7 @@ private struct TableauColumn: View {
             height: CGFloat(hiddenCount) * card.hiddenStep + CGFloat(max(visibleFaceUp.count - 1, 0)) * faceUpStep + card.height,
             alignment: .top
         )
+        .contentShape(Rectangle())
         .overlay(
             RoundedRectangle(cornerRadius: 2).stroke(highlighted ? Color.yellow : Color.clear, lineWidth: highlighted ? 2.5 : 0)
         )
