@@ -347,7 +347,7 @@ struct SwiftUIShellView: View {
                     .ignoresSafeArea()
 
                 VStack(spacing: 1) {
-                    let topInset: CGFloat = 4
+                    let topInset: CGFloat = 0//16
 
                     ZStack {
                         WasteFanView(card: card, cards: Array(waste.suffix(3)), selected: selection == .waste, preferLarge: preferLarge, skin: skin)
@@ -410,6 +410,7 @@ struct SwiftUIShellView: View {
                     Spacer(minLength: 0)
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
+                .ignoresSafeArea(edges: .top)
 
                 VStack {
                     Spacer()
