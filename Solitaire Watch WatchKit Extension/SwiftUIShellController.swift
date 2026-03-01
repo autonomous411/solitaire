@@ -346,30 +346,29 @@ struct SwiftUIShellView: View {
                 Color(red: 0.08, green: 0.49, blue: 0.22)
                     .ignoresSafeArea()
 
-                VStack(spacing: 0) {
+                VStack(spacing: 1) {
+                    let topInset = max(proxy.safeAreaInsets.top + 2, 12)
                     let stockWidth = card.width + (card.deckDepthWidth * 2)
 
-                    HStack {
-                        DeckStackView(card: card, imageName: facedown, stockCount: stock.count, selected: selection == .waste && waste.isEmpty, preferLarge: preferLarge, skin: skin)
-                            .onTapGesture {
-                                drawFromStock(count: snapshot.flipCards == 1 ? 1 : 3)
-                            }
-
-                        Spacer(minLength: 0)
-
+                    ZStack {
                         WasteFanView(card: card, cards: Array(waste.suffix(3)), selected: selection == .waste, preferLarge: preferLarge, skin: skin)
                             .onTapGesture {
                                 if !waste.isEmpty {
                                     selection = selection == .waste ? nil : .waste
                                 }
                             }
-                        .frame(maxWidth: .infinity, alignment: .center)
-                        .padding(.trailing, stockWidth)
+
+                        HStack {
+                            DeckStackView(card: card, imageName: facedown, stockCount: stock.count, selected: selection == .waste && waste.isEmpty, preferLarge: preferLarge, skin: skin)
+                                .onTapGesture {
+                                    drawFromStock(count: snapshot.flipCards == 1 ? 1 : 3)
+                                }
+                            Spacer(minLength: 0)
+                        }
                     }
-                    .padding(.horizontal, 6)
-                    .padding(.top, 18)
-                    .frame(height: card.height + 8)
-                    .background(Color(red: 0.20, green: 0.53, blue: 0.28))
+                    .padding(.horizontal, 8)
+                    .padding(.top, topInset)
+                    .frame(height: card.height + 4)
 
                     HStack(spacing: 0) {
                         ForEach(0..<4, id: \.self) { i in
@@ -385,10 +384,9 @@ struct SwiftUIShellView: View {
                             }
                         }
                     }
-                    .frame(height: card.height + 10)
-                    .background(Color(red: 0.31, green: 0.60, blue: 0.23))
-                    .padding(.top, 2)
-                    .padding(.horizontal, 1)
+                    .frame(height: card.height + 6)
+                    .padding(.top, 1)
+                    .padding(.horizontal, 4)
 
                     HStack(alignment: .top, spacing: 2) {
                         ForEach(0..<7, id: \.self) { i in
@@ -407,9 +405,9 @@ struct SwiftUIShellView: View {
                         }
                     }
                     .padding(.horizontal, 2)
-                    .padding(.top, 2)
+                    .padding(.top, 1)
 
-                    Spacer(minLength: 4)
+                    Spacer(minLength: 0)
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
 
@@ -428,18 +426,9 @@ struct SwiftUIShellView: View {
                         .buttonStyle(.plain)
 
                         Spacer()
-
-                        if winBannerVisible {
-                            Text("You won")
-                                .font(.footnote)
-                                .foregroundStyle(.yellow)
-                        }
                     }
                     .padding(.horizontal, 8)
-
-                    Text("Flip: \(snapshot.flipCards)-Card | Saved: \(snapshot.hasSavedBoard ? "Yes" : "No")")
-                        .font(.caption2)
-                        .padding(.bottom, 2)
+                    .padding(.bottom, 6)
                 }
             }
             .onAppear {
