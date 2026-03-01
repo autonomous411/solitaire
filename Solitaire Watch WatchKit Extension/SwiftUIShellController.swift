@@ -409,7 +409,7 @@ struct SwiftUIShellView: View {
                     Spacer(minLength: 0)
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
-                .padding(.top, 20)
+                .padding(.top, proxy.safeAreaInsets.top)
 
                 VStack {
                     Spacer()
