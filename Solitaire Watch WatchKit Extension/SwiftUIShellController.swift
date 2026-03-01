@@ -69,6 +69,7 @@ private struct TableauPile {
 private struct BoardState {
     var stock: [SwiftCard]
     var waste: [SwiftCard]
+    var wasteDiscard: [SwiftCard]
     var foundations: [[SwiftCard]]
     var tableau: [TableauPile]
 }
@@ -117,6 +118,7 @@ private func makeInitialBoard() -> BoardState {
     return BoardState(
         stock: deck,
         waste: [],
+        wasteDiscard: [],
         foundations: Array(repeating: [], count: 4),
         tableau: tableau
     )
@@ -151,6 +153,7 @@ struct SwiftUIShellView: View {
     @State private var snapshot = BridgeSnapshot.load()
     @State private var stock: [SwiftCard]
     @State private var waste: [SwiftCard]
+    @State private var wasteDiscard: [SwiftCard]
     @State private var foundations: [[SwiftCard]]
     @State private var tableau: [TableauPile]
     @State private var selection: Selection?
@@ -160,6 +163,7 @@ struct SwiftUIShellView: View {
         let initialBoard = makeInitialBoard()
         _stock = State(initialValue: initialBoard.stock)
         _waste = State(initialValue: initialBoard.waste)
+        _wasteDiscard = State(initialValue: initialBoard.wasteDiscard)
         _foundations = State(initialValue: initialBoard.foundations)
         _tableau = State(initialValue: initialBoard.tableau)
     }
@@ -265,6 +269,7 @@ struct SwiftUIShellView: View {
                         let board = makeInitialBoard()
                         stock = board.stock
                         waste = board.waste
+                        wasteDiscard = board.wasteDiscard
                         foundations = board.foundations
                         tableau = board.tableau
                         selection = nil
@@ -290,17 +295,23 @@ struct SwiftUIShellView: View {
     }
 
     private func drawFromStock(count: Int) {
-            if stock.isEmpty {
-                stock = waste.reversed()
-                waste.removeAll()
-                selection = nil
-                updateWinState()
-                return
-            }
+        if stock.isEmpty {
+            moveCardsPreserved(&waste, to: &wasteDiscard, count: waste.count)
+            moveCardsStacked(&wasteDiscard, to: &stock, count: wasteDiscard.count)
+        }
+        if stock.isEmpty { return }
 
-        for _ in 0..<count {
-            guard let next = stock.popLast() else { break }
-            waste.append(next)
+        let flipCount = count == 1 ? 1 : 3
+        if flipCount == 3 {
+            moveCardsPreserved(&waste, to: &wasteDiscard, count: waste.count)
+            moveCardsStacked(&stock, to: &waste, count: 3)
+        } else {
+            if waste.count < 3 {
+                moveCardsStacked(&stock, to: &waste, count: 1)
+            } else {
+                moveCardsPreserved(&waste, to: &wasteDiscard, count: waste.count)
+                moveCardsStacked(&stock, to: &waste, count: 1)
+            }
         }
         selection = nil
         updateWinState()
@@ -440,6 +451,22 @@ struct SwiftUIShellView: View {
         }
         selection = nil
         updateWinState()
+    }
+}
+
+private func moveCardsPreserved(_ from: inout [SwiftCard], to: inout [SwiftCard], count: Int) {
+    guard count > 0, from.count >= count else { return }
+    let start = from.count - count
+    let segment = Array(from[start...])
+    from.removeSubrange(start...)
+    to.append(contentsOf: segment)
+}
+
+private func moveCardsStacked(_ from: inout [SwiftCard], to: inout [SwiftCard], count: Int) {
+    guard count > 0 else { return }
+    for _ in 0..<count {
+        guard let c = from.popLast() else { break }
+        to.append(c)
     }
 }
 
