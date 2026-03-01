@@ -550,10 +550,7 @@ struct SwiftUIShellView: View {
         }
 
         if case .foundation = selection {
-            // Legacy allows foundation -> tableau, but not foundation -> foundation.
-            if !foundations[index].isEmpty {
-                selection = .foundation(index)
-            }
+            // Preserve current selection on illegal foundation->foundation attempt.
             return
         }
 
@@ -564,8 +561,8 @@ struct SwiftUIShellView: View {
             foundations[index].append(moving)
             selection = nil
             updateWinState()
-        } else if !foundations[index].isEmpty {
-            selection = .foundation(index)
+        } else {
+            // Keep current source selected when target move is illegal.
         }
     }
 
@@ -606,8 +603,8 @@ struct SwiftUIShellView: View {
             tableau[index].faceUp.append(moving)
             selection = nil
             updateWinState()
-        } else if !tableau[index].faceUp.isEmpty {
-            selection = .tableau(index)
+        } else {
+            // Keep current source selected when target move is illegal.
         }
     }
 
@@ -806,7 +803,7 @@ private struct DeckStackView: View {
         }
         .frame(width: card.width + (card.deckDepthWidth * 2), height: card.height, alignment: .leading)
         .overlay(
-            RoundedRectangle(cornerRadius: 2).stroke(selected ? Color.yellow : Color.clear, lineWidth: 1)
+            RoundedRectangle(cornerRadius: 2).stroke(selected ? Color.yellow : Color.clear, lineWidth: selected ? 2.5 : 0)
         )
     }
 }
@@ -824,10 +821,16 @@ private struct WasteFanView: View {
                 PixelCard(name: cardImageName(c, sizeSuffix: card.sizeSuffix), card: card, preferLarge: preferLarge, skin: skin)
                     .offset(x: CGFloat(idx) * card.fanOffset)
             }
+            if selected, let last = cards.indices.last {
+                RoundedRectangle(cornerRadius: 2)
+                    .fill(Color.yellow.opacity(0.28))
+                    .frame(width: card.width, height: card.height)
+                    .offset(x: CGFloat(last) * card.fanOffset)
+            }
         }
         .frame(width: card.width + (card.fanOffset * 2), height: card.height, alignment: .leading)
         .overlay(
-            RoundedRectangle(cornerRadius: 2).stroke(selected ? Color.yellow : Color.clear, lineWidth: 1)
+            RoundedRectangle(cornerRadius: 2).stroke(selected ? Color.yellow : Color.clear, lineWidth: selected ? 2.5 : 0)
         )
     }
 }
@@ -843,10 +846,15 @@ private struct FoundationSlot: View {
         ZStack {
             Color.clear
             PixelCard(name: imageName, card: card, preferLarge: preferLarge, skin: skin)
+            if highlighted {
+                RoundedRectangle(cornerRadius: 2)
+                    .fill(Color.yellow.opacity(0.28))
+                    .frame(width: card.width, height: card.height)
+            }
         }
         .frame(maxWidth: .infinity)
         .overlay(
-            RoundedRectangle(cornerRadius: 2).stroke(highlighted ? Color.yellow : Color.clear, lineWidth: 1)
+            RoundedRectangle(cornerRadius: 2).stroke(highlighted ? Color.yellow : Color.clear, lineWidth: highlighted ? 2.5 : 0)
         )
     }
 }
@@ -864,6 +872,7 @@ private struct TableauColumn: View {
     var body: some View {
         let faceUpStep = card.hiddenStep
         let visibleFaceUp = faceUpImages.isEmpty ? [emptyImage] : faceUpImages
+        let selectedCardYOffset = CGFloat(hiddenCount) * card.hiddenStep + CGFloat(max(visibleFaceUp.count - 1, 0)) * faceUpStep
         ZStack(alignment: .topLeading) {
             ForEach(0..<hiddenCount, id: \.self) { idx in
                 PixelCard(name: hiddenImage, card: card, preferLarge: preferLarge, skin: skin)
@@ -874,6 +883,13 @@ private struct TableauColumn: View {
                 PixelCard(name: name, card: card, preferLarge: preferLarge, skin: skin)
                     .offset(y: CGFloat(hiddenCount) * card.hiddenStep + CGFloat(idx) * faceUpStep)
             }
+
+            if highlighted {
+                RoundedRectangle(cornerRadius: 2)
+                    .fill(Color.yellow.opacity(0.28))
+                    .frame(width: card.width, height: card.height)
+                    .offset(y: selectedCardYOffset)
+            }
         }
         .frame(
             width: card.width,
@@ -881,7 +897,7 @@ private struct TableauColumn: View {
             alignment: .top
         )
         .overlay(
-            RoundedRectangle(cornerRadius: 2).stroke(highlighted ? Color.yellow : Color.clear, lineWidth: 1)
+            RoundedRectangle(cornerRadius: 2).stroke(highlighted ? Color.yellow : Color.clear, lineWidth: highlighted ? 2.5 : 0)
         )
     }
 }
