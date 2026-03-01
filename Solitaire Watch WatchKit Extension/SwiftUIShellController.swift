@@ -350,6 +350,8 @@ struct SwiftUIShellView: View {
                     ZStack {
                         WasteFanView(card: card, cards: Array(waste.suffix(3)), selected: selection == .waste, preferLarge: preferLarge, skin: skin)
                             .contentShape(Rectangle())
+                            .frame(width: card.width + (card.fanOffset * 2), height: card.height, alignment: .leading)
+                            .contentShape(Rectangle())
                             .onTapGesture {
                                 wasteTapped()
                             }
@@ -357,6 +359,8 @@ struct SwiftUIShellView: View {
 
                         HStack {
                             DeckStackView(card: card, imageName: facedown, stockCount: stock.count, selected: selection == .waste && waste.isEmpty, preferLarge: preferLarge, skin: skin)
+                                .frame(width: card.width + (card.deckDepthWidth * 2), height: card.height, alignment: .leading)
+                                .contentShape(Rectangle())
                                 .onTapGesture {
                                     drawFromStock(count: snapshot.flipCards == 1 ? 1 : 3)
                                 }
@@ -377,6 +381,7 @@ struct SwiftUIShellView: View {
                                 skin: skin,
                                 highlighted: selection == .foundation(i)
                             )
+                            .contentShape(Rectangle())
                             .onTapGesture {
                                 foundationTapped(i)
                             }
@@ -398,6 +403,7 @@ struct SwiftUIShellView: View {
                                 skin: skin,
                                 highlighted: selection == .tableau(i)
                             )
+                            .contentShape(Rectangle())
                             .onTapGesture {
                                 tableauTapped(i)
                             }
