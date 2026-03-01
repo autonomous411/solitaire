@@ -347,7 +347,7 @@ struct SwiftUIShellView: View {
                     .ignoresSafeArea()
 
                 VStack(spacing: 1) {
-                    let topInset = max(proxy.safeAreaInsets.top + 2, 12)
+                    let topInset: CGFloat = 8
                     let stockWidth = card.width + (card.deckDepthWidth * 2)
 
                     ZStack {
