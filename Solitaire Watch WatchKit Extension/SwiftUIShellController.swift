@@ -347,25 +347,24 @@ struct SwiftUIShellView: View {
                     .ignoresSafeArea()
 
                 VStack(spacing: 1) {
-                    let topInset: CGFloat = 0//16
+                    let topInset: CGFloat = 4
 
-                    ZStack {
+                    HStack(spacing: 10) {
                         WasteFanView(card: card, cards: Array(waste.suffix(3)), selected: selection == .waste, preferLarge: preferLarge, skin: skin)
                             .onTapGesture {
                                 if !waste.isEmpty {
                                     selection = selection == .waste ? nil : .waste
                                 }
                             }
+                            .frame(maxWidth: .infinity, alignment: .center)
 
-                        HStack {
-                            DeckStackView(card: card, imageName: facedown, stockCount: stock.count, selected: selection == .waste && waste.isEmpty, preferLarge: preferLarge, skin: skin)
-                                .onTapGesture {
-                                    drawFromStock(count: snapshot.flipCards == 1 ? 1 : 3)
-                                }
-                            Spacer(minLength: 0)
-                        }
+                        DeckStackView(card: card, imageName: facedown, stockCount: stock.count, selected: selection == .waste && waste.isEmpty, preferLarge: preferLarge, skin: skin)
+                            .onTapGesture {
+                                drawFromStock(count: snapshot.flipCards == 1 ? 1 : 3)
+                            }
                     }
-                    .padding(.horizontal, 8)
+                    .padding(.leading, 18)
+                    .padding(.trailing, 8)
                     .padding(.top, topInset)
                     .frame(height: card.height + 4)
 
@@ -793,14 +792,16 @@ private struct DeckStackView: View {
 
     var body: some View {
         ZStack(alignment: .leading) {
-            PixelCard(name: imageName, card: card, preferLarge: preferLarge, skin: skin)
+            CardStrip(name: imageName, card: card, stripWidth: card.deckDepthWidth, preferLarge: preferLarge, skin: skin)
+                .offset(x: 0)
             CardStrip(name: imageName, card: card, stripWidth: card.deckDepthWidth, preferLarge: preferLarge, skin: skin)
                 .offset(x: card.deckDepthWidth)
-            CardStrip(name: imageName, card: card, stripWidth: card.deckDepthWidth, preferLarge: preferLarge, skin: skin)
+            PixelCard(name: imageName, card: card, preferLarge: preferLarge, skin: skin)
                 .offset(x: card.deckDepthWidth * 2)
             if stockCount == 0 {
                 Rectangle().stroke(Color.white.opacity(0.45), lineWidth: 1)
                     .frame(width: card.width, height: card.height)
+                    .offset(x: card.deckDepthWidth * 2)
             }
         }
         .frame(width: card.width + (card.deckDepthWidth * 2), height: card.height, alignment: .leading)
