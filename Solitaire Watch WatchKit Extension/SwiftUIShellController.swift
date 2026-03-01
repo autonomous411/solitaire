@@ -351,12 +351,11 @@ struct SwiftUIShellView: View {
 
                     ZStack {
                         WasteFanView(card: card, cards: Array(waste.suffix(3)), selected: selection == .waste, preferLarge: preferLarge, skin: skin)
+                            .contentShape(Rectangle())
                             .onTapGesture {
-                                if !waste.isEmpty {
-                                    selection = selection == .waste ? nil : .waste
-                                }
+                                wasteTapped()
                             }
-                            .offset(x: 10)
+                            .offset(x: 20)
 
                         HStack {
                             DeckStackView(card: card, imageName: facedown, stockCount: stock.count, selected: selection == .waste && waste.isEmpty, preferLarge: preferLarge, skin: skin)
@@ -475,17 +474,16 @@ struct SwiftUIShellView: View {
     }
 
     private func drawFromStock(count: Int) {
-        if stock.isEmpty {
-            moveCardsPreserved(&waste, to: &wasteDiscard, count: waste.count)
-            moveCardsStacked(&wasteDiscard, to: &stock, count: wasteDiscard.count)
-        }
+        recycleStockIfNeeded()
         if stock.isEmpty { return }
 
         let flipCount = count == 1 ? 1 : 3
         if flipCount == 3 {
+            // Legacy 3-card flow: archive visible waste, then deal from stock.
             moveCardsPreserved(&waste, to: &wasteDiscard, count: waste.count)
             moveCardsStacked(&stock, to: &waste, count: 3)
         } else {
+            // Legacy 1-card flow: keep up to 3 visible in waste, archive before dealing the 4th.
             if waste.count < 3 {
                 moveCardsStacked(&stock, to: &waste, count: 1)
             } else {
@@ -495,6 +493,21 @@ struct SwiftUIShellView: View {
         }
         selection = nil
         updateWinState()
+    }
+
+    private func recycleStockIfNeeded() {
+        if stock.isEmpty {
+            moveCardsPreserved(&waste, to: &wasteDiscard, count: waste.count)
+            moveCardsStacked(&wasteDiscard, to: &stock, count: wasteDiscard.count)
+        }
+    }
+
+    private func wasteTapped() {
+        guard !waste.isEmpty else {
+            selection = nil
+            return
+        }
+        selection = selection == .waste ? nil : .waste
     }
 
     private func selectedCard() -> SwiftCard? {
@@ -593,6 +606,7 @@ struct SwiftUIShellView: View {
         if case .waste = selection, tableau[index].faceUp.isEmpty {
             // In legacy flow, tapping empty tableau while waste selected only works for a legal King move.
             guard let wasteTop = waste.last, canMoveToTableau(wasteTop, pile: tableau[index]) else {
+                selection = nil
                 return
             }
         }
@@ -827,6 +841,7 @@ private struct DeckStackView: View {
             }
         }
         .frame(width: card.width + (card.deckDepthWidth * 2), height: card.height, alignment: .leading)
+        .contentShape(Rectangle())
         .overlay(
             RoundedRectangle(cornerRadius: 2).stroke(selected ? Color.yellow : Color.clear, lineWidth: selected ? 2.5 : 0)
         )
@@ -854,8 +869,9 @@ private struct WasteFanView: View {
             }
         }
         .frame(width: card.width + (card.fanOffset * 2), height: card.height, alignment: .leading)
+        .contentShape(Rectangle())
         .overlay(
-            RoundedRectangle(cornerRadius: 2).stroke(selected ? Color.yellow : Color.clear, lineWidth: selected ? 2.5 : 0)
+            RoundedRectangle(cornerRadius: 2).stroke(selected ? Color.yellow : Color.clear, lineWidth: selected ? 3.0 : 0)
         )
     }
 }
