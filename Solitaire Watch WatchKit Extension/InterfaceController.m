@@ -35,6 +35,7 @@ static int lastFromTouched = 0;
 -(NSArray<NSMutableArray*>*) boardStackCollections;
 -(BOOL) loadBoardFromValidatedStacks:(NSArray<NSArray<NSNumber*>*>*) stacks;
 -(void) persistStacks:(NSArray<NSArray<NSNumber*>*>*) stacks notifyCompanion:(BOOL) notifyCompanion;
+-(void) ensureBoardStacksAllocated;
 @property (strong, nonatomic) IBOutlet WKInterfaceButton* deckFlipButton;
 @property (strong, nonatomic) IBOutlet WKInterfaceButton* deckStackButton;
 @property (strong, nonatomic) IBOutlet WKInterfaceButton* discard1Button;
@@ -3434,6 +3435,7 @@ static NSInteger const kCurrentSaveStateSchemaVersion = 2;
 
 -(NSArray<NSMutableArray*>*) boardStackCollections
 {
+    [self ensureBoardStacksAllocated];
     return @[
         self.deckStack,
         self.deckFlip,
@@ -3450,6 +3452,24 @@ static NSInteger const kCurrentSaveStateSchemaVersion = 2;
         self.discard3,
         self.discard4
     ];
+}
+
+-(void) ensureBoardStacksAllocated
+{
+    if (self.deckStack == nil) self.deckStack = [[NSMutableArray alloc] init];
+    if (self.deckFlip == nil) self.deckFlip = [[NSMutableArray alloc] init];
+    if (self.deckFlipDiscard == nil) self.deckFlipDiscard = [[NSMutableArray alloc] init];
+    if (self.hand0 == nil) self.hand0 = [[NSMutableArray alloc] init];
+    if (self.hand1 == nil) self.hand1 = [[NSMutableArray alloc] init];
+    if (self.hand2 == nil) self.hand2 = [[NSMutableArray alloc] init];
+    if (self.hand3 == nil) self.hand3 = [[NSMutableArray alloc] init];
+    if (self.hand4 == nil) self.hand4 = [[NSMutableArray alloc] init];
+    if (self.hand5 == nil) self.hand5 = [[NSMutableArray alloc] init];
+    if (self.hand6 == nil) self.hand6 = [[NSMutableArray alloc] init];
+    if (self.discard1 == nil) self.discard1 = [[NSMutableArray alloc] init];
+    if (self.discard2 == nil) self.discard2 = [[NSMutableArray alloc] init];
+    if (self.discard3 == nil) self.discard3 = [[NSMutableArray alloc] init];
+    if (self.discard4 == nil) self.discard4 = [[NSMutableArray alloc] init];
 }
 
 -(void) migrateLegacyDefaultsIfNeeded
