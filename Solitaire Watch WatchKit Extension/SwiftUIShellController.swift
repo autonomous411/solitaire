@@ -1,9 +1,6 @@
 import SwiftUI
 import WatchKit
 
-private let watchUIModeLegacy = "legacy"
-private let watchUIModeSwiftUI = "swiftui"
-
 final class SwiftUIShellController: WKHostingController<SwiftUIShellView> {
     override var body: SwiftUIShellView {
         SwiftUIShellView()
@@ -12,14 +9,12 @@ final class SwiftUIShellController: WKHostingController<SwiftUIShellView> {
 
 private struct BridgeSnapshot {
     let flipCards: Int
-    let uiMode: String
     let hasSavedBoard: Bool
 
     static func load() -> BridgeSnapshot {
         let dict = LegacyGameBridge.snapshot()
         return BridgeSnapshot(
             flipCards: (dict["flipCards"] as? NSNumber)?.intValue ?? 3,
-            uiMode: (dict["uiMode"] as? String) ?? watchUIModeSwiftUI,
             hasSavedBoard: (dict["hasSavedBoard"] as? NSNumber)?.boolValue ?? false
         )
     }
@@ -247,23 +242,6 @@ struct SwiftUIShellView: View {
                     }
                     Text("Flip: \(snapshot.flipCards)-Card | Saved: \(snapshot.hasSavedBoard ? "Yes" : "No")")
                         .font(.caption2)
-                    Text("Mode: \(snapshot.uiMode)")
-                        .font(.caption2)
-
-                    Button("Switch To Legacy") {
-                        LegacyGameBridge.setUIModeToLegacy()
-                        snapshot = BridgeSnapshot.load()
-                        WKInterfaceController.reloadRootPageControllers(withNames: ["legacyRoot"], contexts: nil, orientation: .horizontal, pageIndex: 0)
-                    }
-                    .buttonStyle(.borderedProminent)
-                    .font(.footnote)
-
-                    Button("Keep SwiftUI") {
-                        LegacyGameBridge.setUIModeToSwiftUI()
-                        snapshot = BridgeSnapshot.load()
-                    }
-                    .buttonStyle(.bordered)
-                    .font(.footnote)
 
                     Button(snapshot.flipCards == 1 ? "Flip Mode: 1-Card" : "Flip Mode: 3-Card") {
                         let next = snapshot.flipCards == 1 ? 3 : 1

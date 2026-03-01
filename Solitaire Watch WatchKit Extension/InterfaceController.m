@@ -35,10 +35,6 @@ static int lastFromTouched = 0;
 -(NSArray<NSMutableArray*>*) boardStackCollections;
 -(BOOL) loadBoardFromValidatedStacks:(NSArray<NSArray<NSNumber*>*>*) stacks;
 -(void) persistStacks:(NSArray<NSArray<NSNumber*>*>*) stacks notifyCompanion:(BOOL) notifyCompanion;
--(NSString*) currentUIMode;
--(BOOL) shouldUseSwiftUIRoot;
--(void) openUIRendererSettings;
--(void) toggleUIRendererMode;
 @property (strong, nonatomic) IBOutlet WKInterfaceButton* deckFlipButton;
 @property (strong, nonatomic) IBOutlet WKInterfaceButton* deckStackButton;
 @property (strong, nonatomic) IBOutlet WKInterfaceButton* discard1Button;
@@ -289,9 +285,6 @@ static NSString* const kSolvedDealSelectionModeKey = @"solved_deal_selection_mod
 static NSString* const kSolvedDealFixedIndexKey = @"solved_deal_fixed_index";
 static NSString* const kSolvedDealRoundRobinIndexKey = @"solved_deal_round_robin_index";
 static NSString* const kSolvedDealLastIndexKey = @"solved_deal_last_index";
-static NSString* const kWatchUIModeKey = @"watch_ui_mode";
-static NSString* const kWatchUIModeLegacy = @"legacy";
-static NSString* const kWatchUIModeSwiftUI = @"swiftui";
 static NSInteger const kSaveStateStackCount = 14;
 static NSInteger const kTotalCardsInDeck = 52;
 static NSInteger const kCurrentSaveStateSchemaVersion = 2;
@@ -2674,36 +2667,6 @@ static NSInteger const kCurrentSaveStateSchemaVersion = 2;
     [self pushControllerWithName:@"settings" context:nil];
 }
 
--(NSString*) currentUIMode
-{
-    NSString* mode = [self.sharedDefaults objectForKey:kWatchUIModeKey];
-    if ([mode isEqualToString:kWatchUIModeSwiftUI] || [mode isEqualToString:kWatchUIModeLegacy])
-    {
-        return mode;
-    }
-    [self.sharedDefaults setObject:kWatchUIModeSwiftUI forKey:kWatchUIModeKey];
-    [self.sharedDefaults synchronize];
-    return kWatchUIModeSwiftUI;
-}
-
--(BOOL) shouldUseSwiftUIRoot
-{
-    return [[self currentUIMode] isEqualToString:kWatchUIModeSwiftUI];
-}
-
--(void) openUIRendererSettings
-{
-    [self toggleUIRendererMode];
-}
-
--(void) toggleUIRendererMode
-{
-    NSString* nextMode = [self shouldUseSwiftUIRoot] ? kWatchUIModeLegacy : kWatchUIModeSwiftUI;
-    [self.sharedDefaults setObject:nextMode forKey:kWatchUIModeKey];
-    [self.sharedDefaults synchronize];
-    [self popToRootController];
-}
-
 -(void) refreshInteractionModeFromSettings
 {
     // Force touch interaction for watch-first gameplay reliability.
@@ -2837,7 +2800,6 @@ static NSInteger const kCurrentSaveStateSchemaVersion = 2;
     
     [self clearAllMenuItems];
     [self addMenuItemWithItemIcon:WKMenuItemIconMore title:@"Controls" action:@selector(controlSettings)];
-    [self addMenuItemWithItemIcon:WKMenuItemIconInfo title:@"UI Renderer" action:@selector(openUIRendererSettings)];
     
     if (self.flipCardsNumber==nil)
     {
@@ -2925,7 +2887,6 @@ static NSInteger const kCurrentSaveStateSchemaVersion = 2;
     [self clearAllMenuItems];
     //[self addMenuItemWithItemIcon:WKMenuItemIconDecline title:@"" action:@selector(back)];
     [self addMenuItemWithItemIcon:WKMenuItemIconMore title:@"Controls" action:@selector(controlSettings)];
-    [self addMenuItemWithItemIcon:WKMenuItemIconInfo title:@"UI Renderer" action:@selector(openUIRendererSettings)];
     
     [self addMenuItemWithItemIcon:WKMenuItemIconTrash title:@"Redeal" action:@selector(resetBoard)];
     
@@ -3704,22 +3665,7 @@ static NSInteger const kCurrentSaveStateSchemaVersion = 2;
     // This method is called when watch view controller is about to be visible to user
     [super willActivate];
     [self setTitle:@""];
-    self.sharedDefaults = [[NSUserDefaults alloc] initWithSuiteName:@"group.solitaire"];
-    if (self.sharedDefaults == nil)
-    {
-        self.sharedDefaults = [NSUserDefaults standardUserDefaults];
-    }
-    if ([self shouldUseSwiftUIRoot])
-    {
-        [self presentControllerWithName:@"swiftuiRoot" context:nil];
-        return;
-    }
-    //dispatch_async(dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-    [self initSolitaire];
-    [self refreshInteractionModeFromSettings];
-    
-    [self applyResponsiveLayout];
-    [self renderFullBoard];
+    [self presentControllerWithName:@"swiftuiRoot" context:nil];
 }
 
 - (void)didDeactivate {

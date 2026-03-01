@@ -2,9 +2,6 @@
 
 static NSString* const kSavedDataKey = @"savedata";
 static NSString* const kFlipCardNumberKey = @"flipcardnumber";
-static NSString* const kWatchUIModeKey = @"watch_ui_mode";
-static NSString* const kWatchUIModeLegacy = @"legacy";
-static NSString* const kWatchUIModeSwiftUI = @"swiftui";
 
 @implementation LegacyGameBridge
 
@@ -27,34 +24,14 @@ static NSString* const kWatchUIModeSwiftUI = @"swiftui";
         flipCards = @3;
     }
 
-    NSString* uiMode = [defaults objectForKey:kWatchUIModeKey];
-    if (![uiMode isEqualToString:kWatchUIModeLegacy] && ![uiMode isEqualToString:kWatchUIModeSwiftUI])
-    {
-        uiMode = kWatchUIModeSwiftUI;
-    }
-
     NSData* savedData = [defaults objectForKey:kSavedDataKey];
     BOOL hasSavedBoard = (savedData != nil && [savedData length] > 0);
 
     return @{
         @"flipCards": flipCards,
-        @"uiMode": uiMode,
+        @"uiMode": @"swiftui",
         @"hasSavedBoard": @(hasSavedBoard)
     };
-}
-
-+ (void) setUIModeToLegacy
-{
-    NSUserDefaults* defaults = [self sharedDefaults];
-    [defaults setObject:kWatchUIModeLegacy forKey:kWatchUIModeKey];
-    [defaults synchronize];
-}
-
-+ (void) setUIModeToSwiftUI
-{
-    NSUserDefaults* defaults = [self sharedDefaults];
-    [defaults setObject:kWatchUIModeSwiftUI forKey:kWatchUIModeKey];
-    [defaults synchronize];
 }
 
 + (void) setFlipCardsNumber:(NSInteger) count
