@@ -2681,9 +2681,9 @@ static NSInteger const kCurrentSaveStateSchemaVersion = 2;
     {
         return mode;
     }
-    [self.sharedDefaults setObject:kWatchUIModeLegacy forKey:kWatchUIModeKey];
+    [self.sharedDefaults setObject:kWatchUIModeSwiftUI forKey:kWatchUIModeKey];
     [self.sharedDefaults synchronize];
-    return kWatchUIModeLegacy;
+    return kWatchUIModeSwiftUI;
 }
 
 -(BOOL) shouldUseSwiftUIRoot

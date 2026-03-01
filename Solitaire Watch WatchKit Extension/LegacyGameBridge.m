@@ -30,7 +30,7 @@ static NSString* const kWatchUIModeSwiftUI = @"swiftui";
     NSString* uiMode = [defaults objectForKey:kWatchUIModeKey];
     if (![uiMode isEqualToString:kWatchUIModeLegacy] && ![uiMode isEqualToString:kWatchUIModeSwiftUI])
     {
-        uiMode = kWatchUIModeLegacy;
+        uiMode = kWatchUIModeSwiftUI;
     }
 
     NSData* savedData = [defaults objectForKey:kSavedDataKey];
