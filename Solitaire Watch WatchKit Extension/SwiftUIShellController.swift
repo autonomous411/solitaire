@@ -347,7 +347,7 @@ struct SwiftUIShellView: View {
                     .ignoresSafeArea()
 
                 VStack(spacing: 1) {
-                    HStack(alignment: .top, spacing: 2) {
+                    HStack(alignment: .top, spacing: 4) {
                         DeckStackView(card: card, imageName: facedown, stockCount: stock.count, selected: selection == .waste && waste.isEmpty, preferLarge: preferLarge, skin: skin)
                             .frame(width: card.width + (card.deckDepthWidth * 2), height: card.height, alignment: .leading)
                             .contentShape(Rectangle())
@@ -363,9 +363,9 @@ struct SwiftUIShellView: View {
                                 wasteTapped()
                             }
 
-                        Spacer(minLength: 2)
+                        Spacer(minLength: 6)
 
-                        HStack(spacing: 1) {
+                        HStack(spacing: 4) {
                             ForEach(0..<4, id: \.self) { i in
                                 FoundationSlot(
                                     card: card,
@@ -380,9 +380,9 @@ struct SwiftUIShellView: View {
                                 }
                             }
                         }
+                        .padding(.horizontal, 2)
                     }
-                    .padding(.leading, 6)
-                    .padding(.trailing, 4)
+                    .padding(.horizontal, 6)
                     .frame(height: card.height + 2)
 
                     HStack(alignment: .top, spacing: 2) {
@@ -409,7 +409,7 @@ struct SwiftUIShellView: View {
                     Spacer(minLength: 0)
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
-                .padding(.top, 10)
+                .padding(.top, 20)
 
                 VStack {
                     Spacer()
