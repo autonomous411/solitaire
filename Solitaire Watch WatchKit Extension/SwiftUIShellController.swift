@@ -86,6 +86,34 @@ private enum Selection: Equatable {
     case foundation(Int)
 }
 
+private enum InteractionMode: String, CaseIterable {
+    case voiceAndMoves = "voiceandmoves"
+    case voiceOnly = "voiceonly"
+    case touchTwo = "touchtwo"
+    case touchOne = "touchone"
+
+    var title: String {
+        switch self {
+        case .voiceAndMoves: return "Voice + Moves"
+        case .voiceOnly: return "Voice Only"
+        case .touchTwo: return "Touch (2-Tap)"
+        case .touchOne: return "Touch (1-Tap)"
+        }
+    }
+}
+
+private let interactionDefaultsKey = "solitairesetting"
+
+private func loadInteractionMode() -> InteractionMode {
+    let raw = UserDefaults.standard.string(forKey: interactionDefaultsKey) ?? InteractionMode.touchTwo.rawValue
+    return InteractionMode(rawValue: raw) ?? .touchTwo
+}
+
+private func saveInteractionMode(_ mode: InteractionMode) {
+    UserDefaults.standard.set(mode.rawValue, forKey: interactionDefaultsKey)
+    UserDefaults.standard.synchronize()
+}
+
 private func rankToken(_ rank: Int) -> String {
     switch rank {
     case 1: return "A"
@@ -290,6 +318,8 @@ struct SwiftUIShellView: View {
     @State private var tableau: [TableauPile]
     @State private var selection: Selection?
     @State private var winBannerVisible = false
+    @State private var settingsPresented = false
+    @State private var interactionMode: InteractionMode
 
     init() {
         let initialSnapshot = BridgeSnapshot.load()
@@ -301,6 +331,7 @@ struct SwiftUIShellView: View {
         _wasteDiscard = State(initialValue: initialBoard.wasteDiscard)
         _foundations = State(initialValue: initialBoard.foundations)
         _tableau = State(initialValue: initialBoard.tableau)
+        _interactionMode = State(initialValue: loadInteractionMode())
     }
 
     var body: some View {
@@ -316,13 +347,15 @@ struct SwiftUIShellView: View {
                     .ignoresSafeArea()
 
                 VStack(spacing: 0) {
+                    let stockWidth = card.width + (card.deckDepthWidth * 2)
+
                     HStack {
                         DeckStackView(card: card, imageName: facedown, stockCount: stock.count, selected: selection == .waste && waste.isEmpty, preferLarge: preferLarge, skin: skin)
                             .onTapGesture {
                                 drawFromStock(count: snapshot.flipCards == 1 ? 1 : 3)
                             }
 
-                        Spacer(minLength: 6)
+                        Spacer(minLength: 0)
 
                         WasteFanView(card: card, cards: Array(waste.suffix(3)), selected: selection == .waste, preferLarge: preferLarge, skin: skin)
                             .onTapGesture {
@@ -330,8 +363,11 @@ struct SwiftUIShellView: View {
                                     selection = selection == .waste ? nil : .waste
                                 }
                             }
+                        .frame(maxWidth: .infinity, alignment: .center)
+                        .padding(.trailing, stockWidth)
                     }
-                    .padding(.horizontal, 2)
+                    .padding(.horizontal, 6)
+                    .padding(.top, 18)
                     .frame(height: card.height + 8)
                     .background(Color(red: 0.20, green: 0.53, blue: 0.28))
 
@@ -374,52 +410,75 @@ struct SwiftUIShellView: View {
                     .padding(.top, 2)
 
                     Spacer(minLength: 4)
+                }
+                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
 
-                    VStack(spacing: 3) {
+                VStack {
+                    Spacer()
+                    HStack {
+                        Button {
+                            settingsPresented = true
+                        } label: {
+                            Image(systemName: "gearshape.fill")
+                                .font(.system(size: 12, weight: .bold))
+                                .frame(width: 28, height: 28)
+                                .background(Color.black.opacity(0.28))
+                                .clipShape(Circle())
+                        }
+                        .buttonStyle(.plain)
+
+                        Spacer()
+
                         if winBannerVisible {
                             Text("You won")
                                 .font(.footnote)
                                 .foregroundStyle(.yellow)
                         }
-                        Text("Flip: \(snapshot.flipCards)-Card | Saved: \(snapshot.hasSavedBoard ? "Yes" : "No")")
-                            .font(.caption2)
-
-                        Button(snapshot.flipCards == 1 ? "Flip Mode: 1-Card" : "Flip Mode: 3-Card") {
-                            let next = snapshot.flipCards == 1 ? 3 : 1
-                            LegacyGameBridge.setFlipCardsNumber(next)
-                            snapshot = BridgeSnapshot.load()
-                        }
-                        .buttonStyle(.bordered)
-                        .font(.footnote)
-
-                        Button("New Deal") {
-                            var board = makeInitialBoard()
-                            dealInitialWaste(&board, flipCount: snapshot.flipCards)
-                            stock = board.stock
-                            waste = board.waste
-                            wasteDiscard = board.wasteDiscard
-                            foundations = board.foundations
-                            tableau = board.tableau
-                            selection = nil
-                            winBannerVisible = false
-                        }
-                        .buttonStyle(.bordered)
-                        .font(.footnote)
-
-                        Button("Auto Move") {
-                            autoMoveToFoundations()
-                        }
-                        .buttonStyle(.bordered)
-                        .font(.footnote)
                     }
-                    .padding(.bottom, 2)
+                    .padding(.horizontal, 8)
+
+                    Text("Flip: \(snapshot.flipCards)-Card | Saved: \(snapshot.hasSavedBoard ? "Yes" : "No")")
+                        .font(.caption2)
+                        .padding(.bottom, 2)
                 }
-                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
             }
             .onAppear {
                 snapshot = BridgeSnapshot.load()
+                interactionMode = loadInteractionMode()
+            }
+            .sheet(isPresented: $settingsPresented) {
+                SwiftUISettingsView(
+                    flipCards: snapshot.flipCards,
+                    interactionMode: interactionMode,
+                    onFlipCardsChanged: { next in
+                        LegacyGameBridge.setFlipCardsNumber(next)
+                        snapshot = BridgeSnapshot.load()
+                    },
+                    onInteractionModeChanged: { mode in
+                        interactionMode = mode
+                        saveInteractionMode(mode)
+                    },
+                    onNewDeal: {
+                        newDeal()
+                    },
+                    onAutoMove: {
+                        autoMoveToFoundations()
+                    }
+                )
             }
         }
+    }
+
+    private func newDeal() {
+        var board = makeInitialBoard()
+        dealInitialWaste(&board, flipCount: snapshot.flipCards)
+        stock = board.stock
+        waste = board.waste
+        wasteDiscard = board.wasteDiscard
+        foundations = board.foundations
+        tableau = board.tableau
+        selection = nil
+        winBannerVisible = false
     }
 
     private func drawFromStock(count: Int) {
@@ -599,6 +658,85 @@ struct SwiftUIShellView: View {
         }
         selection = nil
         updateWinState()
+    }
+}
+
+private struct SwiftUISettingsView: View {
+    @Environment(\.dismiss) private var dismiss
+    let flipCards: Int
+    let interactionMode: InteractionMode
+    let onFlipCardsChanged: (Int) -> Void
+    let onInteractionModeChanged: (InteractionMode) -> Void
+    let onNewDeal: () -> Void
+    let onAutoMove: () -> Void
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            HStack {
+                Text("Settings")
+                    .font(.headline)
+                Spacer()
+                Button("Close") {
+                    dismiss()
+                }
+                .buttonStyle(.bordered)
+                .font(.caption)
+            }
+
+            VStack(alignment: .leading, spacing: 4) {
+                Text("Flip Cards")
+                    .font(.caption2)
+                HStack(spacing: 6) {
+                    Button("1-Card") {
+                        onFlipCardsChanged(1)
+                    }
+                    .buttonStyle(.borderedProminent)
+                    .tint(flipCards == 1 ? .green : .gray)
+                    .font(.caption2)
+
+                    Button("3-Card") {
+                        onFlipCardsChanged(3)
+                    }
+                    .buttonStyle(.borderedProminent)
+                    .tint(flipCards == 3 ? .green : .gray)
+                    .font(.caption2)
+                }
+            }
+
+            VStack(alignment: .leading, spacing: 4) {
+                Text("Interaction")
+                    .font(.caption2)
+                ForEach(InteractionMode.allCases, id: \.self) { mode in
+                    Button(mode.title) {
+                        onInteractionModeChanged(mode)
+                    }
+                    .buttonStyle(.borderedProminent)
+                    .tint(interactionMode == mode ? .green : .gray)
+                    .font(.caption2)
+                }
+            }
+
+            HStack(spacing: 6) {
+                Button("New Deal") {
+                    onNewDeal()
+                    dismiss()
+                }
+                .buttonStyle(.bordered)
+                .font(.caption2)
+
+                Button("Auto Move") {
+                    onAutoMove()
+                    dismiss()
+                }
+                .buttonStyle(.bordered)
+                .font(.caption2)
+            }
+
+            Spacer(minLength: 0)
+        }
+        .padding(8)
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+        .background(Color.black.opacity(0.90))
     }
 }
 
