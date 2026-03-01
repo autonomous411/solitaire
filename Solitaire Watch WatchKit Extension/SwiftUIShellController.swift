@@ -697,70 +697,70 @@ private struct SwiftUISettingsView: View {
     let onAutoMove: () -> Void
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            HStack {
-                Text("Settings")
-                    .font(.headline)
-                Spacer()
-                Button("Close") {
-                    dismiss()
-                }
-                .buttonStyle(.bordered)
-                .font(.caption)
-            }
-
-            VStack(alignment: .leading, spacing: 4) {
-                Text("Flip Cards")
+        ScrollView(.vertical, showsIndicators: false) {
+            VStack(alignment: .leading, spacing: 8) {
+                HStack {
+                    Text("Settings")
+                        .font(.headline)
+                    Spacer()
+                    Button("Close") {
+                        dismiss()
+                    }
+                    .buttonStyle(.bordered)
                     .font(.caption2)
+                }
+
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("Flip Cards")
+                        .font(.caption2)
+                    HStack(spacing: 6) {
+                        Button("1-Card") {
+                            onFlipCardsChanged(1)
+                        }
+                        .buttonStyle(.borderedProminent)
+                        .tint(flipCards == 1 ? .green : .gray)
+                        .font(.caption2)
+
+                        Button("3-Card") {
+                            onFlipCardsChanged(3)
+                        }
+                        .buttonStyle(.borderedProminent)
+                        .tint(flipCards == 3 ? .green : .gray)
+                        .font(.caption2)
+                    }
+                }
+
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("Interaction")
+                        .font(.caption2)
+                    ForEach(InteractionMode.allCases, id: \.self) { mode in
+                        Button(mode.title) {
+                            onInteractionModeChanged(mode)
+                        }
+                        .buttonStyle(.borderedProminent)
+                        .tint(interactionMode == mode ? .green : .gray)
+                        .font(.caption2)
+                    }
+                }
+
                 HStack(spacing: 6) {
-                    Button("1-Card") {
-                        onFlipCardsChanged(1)
+                    Button("New Deal") {
+                        onNewDeal()
+                        dismiss()
                     }
-                    .buttonStyle(.borderedProminent)
-                    .tint(flipCards == 1 ? .green : .gray)
+                    .buttonStyle(.bordered)
                     .font(.caption2)
 
-                    Button("3-Card") {
-                        onFlipCardsChanged(3)
+                    Button("Auto Move") {
+                        onAutoMove()
+                        dismiss()
                     }
-                    .buttonStyle(.borderedProminent)
-                    .tint(flipCards == 3 ? .green : .gray)
+                    .buttonStyle(.bordered)
                     .font(.caption2)
                 }
             }
-
-            VStack(alignment: .leading, spacing: 4) {
-                Text("Interaction")
-                    .font(.caption2)
-                ForEach(InteractionMode.allCases, id: \.self) { mode in
-                    Button(mode.title) {
-                        onInteractionModeChanged(mode)
-                    }
-                    .buttonStyle(.borderedProminent)
-                    .tint(interactionMode == mode ? .green : .gray)
-                    .font(.caption2)
-                }
-            }
-
-            HStack(spacing: 6) {
-                Button("New Deal") {
-                    onNewDeal()
-                    dismiss()
-                }
-                .buttonStyle(.bordered)
-                .font(.caption2)
-
-                Button("Auto Move") {
-                    onAutoMove()
-                    dismiss()
-                }
-                .buttonStyle(.bordered)
-                .font(.caption2)
-            }
-
-            Spacer(minLength: 0)
+            .padding(8)
         }
-        .padding(8)
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
         .background(Color.black.opacity(0.90))
     }
