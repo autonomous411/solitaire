@@ -1,1 +1,6 @@
 docs/qa_sessions/logs/*.log
+.derived_data/
+DerivedData/
+.DS_Store
+.env
+.DS_Store
