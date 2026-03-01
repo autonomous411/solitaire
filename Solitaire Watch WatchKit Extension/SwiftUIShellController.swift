@@ -124,6 +124,11 @@ private func makeInitialBoard() -> BoardState {
     )
 }
 
+private func dealInitialWaste(_ board: inout BoardState, flipCount: Int) {
+    let drawCount = (flipCount == 1) ? 1 : 3
+    moveCardsStacked(&board.stock, to: &board.waste, count: drawCount)
+}
+
 private func canMoveToFoundation(_ card: SwiftCard, foundation: [SwiftCard]) -> Bool {
     if let top = foundation.last {
         return top.suit == card.suit && card.rank == top.rank + 1
@@ -150,7 +155,7 @@ private func isValidTableauRun(_ run: [SwiftCard]) -> Bool {
 }
 
 struct SwiftUIShellView: View {
-    @State private var snapshot = BridgeSnapshot.load()
+    @State private var snapshot: BridgeSnapshot
     @State private var stock: [SwiftCard]
     @State private var waste: [SwiftCard]
     @State private var wasteDiscard: [SwiftCard]
@@ -160,7 +165,10 @@ struct SwiftUIShellView: View {
     @State private var winBannerVisible = false
 
     init() {
-        let initialBoard = makeInitialBoard()
+        let initialSnapshot = BridgeSnapshot.load()
+        var initialBoard = makeInitialBoard()
+        dealInitialWaste(&initialBoard, flipCount: initialSnapshot.flipCards)
+        _snapshot = State(initialValue: initialSnapshot)
         _stock = State(initialValue: initialBoard.stock)
         _waste = State(initialValue: initialBoard.waste)
         _wasteDiscard = State(initialValue: initialBoard.wasteDiscard)
@@ -266,7 +274,8 @@ struct SwiftUIShellView: View {
                     .font(.footnote)
 
                     Button("New Deal") {
-                        let board = makeInitialBoard()
+                        var board = makeInitialBoard()
+                        dealInitialWaste(&board, flipCount: snapshot.flipCards)
                         stock = board.stock
                         waste = board.waste
                         wasteDiscard = board.wasteDiscard
