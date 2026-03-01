@@ -57,4 +57,12 @@ static NSString* const kWatchUIModeSwiftUI = @"swiftui";
     [defaults synchronize];
 }
 
++ (void) setFlipCardsNumber:(NSInteger) count
+{
+    NSInteger clamped = (count == 1) ? 1 : 3;
+    NSUserDefaults* defaults = [self sharedDefaults];
+    [defaults setObject:@(clamped) forKey:kFlipCardNumberKey];
+    [defaults synchronize];
+}
+
 @end

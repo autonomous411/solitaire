@@ -174,7 +174,7 @@ struct SwiftUIShellView: View {
                 HStack {
                     DeckStackView(card: card, imageName: facedown, stockCount: stock.count, selected: selection == .waste && waste.isEmpty)
                         .onTapGesture {
-                            drawFromStock(count: max(1, snapshot.flipCards))
+                            drawFromStock(count: snapshot.flipCards == 1 ? 1 : 3)
                         }
 
                     Spacer(minLength: 6)
@@ -248,6 +248,14 @@ struct SwiftUIShellView: View {
 
                     Button("Keep SwiftUI") {
                         LegacyGameBridge.setUIModeToSwiftUI()
+                        snapshot = BridgeSnapshot.load()
+                    }
+                    .buttonStyle(.bordered)
+                    .font(.footnote)
+
+                    Button(snapshot.flipCards == 1 ? "Flip Mode: 1-Card" : "Flip Mode: 3-Card") {
+                        let next = snapshot.flipCards == 1 ? 3 : 1
+                        LegacyGameBridge.setFlipCardsNumber(next)
                         snapshot = BridgeSnapshot.load()
                     }
                     .buttonStyle(.bordered)
