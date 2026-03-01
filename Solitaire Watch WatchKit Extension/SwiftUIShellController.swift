@@ -347,7 +347,10 @@ struct SwiftUIShellView: View {
                     .ignoresSafeArea()
 
                 VStack(spacing: 1) {
-                    let topInset: CGFloat = max(4, proxy.safeAreaInsets.top + 2)
+                    let safeTopInset: CGFloat = proxy.safeAreaInsets.top
+
+                    Color.clear
+                        .frame(height: safeTopInset)
 
                     ZStack {
                         WasteFanView(card: card, cards: Array(waste.suffix(3)), selected: selection == .waste, preferLarge: preferLarge, skin: skin)
@@ -368,7 +371,6 @@ struct SwiftUIShellView: View {
                     }
                     .padding(.leading, 10)
                     .padding(.trailing, 6)
-                    .padding(.top, topInset)
                     .frame(height: card.height + 4)
 
                     HStack(spacing: 0) {
