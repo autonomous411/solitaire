@@ -347,7 +347,14 @@ struct SwiftUIShellView: View {
                     .ignoresSafeArea()
 
                 VStack(spacing: 1) {
-                    ZStack {
+                    HStack(alignment: .top, spacing: 2) {
+                        DeckStackView(card: card, imageName: facedown, stockCount: stock.count, selected: selection == .waste && waste.isEmpty, preferLarge: preferLarge, skin: skin)
+                            .frame(width: card.width + (card.deckDepthWidth * 2), height: card.height, alignment: .leading)
+                            .contentShape(Rectangle())
+                            .onTapGesture {
+                                drawFromStock(count: snapshot.flipCards == 1 ? 1 : 3)
+                            }
+
                         WasteFanView(card: card, cards: Array(waste.suffix(3)), selected: selection == .waste, preferLarge: preferLarge, skin: skin)
                             .contentShape(Rectangle())
                             .frame(width: card.width + (card.fanOffset * 2), height: card.height, alignment: .leading)
@@ -355,41 +362,28 @@ struct SwiftUIShellView: View {
                             .onTapGesture {
                                 wasteTapped()
                             }
-                            .offset(x: 20)
 
-                        HStack {
-                            DeckStackView(card: card, imageName: facedown, stockCount: stock.count, selected: selection == .waste && waste.isEmpty, preferLarge: preferLarge, skin: skin)
-                                .frame(width: card.width + (card.deckDepthWidth * 2), height: card.height, alignment: .leading)
+                        Spacer(minLength: 2)
+
+                        HStack(spacing: 1) {
+                            ForEach(0..<4, id: \.self) { i in
+                                FoundationSlot(
+                                    card: card,
+                                    imageName: foundations[i].last.map { cardImageName($0, sizeSuffix: card.sizeSuffix) } ?? cardback,
+                                    preferLarge: preferLarge,
+                                    skin: skin,
+                                    highlighted: selection == .foundation(i)
+                                )
                                 .contentShape(Rectangle())
                                 .onTapGesture {
-                                    drawFromStock(count: snapshot.flipCards == 1 ? 1 : 3)
+                                    foundationTapped(i)
                                 }
-                                .offset(x: 40)
-                            Spacer(minLength: 0)
-                        }
-                    }
-                    .padding(.leading, 10)
-                    .padding(.trailing, 6)
-                    .frame(height: card.height + 4)
-
-                    HStack(spacing: 0) {
-                        ForEach(0..<4, id: \.self) { i in
-                            FoundationSlot(
-                                card: card,
-                                imageName: foundations[i].last.map { cardImageName($0, sizeSuffix: card.sizeSuffix) } ?? cardback,
-                                preferLarge: preferLarge,
-                                skin: skin,
-                                highlighted: selection == .foundation(i)
-                            )
-                            .contentShape(Rectangle())
-                            .onTapGesture {
-                                foundationTapped(i)
                             }
                         }
                     }
-                    .frame(height: card.height + 6)
-                    .padding(.top, 1)
-                    .padding(.horizontal, 4)
+                    .padding(.leading, 6)
+                    .padding(.trailing, 4)
+                    .frame(height: card.height + 2)
 
                     HStack(alignment: .top, spacing: 2) {
                         ForEach(0..<7, id: \.self) { i in
@@ -916,7 +910,7 @@ private struct FoundationSlot: View {
                     .frame(width: card.width, height: card.height)
             }
         }
-        .frame(maxWidth: .infinity)
+        .frame(width: card.width, height: card.height, alignment: .center)
         .contentShape(Rectangle())
         .overlay(
             RoundedRectangle(cornerRadius: 2).stroke(highlighted ? Color.yellow : Color.clear, lineWidth: highlighted ? 2.5 : 0)
