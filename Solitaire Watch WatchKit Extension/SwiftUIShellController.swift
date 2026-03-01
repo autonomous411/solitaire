@@ -5,6 +5,11 @@ final class SwiftUIShellController: WKHostingController<SwiftUIShellView> {
     override var body: SwiftUIShellView {
         SwiftUIShellView()
     }
+
+    override func willActivate() {
+        super.willActivate()
+        setTitle("")
+    }
 }
 
 private struct BridgeSnapshot {
@@ -269,108 +274,111 @@ struct SwiftUIShellView: View {
             let facedown = "facedown.png"
             let cardback = "cardback.png"
 
-            VStack(spacing: 0) {
-                HStack {
-                    DeckStackView(card: card, imageName: facedown, stockCount: stock.count, selected: selection == .waste && waste.isEmpty, preferLarge: preferLarge, skin: skin)
-                        .onTapGesture {
-                            drawFromStock(count: snapshot.flipCards == 1 ? 1 : 3)
-                        }
+            ZStack {
+                Color(red: 0.08, green: 0.49, blue: 0.22)
+                    .ignoresSafeArea()
 
-                    Spacer(minLength: 6)
+                VStack(spacing: 0) {
+                    HStack {
+                        DeckStackView(card: card, imageName: facedown, stockCount: stock.count, selected: selection == .waste && waste.isEmpty, preferLarge: preferLarge, skin: skin)
+                            .onTapGesture {
+                                drawFromStock(count: snapshot.flipCards == 1 ? 1 : 3)
+                            }
 
-                    WasteFanView(card: card, cards: Array(waste.suffix(3)), selected: selection == .waste, preferLarge: preferLarge, skin: skin)
-                        .onTapGesture {
-                            if !waste.isEmpty {
-                                selection = selection == .waste ? nil : .waste
+                        Spacer(minLength: 6)
+
+                        WasteFanView(card: card, cards: Array(waste.suffix(3)), selected: selection == .waste, preferLarge: preferLarge, skin: skin)
+                            .onTapGesture {
+                                if !waste.isEmpty {
+                                    selection = selection == .waste ? nil : .waste
+                                }
+                            }
+                    }
+                    .padding(.horizontal, 2)
+                    .frame(height: card.height + 8)
+                    .background(Color(red: 0.20, green: 0.53, blue: 0.28))
+
+                    HStack(spacing: 0) {
+                        ForEach(0..<4, id: \.self) { i in
+                            FoundationSlot(
+                                card: card,
+                                imageName: foundations[i].last.map { cardImageName($0, sizeSuffix: card.sizeSuffix) } ?? cardback,
+                                preferLarge: preferLarge,
+                                skin: skin,
+                                highlighted: selection == .foundation(i)
+                            )
+                            .onTapGesture {
+                                foundationTapped(i)
                             }
                         }
-                }
-                .padding(.horizontal, 2)
-                .padding(.top, 2)
-                .frame(height: card.height + 8)
-                .background(Color(red: 0.20, green: 0.53, blue: 0.28))
+                    }
+                    .frame(height: card.height + 10)
+                    .background(Color(red: 0.31, green: 0.60, blue: 0.23))
+                    .padding(.top, 2)
+                    .padding(.horizontal, 1)
 
-                HStack(spacing: 0) {
-                    ForEach(0..<4, id: \.self) { i in
-                        FoundationSlot(
-                            card: card,
-                            imageName: foundations[i].last.map { cardImageName($0, sizeSuffix: card.sizeSuffix) } ?? cardback,
-                            preferLarge: preferLarge,
-                            skin: skin,
-                            highlighted: selection == .foundation(i)
-                        )
-                        .onTapGesture {
-                            foundationTapped(i)
+                    HStack(alignment: .top, spacing: 2) {
+                        ForEach(0..<7, id: \.self) { i in
+                            TableauColumn(
+                                card: card,
+                                hiddenCount: tableau[i].hiddenCount,
+                                hiddenImage: facedown,
+                                topImage: tableau[i].faceUp.last.map { cardImageName($0, sizeSuffix: card.sizeSuffix) } ?? cardback,
+                                preferLarge: preferLarge,
+                                skin: skin,
+                                highlighted: selection == .tableau(i)
+                            )
+                            .onTapGesture {
+                                tableauTapped(i)
+                            }
                         }
                     }
-                }
-                .frame(height: card.height + 10)
-                .background(Color(red: 0.31, green: 0.60, blue: 0.23))
-                .padding(.top, 2)
-                .padding(.horizontal, 1)
+                    .padding(.horizontal, 2)
+                    .padding(.top, 2)
 
-                HStack(alignment: .top, spacing: 2) {
-                    ForEach(0..<7, id: \.self) { i in
-                        TableauColumn(
-                            card: card,
-                            hiddenCount: tableau[i].hiddenCount,
-                            hiddenImage: facedown,
-                            topImage: tableau[i].faceUp.last.map { cardImageName($0, sizeSuffix: card.sizeSuffix) } ?? cardback,
-                            preferLarge: preferLarge,
-                            skin: skin,
-                            highlighted: selection == .tableau(i)
-                        )
-                        .onTapGesture {
-                            tableauTapped(i)
+                    Spacer(minLength: 4)
+
+                    VStack(spacing: 3) {
+                        if winBannerVisible {
+                            Text("You won")
+                                .font(.footnote)
+                                .foregroundStyle(.yellow)
                         }
+                        Text("Flip: \(snapshot.flipCards)-Card | Saved: \(snapshot.hasSavedBoard ? "Yes" : "No")")
+                            .font(.caption2)
+
+                        Button(snapshot.flipCards == 1 ? "Flip Mode: 1-Card" : "Flip Mode: 3-Card") {
+                            let next = snapshot.flipCards == 1 ? 3 : 1
+                            LegacyGameBridge.setFlipCardsNumber(next)
+                            snapshot = BridgeSnapshot.load()
+                        }
+                        .buttonStyle(.bordered)
+                        .font(.footnote)
+
+                        Button("New Deal") {
+                            var board = makeInitialBoard()
+                            dealInitialWaste(&board, flipCount: snapshot.flipCards)
+                            stock = board.stock
+                            waste = board.waste
+                            wasteDiscard = board.wasteDiscard
+                            foundations = board.foundations
+                            tableau = board.tableau
+                            selection = nil
+                            winBannerVisible = false
+                        }
+                        .buttonStyle(.bordered)
+                        .font(.footnote)
+
+                        Button("Auto Move") {
+                            autoMoveToFoundations()
+                        }
+                        .buttonStyle(.bordered)
+                        .font(.footnote)
                     }
+                    .padding(.bottom, 2)
                 }
-                .padding(.horizontal, 2)
-                .padding(.top, 2)
-
-                Spacer(minLength: 4)
-
-                VStack(spacing: 3) {
-                    if winBannerVisible {
-                        Text("You won")
-                            .font(.footnote)
-                            .foregroundStyle(.yellow)
-                    }
-                    Text("Flip: \(snapshot.flipCards)-Card | Saved: \(snapshot.hasSavedBoard ? "Yes" : "No")")
-                        .font(.caption2)
-
-                    Button(snapshot.flipCards == 1 ? "Flip Mode: 1-Card" : "Flip Mode: 3-Card") {
-                        let next = snapshot.flipCards == 1 ? 3 : 1
-                        LegacyGameBridge.setFlipCardsNumber(next)
-                        snapshot = BridgeSnapshot.load()
-                    }
-                    .buttonStyle(.bordered)
-                    .font(.footnote)
-
-                    Button("New Deal") {
-                        var board = makeInitialBoard()
-                        dealInitialWaste(&board, flipCount: snapshot.flipCards)
-                        stock = board.stock
-                        waste = board.waste
-                        wasteDiscard = board.wasteDiscard
-                        foundations = board.foundations
-                        tableau = board.tableau
-                        selection = nil
-                        winBannerVisible = false
-                    }
-                    .buttonStyle(.bordered)
-                    .font(.footnote)
-
-                    Button("Auto Move") {
-                        autoMoveToFoundations()
-                    }
-                    .buttonStyle(.bordered)
-                    .font(.footnote)
-                }
-                .padding(.bottom, 2)
+                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
             }
-            .background(Color(red: 0.08, green: 0.49, blue: 0.22))
-            .ignoresSafeArea()
             .onAppear {
                 snapshot = BridgeSnapshot.load()
             }
