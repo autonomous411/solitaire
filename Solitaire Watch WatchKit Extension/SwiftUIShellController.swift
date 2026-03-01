@@ -136,6 +136,17 @@ private func canMoveToTableau(_ card: SwiftCard, pile: TableauPile) -> Bool {
     return top.suit.isRed != card.suit.isRed && card.rank == top.rank - 1
 }
 
+private func isValidTableauRun(_ run: [SwiftCard]) -> Bool {
+    guard run.count > 1 else { return !run.isEmpty }
+    for i in 0..<(run.count - 1) {
+        let upper = run[i]
+        let lower = run[i + 1]
+        if upper.suit.isRed == lower.suit.isRed { return false }
+        if upper.rank != lower.rank + 1 { return false }
+    }
+    return true
+}
+
 struct SwiftUIShellView: View {
     @State private var snapshot = BridgeSnapshot.load()
     @State private var stock: [SwiftCard]
@@ -235,6 +246,17 @@ struct SwiftUIShellView: View {
                     }
                     .buttonStyle(.bordered)
                     .font(.footnote)
+
+                    Button("New Deal") {
+                        let board = makeInitialBoard()
+                        stock = board.stock
+                        waste = board.waste
+                        foundations = board.foundations
+                        tableau = board.tableau
+                        selection = nil
+                    }
+                    .buttonStyle(.bordered)
+                    .font(.footnote)
                 }
                 .padding(.bottom, 2)
             }
@@ -296,6 +318,7 @@ struct SwiftUIShellView: View {
         guard sourceIndex != targetIndex else { return false }
         let movingRun = tableau[sourceIndex].faceUp
         guard let lead = movingRun.first else { return false }
+        guard isValidTableauRun(movingRun) else { return false }
         guard canMoveToTableau(lead, pile: tableau[targetIndex]) else { return false }
         tableau[targetIndex].faceUp.append(contentsOf: movingRun)
         tableau[sourceIndex].faceUp.removeAll()
