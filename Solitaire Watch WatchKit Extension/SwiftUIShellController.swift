@@ -58,8 +58,19 @@ private struct SwiftCard: Equatable {
 }
 
 private struct TableauPile {
-    var hiddenCount: Int
+    var hidden: [SwiftCard]
     var faceUp: [SwiftCard]
+
+    var hiddenCount: Int {
+        hidden.count
+    }
+}
+
+private struct BoardState {
+    var stock: [SwiftCard]
+    var waste: [SwiftCard]
+    var foundations: [[SwiftCard]]
+    var tableau: [TableauPile]
 }
 
 private enum Selection: Equatable {
@@ -92,7 +103,7 @@ private func shuffledDeck() -> [SwiftCard] {
     return deck.shuffled()
 }
 
-private func makeInitialBoard() -> ([SwiftCard], [SwiftCard], [[SwiftCard]], [TableauPile]) {
+private func makeInitialBoard() -> BoardState {
     var deck = shuffledDeck()
     var tableau: [TableauPile] = []
     for i in 0..<7 {
@@ -100,14 +111,15 @@ private func makeInitialBoard() -> ([SwiftCard], [SwiftCard], [[SwiftCard]], [Ta
         for _ in 0...i {
             if let c = deck.popLast() { pile.append(c) }
         }
-        let top = pile.isEmpty ? [] : [pile.removeLast()]
-        tableau.append(TableauPile(hiddenCount: i, faceUp: top))
+        let faceUp = pile.isEmpty ? [] : [pile.removeLast()]
+        tableau.append(TableauPile(hidden: pile, faceUp: faceUp))
     }
-    var waste: [SwiftCard] = []
-    for _ in 0..<3 {
-        if let c = deck.popLast() { waste.append(c) }
-    }
-    return (deck, waste, Array(repeating: [], count: 4), tableau)
+    return BoardState(
+        stock: deck,
+        waste: [],
+        foundations: Array(repeating: [], count: 4),
+        tableau: tableau
+    )
 }
 
 private func canMoveToFoundation(_ card: SwiftCard, foundation: [SwiftCard]) -> Bool {
@@ -126,11 +138,19 @@ private func canMoveToTableau(_ card: SwiftCard, pile: TableauPile) -> Bool {
 
 struct SwiftUIShellView: View {
     @State private var snapshot = BridgeSnapshot.load()
-    @State private var stock: [SwiftCard] = makeInitialBoard().0
-    @State private var waste: [SwiftCard] = makeInitialBoard().1
-    @State private var foundations: [[SwiftCard]] = makeInitialBoard().2
-    @State private var tableau: [TableauPile] = makeInitialBoard().3
+    @State private var stock: [SwiftCard]
+    @State private var waste: [SwiftCard]
+    @State private var foundations: [[SwiftCard]]
+    @State private var tableau: [TableauPile]
     @State private var selection: Selection?
+
+    init() {
+        let initialBoard = makeInitialBoard()
+        _stock = State(initialValue: initialBoard.stock)
+        _waste = State(initialValue: initialBoard.waste)
+        _foundations = State(initialValue: initialBoard.foundations)
+        _tableau = State(initialValue: initialBoard.tableau)
+    }
 
     var body: some View {
         GeometryReader { proxy in
@@ -260,10 +280,8 @@ struct SwiftUIShellView: View {
             _ = waste.popLast()
         case .tableau(let i):
             _ = tableau[i].faceUp.popLast()
-            if tableau[i].faceUp.isEmpty && tableau[i].hiddenCount > 0 {
-                tableau[i].hiddenCount -= 1
-                // Placeholder flip to keep interactions moving; full engine parity comes next.
-                tableau[i].faceUp = [SwiftCard(suit: .spade, rank: 1)]
+            if tableau[i].faceUp.isEmpty, let revealed = tableau[i].hidden.popLast() {
+                tableau[i].faceUp = [revealed]
             }
         case .foundation(let i):
             _ = foundations[i].popLast()
