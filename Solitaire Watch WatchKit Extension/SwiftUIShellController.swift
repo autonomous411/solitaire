@@ -347,11 +347,6 @@ struct SwiftUIShellView: View {
                     .ignoresSafeArea()
 
                 VStack(spacing: 1) {
-                    let safeTopInset: CGFloat = max(8, proxy.safeAreaInsets.top * 0.35)
-
-                    Color.clear
-                        .frame(height: safeTopInset)
-
                     ZStack {
                         WasteFanView(card: card, cards: Array(waste.suffix(3)), selected: selection == .waste, preferLarge: preferLarge, skin: skin)
                             .contentShape(Rectangle())
