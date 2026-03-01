@@ -274,20 +274,33 @@ struct SwiftUIShellView: View {
         }
     }
 
-    private func popSelectedCard() {
-        switch selection {
+    private func popOneFromSource(_ source: Selection) {
+        switch source {
         case .waste:
             _ = waste.popLast()
         case .tableau(let i):
             _ = tableau[i].faceUp.popLast()
-            if tableau[i].faceUp.isEmpty, let revealed = tableau[i].hidden.popLast() {
-                tableau[i].faceUp = [revealed]
-            }
+            revealIfNeeded(afterTableauRemovalAt: i)
         case .foundation(let i):
             _ = foundations[i].popLast()
-        case .none:
-            break
         }
+    }
+
+    private func revealIfNeeded(afterTableauRemovalAt index: Int) {
+        if tableau[index].faceUp.isEmpty, let revealed = tableau[index].hidden.popLast() {
+            tableau[index].faceUp = [revealed]
+        }
+    }
+
+    private func moveSelectedRun(from sourceIndex: Int, to targetIndex: Int) -> Bool {
+        guard sourceIndex != targetIndex else { return false }
+        let movingRun = tableau[sourceIndex].faceUp
+        guard let lead = movingRun.first else { return false }
+        guard canMoveToTableau(lead, pile: tableau[targetIndex]) else { return false }
+        tableau[targetIndex].faceUp.append(contentsOf: movingRun)
+        tableau[sourceIndex].faceUp.removeAll()
+        revealIfNeeded(afterTableauRemovalAt: sourceIndex)
+        return true
     }
 
     private func foundationTapped(_ index: Int) {
@@ -304,7 +317,9 @@ struct SwiftUIShellView: View {
         }
 
         if canMoveToFoundation(moving, foundation: foundations[index]) {
-            popSelectedCard()
+            if let source = selection {
+                popOneFromSource(source)
+            }
             foundations[index].append(moving)
             selection = nil
         } else if !foundations[index].isEmpty {
@@ -325,8 +340,15 @@ struct SwiftUIShellView: View {
             return
         }
 
-        if canMoveToTableau(moving, pile: tableau[index]) {
-            popSelectedCard()
+        if case .tableau(let sourceIndex) = selection {
+            if moveSelectedRun(from: sourceIndex, to: index) {
+                selection = nil
+                return
+            }
+        }
+
+        if canMoveToTableau(moving, pile: tableau[index]), let source = selection {
+            popOneFromSource(source)
             tableau[index].faceUp.append(moving)
             selection = nil
         } else if !tableau[index].faceUp.isEmpty {
