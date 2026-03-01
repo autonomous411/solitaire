@@ -363,6 +363,7 @@ struct SwiftUIShellView: View {
                                 .onTapGesture {
                                     drawFromStock(count: snapshot.flipCards == 1 ? 1 : 3)
                                 }
+                                .offset(x: 40)
                             Spacer(minLength: 0)
                         }
                     }
