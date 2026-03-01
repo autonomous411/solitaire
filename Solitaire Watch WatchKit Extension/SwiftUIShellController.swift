@@ -450,6 +450,7 @@ struct SwiftUIShellView: View {
                 .allowsHitTesting(false)
 #endif
             }
+            .ignoresSafeArea(.all)
             .onAppear {
                 snapshot = BridgeSnapshot.load()
                 interactionMode = loadInteractionMode()
