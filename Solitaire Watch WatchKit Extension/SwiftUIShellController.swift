@@ -347,8 +347,7 @@ struct SwiftUIShellView: View {
                     .ignoresSafeArea()
 
                 VStack(spacing: 1) {
-                    let topInset: CGFloat = 8
-                    let stockWidth = card.width + (card.deckDepthWidth * 2)
+                    let topInset: CGFloat = 4
 
                     ZStack {
                         WasteFanView(card: card, cards: Array(waste.suffix(3)), selected: selection == .waste, preferLarge: preferLarge, skin: skin)
@@ -394,7 +393,8 @@ struct SwiftUIShellView: View {
                                 card: card,
                                 hiddenCount: tableau[i].hiddenCount,
                                 hiddenImage: facedown,
-                                topImage: tableau[i].faceUp.last.map { cardImageName($0, sizeSuffix: card.sizeSuffix) } ?? cardback,
+                                faceUpImages: tableau[i].faceUp.map { cardImageName($0, sizeSuffix: card.sizeSuffix) },
+                                emptyImage: cardback,
                                 preferLarge: preferLarge,
                                 skin: skin,
                                 highlighted: selection == .tableau(i)
@@ -853,21 +853,31 @@ private struct TableauColumn: View {
     let card: CardMetrics
     let hiddenCount: Int
     let hiddenImage: String
-    let topImage: String
+    let faceUpImages: [String]
+    let emptyImage: String
     let preferLarge: Bool
     let skin: String?
     let highlighted: Bool
 
     var body: some View {
+        let faceUpStep = card.hiddenStep
+        let visibleFaceUp = faceUpImages.isEmpty ? [emptyImage] : faceUpImages
         ZStack(alignment: .topLeading) {
             ForEach(0..<hiddenCount, id: \.self) { idx in
                 PixelCard(name: hiddenImage, card: card, preferLarge: preferLarge, skin: skin)
                     .offset(y: CGFloat(idx) * card.hiddenStep)
             }
-            PixelCard(name: topImage, card: card, preferLarge: preferLarge, skin: skin)
-                .offset(y: CGFloat(hiddenCount) * card.hiddenStep)
+
+            ForEach(Array(visibleFaceUp.enumerated()), id: \.offset) { idx, name in
+                PixelCard(name: name, card: card, preferLarge: preferLarge, skin: skin)
+                    .offset(y: CGFloat(hiddenCount) * card.hiddenStep + CGFloat(idx) * faceUpStep)
+            }
         }
-        .frame(width: card.width, height: CGFloat(hiddenCount) * card.hiddenStep + card.height, alignment: .top)
+        .frame(
+            width: card.width,
+            height: CGFloat(hiddenCount) * card.hiddenStep + CGFloat(max(visibleFaceUp.count - 1, 0)) * faceUpStep + card.height,
+            alignment: .top
+        )
         .overlay(
             RoundedRectangle(cornerRadius: 2).stroke(highlighted ? Color.yellow : Color.clear, lineWidth: 1)
         )
