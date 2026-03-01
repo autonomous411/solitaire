@@ -430,6 +430,25 @@ struct SwiftUIShellView: View {
                     .padding(.horizontal, 8)
                     .padding(.bottom, 6)
                 }
+
+#if DEBUG
+                VStack {
+                    HStack {
+                        Text("safeTop: \(Int(proxy.safeAreaInsets.top.rounded()))pt")
+                            .font(.system(size: 10, weight: .semibold, design: .monospaced))
+                            .foregroundColor(.white)
+                            .padding(.horizontal, 6)
+                            .padding(.vertical, 2)
+                            .background(Color.black.opacity(0.35))
+                            .clipShape(Capsule())
+                        Spacer()
+                    }
+                    Spacer()
+                }
+                .padding(.top, 2)
+                .padding(.horizontal, 8)
+                .allowsHitTesting(false)
+#endif
             }
             .onAppear {
                 snapshot = BridgeSnapshot.load()
