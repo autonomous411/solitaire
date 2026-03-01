@@ -550,7 +550,8 @@ struct SwiftUIShellView: View {
         }
 
         if case .foundation = selection {
-            // Preserve current selection on illegal foundation->foundation attempt.
+            // Clear selection on illegal second tap.
+            selection = nil
             return
         }
 
@@ -562,7 +563,8 @@ struct SwiftUIShellView: View {
             selection = nil
             updateWinState()
         } else {
-            // Keep current source selected when target move is illegal.
+            // Clear selection on illegal second tap.
+            selection = nil
         }
     }
 
@@ -588,6 +590,7 @@ struct SwiftUIShellView: View {
 
         if case .foundation = selection, tableau[index].faceUp.isEmpty, moving.rank != 13 {
             // Foundation card can only go to empty tableau if it is a King.
+            selection = nil
             return
         }
 
@@ -604,7 +607,8 @@ struct SwiftUIShellView: View {
             selection = nil
             updateWinState()
         } else {
-            // Keep current source selected when target move is illegal.
+            // Clear selection on illegal second tap.
+            selection = nil
         }
     }
 
