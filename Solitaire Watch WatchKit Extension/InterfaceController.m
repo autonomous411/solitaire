@@ -3437,20 +3437,20 @@ static NSInteger const kCurrentSaveStateSchemaVersion = 2;
 {
     [self ensureBoardStacksAllocated];
     return @[
-        self.deckStack,
-        self.deckFlip,
-        self.deckFlipDiscard,
-        self.hand0,
-        self.hand1,
-        self.hand2,
-        self.hand3,
-        self.hand4,
-        self.hand5,
-        self.hand6,
-        self.discard1,
-        self.discard2,
-        self.discard3,
-        self.discard4
+        self.deckStack ?: [[NSMutableArray alloc] init],
+        self.deckFlip ?: [[NSMutableArray alloc] init],
+        self.deckFlipDiscard ?: [[NSMutableArray alloc] init],
+        self.hand0 ?: [[NSMutableArray alloc] init],
+        self.hand1 ?: [[NSMutableArray alloc] init],
+        self.hand2 ?: [[NSMutableArray alloc] init],
+        self.hand3 ?: [[NSMutableArray alloc] init],
+        self.hand4 ?: [[NSMutableArray alloc] init],
+        self.hand5 ?: [[NSMutableArray alloc] init],
+        self.hand6 ?: [[NSMutableArray alloc] init],
+        self.discard1 ?: [[NSMutableArray alloc] init],
+        self.discard2 ?: [[NSMutableArray alloc] init],
+        self.discard3 ?: [[NSMutableArray alloc] init],
+        self.discard4 ?: [[NSMutableArray alloc] init]
     ];
 }
 
